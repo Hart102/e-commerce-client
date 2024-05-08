@@ -4,10 +4,15 @@ MainLayout;
 import MainLayout from "./layout/MainLayout";
 import Home from "./pages/Home";
 import ShopSingle from "./pages/Shop-single";
+import SingleProduct from "./pages/Single";
+
+import CheckoutSummary from "./pages/checkoutSummary/summary";
 
 import DashboardLayout from "./layout/DashboardLayout";
 import Products from "./pages/dashboard/Products";
 import AddProduct from "./pages/dashboard/Add-products";
+import Shipping from "./pages/shipping";
+import Login from "./pages/Login";
 
 export const router = createBrowserRouter([
   {
@@ -15,7 +20,13 @@ export const router = createBrowserRouter([
     element: <MainLayout />,
     children: [
       { path: "/", element: <Home /> },
-      { path: "/online-store/shop-single/:id", element: <ShopSingle /> },
+      { path: "/login", element: <Login /> },
+
+      { path: "/shop/:id", element: <ShopSingle /> },
+      { path: "/shop/single", element: <SingleProduct /> },
+
+      { path: "shop/summary", element: <CheckoutSummary /> },
+      { path: "/shop/shipping", element: <Shipping /> },
     ],
   },
   {

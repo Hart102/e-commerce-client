@@ -9,6 +9,7 @@ export const products = [
     price: "$ 150",
     category: "fashion",
     units: 2,
+    size: "meduim",
     description:
       "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.",
     createdAt: "12:00",
@@ -21,6 +22,7 @@ export const products = [
     price: "$ 150",
     category: "fashion",
     units: 8,
+    size: "small",
     description:
       "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.",
     createdAt: "12:00",
@@ -33,6 +35,7 @@ export const products = [
     price: "$ 150",
     category: "fashion",
     units: 17,
+    size: "large",
     description:
       "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.",
     createdAt: "12:00",
@@ -45,6 +48,7 @@ export const products = [
     price: "$ 150",
     category: "fashion",
     units: 30,
+    size: "extra large",
     description:
       "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.",
     createdAt: "12:00",
@@ -57,6 +61,7 @@ export const products = [
     price: "$ 150",
     category: "fashion",
     units: 5,
+    size: "small",
     description:
       "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.",
     createdAt: "12:00",

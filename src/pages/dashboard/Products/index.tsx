@@ -22,8 +22,8 @@ export default function Products() {
   const [searchResult, setSearchResult] = useState<ProductType[]>([]);
 
   return (
-    <div className="flex flex-col gap-16">
-      <div className="flex items-center justify-between">
+    <>
+      <div className="flex items-center justify-between p-5 bg-white rounded-t-2xl">
         <h3 className="text-3xl font-bold">Products</h3>
         <Link
           to="/dashboard/add-products"
@@ -33,12 +33,12 @@ export default function Products() {
         </Link>
       </div>
 
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-4 bg-white p-4">
         <Search items={products} searchResponse={setSearchResult} />
 
         <Table
           aria-label="Example table with custom cells"
-          className="text-sm shadow-lg py-5"
+          className="text-sm border-b py-5"
           classNames={{
             th: "text-neutral-700",
           }}
@@ -164,6 +164,6 @@ export default function Products() {
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }
