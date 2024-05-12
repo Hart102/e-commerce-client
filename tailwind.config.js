@@ -13,6 +13,9 @@ export default {
         "app-yellow-200": "#D1A627",
         "app-yellow-100": "#EDB953",
         overLay: "rgba(0, 0, 0, 0.5)",
+
+        // ------------------
+        "main-gray": "#F3F2F4",
       },
     },
   },
@@ -20,3 +23,5 @@ export default {
 };
 // 27272A
 // 18181B
+
+// Dark blue: #10182F

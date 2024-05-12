@@ -1,51 +1,50 @@
 import { Link } from "react-router-dom";
-import { FaHome, FaTimes } from "react-icons/fa";
-import { sideBarLinks } from "./sidebarLinks";
+import {
+  BiGridAlt,
+  BiLogoProductHunt,
+  BiUserPlus,
+  BiCategoryAlt,
+} from "react-icons/bi";
 
-export default function SideBar({
-  activate,
-  onclick,
-}: {
-  activate: boolean;
-  onclick: () => void;
-}) {
+const sideBarLinks = [
+  { icon: BiLogoProductHunt, title: "Products", href: "/dashboard_1/products" },
+  { icon: BiUserPlus, title: "Customers", href: "/dashboard_1/customers" },
+  { icon: BiCategoryAlt, title: "Categories", href: "/dashboard_1/categories" },
+];
+
+export default function SideBar() {
   return (
-    <aside
-      className={`md:block bg-white w-full md:w-[23%] fixed rounded-2xl h-full z-10 ${
-        !activate ? "hidden" : "block absolute"
-      }`}
-    >
-      <div className="flex flex-col gap-5 py-4 px-6 bg-white h-full rounded-2xl">
-        <FaTimes className="block md:hidden self-end" onClick={onclick} />
-        <Link to="/dashboard">
-          <h2 className="text-2xl font-bold">Spline.One</h2>
+    <aside className="bg-white p-5 rounded-l-xl h-[93vh w-full md:w-3/12 hidden md:flex flex-col gap-8">
+      <Link
+        to="/dashboard_1/products"
+        className="text-2xl font-bold first-letter:text-3xl"
+      >
+        Spline.One
+      </Link>
+
+      <div className="flex flex-col gap-4 text-neutral-500">
+        <Link
+          to="/dashboard_1/products"
+          className="flex items-center gap-2 px-2 py-3 rounded hover:bg-main-gray"
+        >
+          <BiGridAlt size={18} />
+          Dashboard
         </Link>
 
-        <div className="mt-5">
-          <Link
-            to={""}
-            className="flex items-center gap-2 text-neutral-600 py-3 px-2 rounded-lg hover:bg-app-gray-50"
-          >
-            <FaHome />
-            Dashboard
-          </Link>
+        <div className="flex flex-col gap-2">
+          <p className="px-2 py-3 rounded bg-main-gray">PRODUCT MANAGEMENT</p>
 
-          <div className="mt-8">
-            <p className="text-neutral-600 text-sm mb-5 px-2">
-              Store Management
-            </p>
-            <div className="mt-5 flex flex-col gap-2">
-              {sideBarLinks.map((sideLinks) => (
-                <Link
-                  key={sideLinks.title}
-                  to={sideLinks.href}
-                  className="flex items-center gap-2 text-neutral-600 py-3 px-2 rounded-lg hover:bg-app-gray-50 capitalize"
-                >
-                  <sideLinks.icon />
-                  {sideLinks.title}
-                </Link>
-              ))}
-            </div>
+          <div className="flex flex-col gap-2">
+            {sideBarLinks.map((link) => (
+              <Link
+                key={link.href}
+                to={link.href}
+                className="flex items-center gap-2 px-2 py-3 rounded hover:bg-main-gray"
+              >
+                <link.icon size={18} />
+                {link.title}
+              </Link>
+            ))}
           </div>
         </div>
       </div>

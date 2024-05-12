@@ -5,63 +5,112 @@ import {
   DropdownMenu,
   DropdownItem,
 } from "@nextui-org/react";
-import { FaBars, FaUserAlt, FaShoppingBag, FaSearch } from "react-icons/fa";
+import { useState } from "react";
+import {
+  FaBars,
+  FaTimes,
+  FaShoppingBag,
+  FaSearch,
+  FaTools,
+} from "react-icons/fa";
+import { BiGridAlt, BiLogOut } from "react-icons/bi";
 import { Link } from "react-router-dom";
 
+const navBarLink = [
+  { title: "Fashion", href: "" },
+  { title: "Jewerrey", href: "" },
+  { title: "Electronics", href: "" },
+];
+
 export default function Header() {
+  const [isTrue, setIsTrue] = useState<boolean>(false);
+  const toggleMenu = () => (!isTrue ? setIsTrue(true) : setIsTrue(false));
+
   return (
-    <nav className="w-screen text-sm">
-      <div className="container mx-auto flex flex-col md:flex-row items-center justify-between gap-2 md:gap-4 py-4 md:py-8 px-4 md:px-14">
-        <div className="w-full md:w-auto flex gap-4 items-center">
-          <FaBars />
-          <h2 className="text-2xl font-bold">Spline.One</h2>
-        </div>
-
-        <div className="w-full md:w-1/2 border rounded-md px-2 flex items-center gap-2">
-          <FaSearch className="text-app-gray-100" />
-          <Input
-            size="sm"
-            type="search"
-            placeholder="Type to search..."
-            classNames={{
-              base: "h-10 border-0 outline-0",
-              mainWrapper: "h-full",
-              input: "text-small",
-              inputWrapper: "h-full font-normal hover:border-0",
-            }}
-            style={{ outline: "0" }}
-          />
-        </div>
-
-        <div className="hidden md:flex items-center gap-4">
-          <Link to={""} className="flex items-center gap-2">
-            <FaShoppingBag className="text-app-gray-100" />
-            Cart
+    <nav className="bg-[#F7F7F7] w-full fixed top-0 left-0 z-20 text-sm">
+      <div className="container bg-[#F7F7F7] relative mx-auto flex flex-col md:flex-row items-center justify-between gap-2 md:gap-4 py-3 px-4 md:px-14 z-40">
+        <div className="w-full md:w-auto flex gap-4 items-baseline justify-between">
+          <Link to="/" className="text-2xl font-bold first-letter:text-3xl">
+            Spline.One
           </Link>
+          {!isTrue && (
+            <FaBars onClick={toggleMenu} className="block md:hidden" />
+          )}
 
-          <Dropdown>
-            <DropdownTrigger>
-              <div className="flex items-center gap-2 cursor-pointer">
-                <FaUserAlt className="text-app-gray-100" />
-                Account
-              </div>
-            </DropdownTrigger>
-            <DropdownMenu
-              variant="light"
-              className="flex flex-col p-5 rounded text-sm"
-            >
-              <DropdownItem key="settings" className="my-1">
-                <Link to={""}>My Settings</Link>
-              </DropdownItem>
-              <DropdownItem key="analytics" className="my-1">
-                <Link to={""}>Analytics</Link>
-              </DropdownItem>
+          {isTrue && (
+            <FaTimes onClick={toggleMenu} className="block md:hidden" />
+          )}
+        </div>
 
-              <DropdownItem key="logout" color="danger" className="my-1">
-                <Link to={""}> Log Out</Link>
-              </DropdownItem>
-            </DropdownMenu>
-          </Dropdown>
+        <div
+          className={`absolute md:relative top-[60px] md:top-0 w-full md:w-7/12 p-5 
+          md:p-0 flex flex-col-reverse md:flex-row justify-between gap-4 delay-150 
+          duration-300 z-10 bg-[#F7F7F7] md:bg-transparent shadow md:shadow-none ${
+            !isTrue
+              ? "-translate-x-[30rem] md:-translate-x-0"
+              : "-translate-x-0"
+          }`}
+        >
+          <div className="w-full flex flex-col md:flex-row items-start md:items-center gap-4 [&_a]:p-2 md:[&_a]:p-2">
+            {navBarLink.map((link) => (
+              <Link
+                to={link.href}
+                className="w-11/12 md:w-auto hover:bg-black hover:text-white md:hover:bg-transparent md:hover:text-neutral-400"
+              >
+                {link.title}
+              </Link>
+            ))}
+          </div>
+
+          <div className="w-full md:w-auto flex items-center gap-8 pb-5 border-b md:border-0">
+            <div className="w-full border rounded px-2 md:hidden flex items-center gap-4">
+              <FaSearch className="text-app-gray-100" />
+              <Input
+                size="sm"
+                type="search"
+                placeholder="Search for products..."
+                classNames={{
+                  base: "h-10 border-0 border-l",
+                  mainWrapper: "h-full",
+                  input: "text-small outline-0",
+                  inputWrapper: "h-full",
+                }}
+              />
+            </div>
+          </div>
+          <div className="flex items-center justify-between p-2 gap-8">
+            <FaSearch className="hidden md:block" />
+            <Link to="/shop/cart" className="flex items-center gap-2">
+              <FaShoppingBag size={17} />
+            </Link>
+
+            <Dropdown>
+              <DropdownTrigger>
+                <div className="flex items-center gap-2 cursor-pointer">
+                  <BiGridAlt size={17} />
+                </div>
+              </DropdownTrigger>
+              <DropdownMenu
+                variant="light"
+                className="flex flex-col rounded text-sm bg-white shadow text-neutral-500 mt-1 px-0"
+              >
+                <DropdownItem
+                  startContent={<FaTools />}
+                  key="settings"
+                  className="p-3 cursor-pointer hover:bg-[#F7F7F7]"
+                >
+                  <Link to={""}>My Account</Link>
+                </DropdownItem>
+                <DropdownItem
+                  key="logout"
+                  startContent={<BiLogOut />}
+                  className="p-3 cursor-pointer hover:bg-[#F7F7F7]"
+                >
+                  <Link to={""}> Log Out</Link>
+                </DropdownItem>
+              </DropdownMenu>
+            </Dropdown>
+          </div>
         </div>
       </div>
     </nav>

@@ -6,13 +6,16 @@ import Home from "./pages/Home";
 import ShopSingle from "./pages/Shop-single";
 import SingleProduct from "./pages/Single";
 
-import CheckoutSummary from "./pages/checkoutSummary/summary";
+import Cart from "./pages/Cart";
 
 import DashboardLayout from "./layout/DashboardLayout";
 import Products from "./pages/dashboard/Products";
 import AddProduct from "./pages/dashboard/Add-products";
-import Shipping from "./pages/shipping";
+import Checkout from "./pages/Checkout";
 import Login from "./pages/Login";
+
+// DASHBOARD
+import Porducts_1 from "./pages/dashboard_1/Products";
 
 export const router = createBrowserRouter([
   {
@@ -20,14 +23,17 @@ export const router = createBrowserRouter([
     element: <MainLayout />,
     children: [
       { path: "/", element: <Home /> },
+      { path: "shop/cart", element: <Cart /> },
       { path: "/login", element: <Login /> },
+      { path: "/shop/checkout", element: <Checkout /> },
 
       { path: "/shop/:id", element: <ShopSingle /> },
       { path: "/shop/single", element: <SingleProduct /> },
-
-      { path: "shop/summary", element: <CheckoutSummary /> },
-      { path: "/shop/shipping", element: <Shipping /> },
     ],
+  },
+  {
+    path: "/dashboard_1/products",
+    element: <Porducts_1 />,
   },
   {
     path: "/dashboard",

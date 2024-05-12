@@ -5,11 +5,11 @@ export const products = [
   {
     id: "1",
     images: [Img1, Img2, Img1, Img2],
-    name: "female ware",
+    name: "Breathable slim sport vest",
     price: "$ 150",
     category: "fashion",
     units: 2,
-    size: "meduim",
+    size: "MD",
     description:
       "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.",
     createdAt: "12:00",
@@ -22,7 +22,7 @@ export const products = [
     price: "$ 150",
     category: "fashion",
     units: 8,
-    size: "small",
+    size: "SM",
     description:
       "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.",
     createdAt: "12:00",
@@ -31,11 +31,11 @@ export const products = [
   {
     id: "3",
     images: [Img1, Img2, Img1, Img2],
-    name: "female ware",
+    name: "Breathable slim sport vest",
     price: "$ 150",
     category: "fashion",
     units: 17,
-    size: "large",
+    size: "LG",
     description:
       "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.",
     createdAt: "12:00",
@@ -48,7 +48,7 @@ export const products = [
     price: "$ 150",
     category: "fashion",
     units: 30,
-    size: "extra large",
+    size: "XL",
     description:
       "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.",
     createdAt: "12:00",
@@ -57,11 +57,11 @@ export const products = [
   {
     id: "5",
     images: [Img1, Img2, Img1, Img2],
-    name: "female ware",
+    name: "men tshirt",
     price: "$ 150",
     category: "fashion",
     units: 5,
-    size: "small",
+    size: "MD",
     description:
       "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.",
     createdAt: "12:00",

@@ -1,9 +1,14 @@
-import { Image, Button } from "@nextui-org/react";
-import { ContainerLG, ContainerMD, ContainerSM } from "../../layout/Container";
+import { Button, Image } from "@nextui-org/react";
 import { FaTimes } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 import { products } from "../../dummy/products";
+import { ContainerLG, ContainerMD, ContainerSM } from "../../layout/Container";
 
 export default function CheckoutSummary() {
+  const navigation = useNavigate();
+
+  const moveToCheckout = () => navigation("/shop/checkout");
+
   return (
     <ContainerLG columnReverse="flex-col">
       <ContainerMD>
@@ -38,7 +43,7 @@ export default function CheckoutSummary() {
                 </div>
                 <div className="capitalize">
                   <b className="text-neutral-600">{product.name}</b>
-                  <p className="text-neutral-400">{product.size}</p>
+                  <p className="text-neutral-400">Size: {product.size}</p>
                   <b className="hidden md:block text-neutral-600 mt-2">
                     {product.price}
                   </b>
@@ -78,7 +83,7 @@ export default function CheckoutSummary() {
               <div className="w-full flex flex-col gap-4 capitalize">
                 <div>
                   <b className="text-neutral-600">{product.name}</b>
-                  <p className="text-neutral-400">{product.size}</p>
+                  <p className="text-neutral-400">Size: {product.size}</p>
                 </div>
 
                 <div className="w-full flex flex-col gap-2">
@@ -128,7 +133,10 @@ export default function CheckoutSummary() {
         </div>
 
         <div className="flex flex-col gap-8 justify-between h-full pb-10">
-          <Button className="w-full rounded-full font-bold bg-black mt-5 text-white">
+          <Button
+            onClick={moveToCheckout}
+            className="w-full rounded-full font-bold bg-black mt-5 text-white"
+          >
             CHECK OUT
           </Button>
 
