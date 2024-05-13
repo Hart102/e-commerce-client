@@ -10,7 +10,7 @@ import { BiBell } from "react-icons/bi";
 import SideBar from "../../../components/Navigation/SideBar";
 import { products } from "../../../dummy/products";
 
-[#F7F7F7];
+// [#F7F7F7];
 export default function Products() {
   return (
     <div className="w-full text-sm md:p-5 flex">
