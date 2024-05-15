@@ -16,7 +16,7 @@ function ContainerLG({ children, columnReverse }: ContainerProps) {
 
 function ContainerMD({ children }: ContainerProps) {
   return (
-    <div className="w-full md:w-7/12 flex flex-col gap-8 md:bg-[#F7F7F7] md:p-16">
+    <div className="w-full md:w-7/12 flex flex-col gap-8 md:bg-[#F7F7F7] md:p-10">
       {children}
     </div>
   );

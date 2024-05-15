@@ -20,7 +20,7 @@ export const products = [
     images: [Img2, Img1, Img2, Img1],
     name: "female ware",
     price: "$ 150",
-    category: "fashion",
+    category: "Electronics",
     units: 8,
     size: "SM",
     description:
@@ -33,7 +33,7 @@ export const products = [
     images: [Img1, Img2, Img1, Img2],
     name: "Breathable slim sport vest",
     price: "$ 150",
-    category: "fashion",
+    category: "Electronics",
     units: 17,
     size: "LG",
     description:
@@ -46,7 +46,7 @@ export const products = [
     images: [Img2, Img1, Img2, Img1],
     name: "female ware",
     price: "$ 150",
-    category: "fashion",
+    category: "Jewerrey",
     units: 30,
     size: "XL",
     description:

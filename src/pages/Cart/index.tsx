@@ -13,53 +13,59 @@ export default function CheckoutSummary() {
     <ContainerLG columnReverse="flex-col">
       <ContainerMD>
         {/* DESKTOP PRODUCT TEMPLATE */}
-        <div className="hidden md:flex justify-between border-b pb-5 px-2">
-          <div className="flex items-center gap-3">
+        <div className="hidden md:flex justify-between gap-4 border-b pb-5 px-2">
+          <div className="w-[60%] flex items-center gap-3">
             <input type="checkbox" className="cursor-pointer" />
             <span>SELECT ALL</span>
           </div>
-          <span>QUANTITY</span>
-          <span>TOTAL</span>
+          <div className="w-[40%] flex justify-between">
+            <span>QUANTITY</span>
+            <span>TOTAL</span>
+          </div>
         </div>
 
-        <div className="hidden md:block md:h-[400px] md:overflow-y-scroll">
+        <div className="w-full hidden md:block md:h-[400px] md:overflow-y-scroll">
           {products.map((product) => (
             <div
               key={product.id}
-              className="flex items-center justify-between w-full border-b pb-8 md:px-2"
+              className="flex items-center gap-4 w-full border-b pb-8 md:px-2"
             >
-              <input
-                type="checkbox"
-                className="hidden md:block cursor-pointer"
-              />
+              <div className="w-[60%] flex gap-2">
+                <input
+                  type="checkbox"
+                  className="hidden md:block cursor-pointer"
+                />
 
-              <div className="flex items-center gap-5">
-                <div className="h-[100px] w-[90px]">
+                <div className="flex items-center gap-5">
                   <Image
+                    width={80}
                     src={product.images[0]}
                     alt="product image"
-                    className="object-contain w-full h-full"
                   />
-                </div>
-                <div className="capitalize">
-                  <b className="text-neutral-600">{product.name}</b>
-                  <p className="text-neutral-400">Size: {product.size}</p>
-                  <b className="hidden md:block text-neutral-600 mt-2">
-                    {product.price}
-                  </b>
+                  <div className="capitalize">
+                    <b className="text-neutral-600 line-clamp-2">
+                      {product.name}
+                    </b>
+                    <p className="text-neutral-400">Size: {product.size}</p>
+                    <b className="hidden md:block text-neutral-600 mt-2">
+                      {product.price}
+                    </b>
+                  </div>
                 </div>
               </div>
 
-              <div className="flex items-center">
-                <Button>-</Button>
-                <div className="border px-2.5 py-1">0</div>
-                <Button>+</Button>
-              </div>
+              <div className="w-[40%] flex items-center justify-between">
+                <div className="flex items-center">
+                  <Button>-</Button>
+                  <div className="border px-2.5 py-1">0</div>
+                  <Button>+</Button>
+                </div>
 
-              <div className="flex items-center gap-8">
-                <b className="text-neutral-600">$ 5.00</b>
-                <div className="rounded-full bg-black text-white p-1 cursor-pointer">
-                  <FaTimes />
+                <div className="flex items-center gap-8">
+                  <b className="text-neutral-600">$ 5.00</b>
+                  <div className="rounded-full bg-black text-white p-1 cursor-pointer">
+                    <FaTimes />
+                  </div>
                 </div>
               </div>
             </div>
@@ -67,7 +73,7 @@ export default function CheckoutSummary() {
         </div>
 
         {/* MOBILE PRODUCT TEMPLATE */}
-        <div className="md:hidden h-[400px] overflow-y-scroll">
+        <div className="md:hidden h-[600px] overflow-y-scroll">
           {products.map((product) => (
             <div
               key={product.id}

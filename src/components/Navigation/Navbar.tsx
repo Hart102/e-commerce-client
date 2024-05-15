@@ -6,13 +6,8 @@ import {
   DropdownItem,
 } from "@nextui-org/react";
 import { useState } from "react";
-import {
-  FaBars,
-  FaTimes,
-  FaShoppingBag,
-  FaSearch,
-  FaTools,
-} from "react-icons/fa";
+import { FaBars, FaTimes, FaSearch, FaTools } from "react-icons/fa";
+import { BiCartAdd } from "react-icons/bi";
 import { BiGridAlt, BiLogOut } from "react-icons/bi";
 import { Link } from "react-router-dom";
 
@@ -81,7 +76,7 @@ export default function Header() {
           <div className="flex items-center justify-between p-2 gap-8">
             <FaSearch className="hidden md:block" />
             <Link to="/shop/cart" className="flex items-center gap-2">
-              <FaShoppingBag size={17} />
+              <BiCartAdd size={17} />
             </Link>
 
             <Dropdown>
