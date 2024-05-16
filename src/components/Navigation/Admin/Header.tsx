@@ -1,11 +1,16 @@
 import { Avatar, Badge } from "@nextui-org/react";
 import { BiBell } from "react-icons/bi";
+import { useLocation } from "react-router-dom";
 
 export default function Header() {
+  const location = useLocation();
+
   return (
     <nav className="bg-white rounded-tr-xl p-5">
       <div className="container mx-auto flex justify-between items-center">
-        <p className="text-lg font-semibold">OVERVIEW</p>
+        <p className="text-lg font-semibold uppercase">
+          {location.pathname.slice(11)}
+        </p>
 
         <div className="flex items-center gap-6">
           <div className="flex items-start">

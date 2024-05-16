@@ -6,6 +6,9 @@ import {
   Input,
 } from "@nextui-org/react";
 import { FaTimes } from "react-icons/fa";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { useForm } from "react-hook-form";
+import { addAddressSchema } from "../../schema/addressSchema";
 
 export default function AddAddress({
   isOpen,
@@ -14,6 +17,16 @@ export default function AddAddress({
   isOpen: boolean;
   onClose: () => void;
 }) {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<addAddressSchema>({ resolver: yupResolver(addAddressSchema) });
+
+  const onSubmit = (data: addAddressSchema) => {
+    console.log(data);
+  };
+
   const InputProps = {
     label: "mb-16",
     inputWrapper: "px-0 flex",
@@ -50,31 +63,58 @@ export default function AddAddress({
                     </div>
                   </div>
                   <div className="md:px-10 md:py-2">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                      <Input
-                        label="Address"
-                        placeholder="No, 7 aba oweri road"
-                        classNames={InputProps}
-                      />
-                      <Input
-                        label="City"
-                        placeholder="Aba"
-                        classNames={InputProps}
-                      />
-                      <Input
-                        label="State"
-                        placeholder="Abia state"
-                        classNames={InputProps}
-                      />
-                      <Input
-                        label="Country"
-                        placeholder="Nigeria"
-                        classNames={InputProps}
-                      />
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-2 [&_span]:text-red-500 [&_span]:text-xs">
+                      <div>
+                        <Input
+                          label="Address"
+                          placeholder="No, 7 aba oweri road"
+                          classNames={InputProps}
+                          {...register("address")}
+                        />
+                        <span>{errors?.address?.message}</span>
+                      </div>
+                      <div>
+                        <Input
+                          label="City"
+                          placeholder="Aba"
+                          classNames={InputProps}
+                          {...register("city")}
+                        />
+                        <span>{errors?.city?.message}</span>
+                      </div>
+                      <div>
+                        <Input
+                          label="State"
+                          placeholder="Abia state"
+                          classNames={InputProps}
+                          {...register("state")}
+                        />
+                        <span>{errors?.state?.message}</span>
+                      </div>
+
+                      <div>
+                        <Input
+                          label="Country"
+                          placeholder="Nigeria"
+                          classNames={InputProps}
+                          {...register("country")}
+                        />
+                        <span>{errors?.country?.message}</span>
+                      </div>
+                      <div>
+                        <Input
+                          label="Phone Number"
+                          placeholder="+234 456 789"
+                          classNames={InputProps}
+                          {...register("phone")}
+                        />
+                        <span>{errors?.phone?.message}</span>
+                      </div>
                     </div>
                     <div>
                       <Button
                         variant="light"
+                        onClick={handleSubmit(onSubmit)}
                         className="bg-black text-white rounded-full px-20 mt-5"
                       >
                         SAVE

@@ -1,4 +1,5 @@
 import { Button, Image } from "@nextui-org/react";
+import { useState } from "react";
 import { FaTimes } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { products } from "../../dummy/products";
@@ -6,8 +7,11 @@ import { ContainerLG, ContainerMD, ContainerSM } from "../../layout/Container";
 
 export default function CheckoutSummary() {
   const navigation = useNavigate();
+  const [quantity, setQuantity] = useState<number>(0);
 
   const moveToCheckout = () => navigation("/shop/checkout");
+  const increaseQty = () => setQuantity(quantity + 1);
+  const deCreaseQty = () => quantity !== 0 && setQuantity(quantity - 1);
 
   return (
     <ContainerLG columnReverse="flex-col">
@@ -56,9 +60,9 @@ export default function CheckoutSummary() {
 
               <div className="w-[40%] flex items-center justify-between">
                 <div className="flex items-center">
-                  <Button>-</Button>
-                  <div className="border px-2.5 py-1">0</div>
-                  <Button>+</Button>
+                  <Button onClick={deCreaseQty}>-</Button>
+                  <div className="border px-2.5 py-1">{quantity}</div>
+                  <Button onClick={increaseQty}>+</Button>
                 </div>
 
                 <div className="flex items-center gap-8">

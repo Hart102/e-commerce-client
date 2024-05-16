@@ -13,7 +13,7 @@ export default function Login() {
 
   return (
     <ContainerLG>
-      <div className="w-full md:w-4/12 hidden md:flex justify-center gap-8 md:bg-[#F7F7F7]">
+      <div className="w-full md:w-4/12 hidden md:flex justify-center gap-8 md:bg-deep-gray-200">
         <Image
           width={500}
           className="h-full"

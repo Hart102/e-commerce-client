@@ -130,7 +130,7 @@ export default function ShopSingle() {
                 <Link to="preview" smooth={true} duration={500}>
                   <FaEye
                     onClick={() => selectProduct(product.id)}
-                    className="text-app-gray-100 cursor-pointer"
+                    className="text-deep-gray-100 cursor-pointer"
                   />
                 </Link>
               </div>

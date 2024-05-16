@@ -23,15 +23,15 @@ export default function Products() {
   const viewProduct = (id: string) => navigation(`/shop/single/${id}`);
 
   return (
-    <>
+    <div className="bg-deep-gray-200 p-5 flex flex-col gap-4 md:gap-8">
       <div className="hidden px-4 md:flex items-center justify-between">
         <div className="flex items-baseline gap-2">
           <b className="text-3xl">300</b>
           <p className="text-neutral-400 text-sm italic">Products</p>
         </div>
 
-        <form className="flex w-1/2 items-center gap-2 bg-[#F7F7F7] shadow rounded px-2">
-          <BiSearch size={18} className="text-app-gray-100" />
+        <form className="flex w-1/2 items-center gap-2 bg-white rounded px-2">
+          <BiSearch size={18} className="text-deep-gray-100" />
           <Input
             size="sm"
             type="search"
@@ -49,7 +49,7 @@ export default function Products() {
         <div>
           <Link
             to="/dashboard/add-products"
-            className="py-2 px-2 rounded flex items-center gap-1 font-semibold bg-[#F7F7F7] hover:bg-white"
+            className="py-2 px-2 rounded flex items-center gap-1 font-semibold bg-white hover:bg-white"
           >
             <BiAddToQueue />
             <p className="text-sm">ADD PRODUCT</p>
@@ -60,7 +60,7 @@ export default function Products() {
         classNames={{
           base: "text-center",
           th: "text-neutral-400",
-          tr: "capitalize py-4 bg-[#F7F7F7] shadow",
+          tbody: "capitalize py-4 text-sm",
         }}
       >
         <TableHeader>
@@ -83,7 +83,10 @@ export default function Products() {
                 <div className="flex items-center gap-4">
                   <input type="checkbox" className="cursor-pointer" />
                   <div className="flex items-center gap-4">
-                    <Image src={product.images[0]} width={50} />
+                    <Image
+                      src={product.images[0]}
+                      classNames={{ img: "rounded-full h-[50px] w-[50px]" }}
+                    />
                     {product.name}
                   </div>
                 </div>
@@ -105,7 +108,7 @@ export default function Products() {
                       <DropdownItem
                         key={action}
                         color="default"
-                        className="py-2 hover:bg-[#F7F7F7]"
+                        className="py-2 hover:bg-deep-gray-200"
                         onClick={() => viewProduct(product.id)}
                       >
                         {action}
@@ -118,6 +121,6 @@ export default function Products() {
           ))}
         </TableBody>
       </Table>
-    </>
+    </div>
   );
 }

@@ -38,7 +38,7 @@ export default function Search({ items, searchResponse }: SearchProps) {
   return (
     <div className="flex items-center justify-between md:px-4">
       <form className="flex items-center gap-2 border rounded px-2">
-        <FaSearch size={18} className="text-app-gray-100" />
+        <FaSearch size={18} className="text-deep-gray-100" />
         <Input
           size="sm"
           type="search"

@@ -11,6 +11,11 @@ import Login from "./pages/Login";
 import DashboardLayout from "./layout/DashboardLayout";
 import AddProduct from "./pages/dashboard/Add-product";
 import ProductsPage from "./pages/dashboard/Products";
+import Orders from "./pages/dashboard/Orders";
+import SingleOrder from "./pages/dashboard/SingleOrder";
+import Customers from "./pages/dashboard/Customers";
+import Categories from "./pages/dashboard/Categories";
+// import AddCategory from "./components/Add-category";
 
 // DASHBOARD
 
@@ -34,6 +39,11 @@ export const router = createBrowserRouter([
     children: [
       { path: "/dashboard/products", element: <ProductsPage /> },
       { path: "/dashboard/add-products", element: <AddProduct /> },
+      { path: "/dashboard/orders", element: <Orders /> },
+      { path: "/dashboard/orders/:id", element: <SingleOrder /> },
+      { path: "/dashboard/customers", element: <Customers /> },
+      { path: "/dashboard/categories", element: <Categories /> },
+      // { path: "/dashboard/add-category", element: <AddCategory /> },
     ],
   },
 ]);

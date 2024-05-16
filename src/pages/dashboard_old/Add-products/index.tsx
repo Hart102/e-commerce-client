@@ -65,7 +65,7 @@ export default function AddProduct() {
         <h3 className="text-2xl font-bold text-neutral-500">Add Products</h3>
         <Link
           to="/dashboard/products"
-          className="bg-app-gray-100 py-2 px-3 rounded text-sm font-bold hover:opacity-65"
+          className="bg-deep-gray-100 py-2 px-3 rounded text-sm font-bold hover:opacity-65"
         >
           Back to Products
         </Link>
@@ -199,7 +199,7 @@ export default function AddProduct() {
 
           <Button
             onClick={handleSubmit(onSubmit)}
-            className="w-full mt-2 font-bold bg-app-gray-100 rounded"
+            className="w-full mt-2 font-bold bg-deep-gray-100 rounded"
           >
             Create Product
           </Button>

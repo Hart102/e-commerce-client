@@ -22,8 +22,8 @@ export default function Header() {
   const toggleMenu = () => (!isTrue ? setIsTrue(true) : setIsTrue(false));
 
   return (
-    <nav className="bg-[#F7F7F7] w-full fixed top-0 left-0 z-20 text-sm">
-      <div className="container bg-[#F7F7F7] relative mx-auto flex flex-col md:flex-row items-center justify-between gap-2 md:gap-4 py-3 px-4 md:px-14 z-40">
+    <nav className="bg-deep-gray-200 w-full fixed top-0 left-0 z-20 text-sm">
+      <div className="container bg-deep-gray-200 relative mx-auto flex flex-col md:flex-row items-center justify-between gap-2 md:gap-4 py-3 px-4 md:px-14 z-40">
         <div className="w-full md:w-auto flex gap-4 items-baseline justify-between">
           <Link to="/" className="text-2xl font-bold first-letter:text-3xl">
             Spline.One
@@ -40,7 +40,7 @@ export default function Header() {
         <div
           className={`absolute md:relative top-[60px] md:top-0 w-full md:w-7/12 p-5 
           md:p-0 flex flex-col-reverse md:flex-row justify-between gap-4 delay-150 
-          duration-300 z-10 bg-[#F7F7F7] md:bg-transparent shadow md:shadow-none ${
+          duration-300 z-10 bg-deep-gray-200 md:bg-transparent shadow md:shadow-none ${
             !isTrue
               ? "-translate-x-[30rem] md:-translate-x-0"
               : "-translate-x-0"
@@ -49,6 +49,7 @@ export default function Header() {
           <div className="w-full flex flex-col md:flex-row items-start md:items-center gap-4 [&_a]:p-2 md:[&_a]:p-2">
             {navBarLink.map((link) => (
               <Link
+                key={link.title}
                 to={link.href}
                 className="w-11/12 md:w-auto hover:bg-black hover:text-white md:hover:bg-transparent md:hover:text-neutral-400"
               >
@@ -59,7 +60,7 @@ export default function Header() {
 
           <div className="w-full md:w-auto flex items-center gap-8 pb-5 border-b md:border-0">
             <div className="w-full border rounded px-2 md:hidden flex items-center gap-4">
-              <FaSearch className="text-app-gray-100" />
+              <FaSearch className="text-deep-gray-100" />
               <Input
                 size="sm"
                 type="search"
@@ -92,14 +93,14 @@ export default function Header() {
                 <DropdownItem
                   startContent={<FaTools />}
                   key="settings"
-                  className="p-3 cursor-pointer hover:bg-[#F7F7F7]"
+                  className="p-3 cursor-pointer hover:bg-deep-gray-200"
                 >
                   <Link to={""}>My Account</Link>
                 </DropdownItem>
                 <DropdownItem
                   key="logout"
                   startContent={<BiLogOut />}
-                  className="p-3 cursor-pointer hover:bg-[#F7F7F7]"
+                  className="p-3 cursor-pointer hover:bg-deep-gray-200"
                 >
                   <Link to={""}> Log Out</Link>
                 </DropdownItem>

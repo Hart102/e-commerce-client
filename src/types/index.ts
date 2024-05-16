@@ -4,8 +4,9 @@ export type ProductType = {
   name: string;
   price: string;
   category: string;
-  units: number;
+  quantity: number;
+  size: string;
   description: string;
-  status: string;
   createdAt: string;
+  status: string;
 };
