@@ -12,7 +12,7 @@ import { products } from "../../../dummy/products";
 
 export default function SingleOrder() {
   return (
-    <div className="w-full flex flex-col gap-8 md:bg-deep-gray-200 md:p-5">
+    <div className="w-full flex flex-col gap-8 md:bg-deep-gray-200 md:p-5 text-sm">
       <div className="flex gap-2 items-baseline">
         <p className="text-2xl font-semibold">Order</p>
         <span className="capitalize text-sm px-2 rounded text-white bg-orange-500">

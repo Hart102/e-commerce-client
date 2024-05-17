@@ -1,19 +1,59 @@
-import { Input, Textarea, Button } from "@nextui-org/react";
+import { useState, ChangeEvent } from "react";
+import {
+  Input,
+  Textarea,
+  Button,
+  Select,
+  SelectItem,
+  useDisclosure,
+} from "@nextui-org/react";
 import { BiCloudUpload } from "react-icons/bi";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
 import { ProductSchema } from "../../../schema/addProductSchema";
 import { ContainerLG } from "../../../layout/Container";
+import ServerResponseModal from "../../../components/Modal/ServerResponse";
 
 export default function AddProduct() {
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [files, setFiles] = useState<File[]>([]);
+  const [previewImages, setPreviewImages] = useState<string[]>([]);
+  const filesLength: number[] = [0, 1, 2, 3];
+
+  const categories: string[] = ["fasion", "electronics", "jewelry"];
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<ProductSchema>({ resolver: yupResolver(ProductSchema) });
 
+  const handleImage = (e: ChangeEvent<HTMLInputElement>, index: number) => {
+    const selectedFile = e.target.files && e.target.files[0];
+
+    if (selectedFile) {
+      const newFiles = [...files];
+      const newPreviewImages = [...previewImages];
+
+      newFiles[index] = selectedFile;
+      newPreviewImages[index] = URL.createObjectURL(selectedFile);
+
+      setFiles(newFiles);
+      setPreviewImages(newPreviewImages);
+    }
+  };
+
   const onSubmit = (data: ProductSchema) => {
+    const formData = new FormData();
+    files.forEach((file: File) => formData.append("file", file));
+    formData.append("name", data.productName);
+    formData.append("category", data.category);
+    formData.append("price", data.price);
+    formData.append("quantity", data.quantity);
+    formData.append("status", data.status);
+    formData.append("description", data.description);
+
     console.log(data);
+    onOpen();
   };
 
   return (
@@ -22,40 +62,56 @@ export default function AddProduct() {
         <div className="flex flex-col gap-4">
           <p className="text-xl ml-3">Product Information</p>
 
-          <form className="flex flex-col gap-4 [&_span]:text-red-500 [&_span]:text-xs [&_span]:ml-3">
+          <form className="flex flex-col gap-4 [&_span]:text-red-500 [&_span]:text-xs [&_span]:ml-31">
             <div>
               <Input
                 placeholder="Product Name"
                 classNames={{
-                  input: "border-0 outline-none bg-deep-gray-50 px-2",
+                  base: "bg-deep-gray-50",
+                  input: "border-0 outline-none",
                 }}
                 {...register("productName")}
               />
-              <span>{errors?.productName?.message}</span>
+              {errors?.productName?.message && (
+                <span>{errors?.productName?.message}</span>
+              )}
             </div>
 
-            <div className="w-full px-2">
-              <div>
-                <select
-                  {...register("category")}
-                  className="w-full px-2 py-3 bg-deep-gray-50 outline-none"
-                >
-                  <option value="fashion">Fashion</option>
-                  <option value="electronics">Jewerrey</option>
-                  <option value="electronics">Electronics</option>
-                </select>
-
-                <span>{errors?.category?.message}</span>
-              </div>
+            <div>
+              <Select
+                aria-labelledby="category-select-label"
+                placeholder="Select category"
+                selectionMode="single"
+                className="text-green-400"
+                classNames={{
+                  selectorIcon: "hidden",
+                  base: "bg-deep-gray-50 capitalize",
+                  listbox: "bg-white",
+                  value: "capitalize",
+                  innerWrapper: "text-start flex",
+                }}
+                {...register("category")}
+              >
+                {categories.map((category) => (
+                  <SelectItem
+                    key={category}
+                    value={category}
+                    className="capitalize text-sm my-1 py-2 hover:bg-deep-gray-200"
+                  >
+                    {category}
+                  </SelectItem>
+                ))}
+              </Select>
+              <span>{errors?.category?.message}</span>
             </div>
 
-            <div className="px-2">
+            <div>
               <div>
                 <Textarea
                   placeholder="Describe product"
                   classNames={{
-                    base: "h-32 bg-deep-gray-50",
                     input: "outline-none",
+                    base: "h-32 bg-deep-gray-50",
                   }}
                   {...register("description")}
                 />
@@ -66,34 +122,29 @@ export default function AddProduct() {
             <div className="px-2">
               <p className="text-xl">Product Images</p>
               <div className="grid grid-cols-2 gap-4 p-4 bg-deep-gray-50">
-                <label
-                  htmlFor="file_1"
-                  className="rounded h-36 cursor-pointer flex items-center justify-center border"
-                >
-                  <BiCloudUpload size={20} />
-                  <input type="file" id="file_1" className="hidden" />
-                </label>
-                <label
-                  htmlFor="file_1"
-                  className="rounded h-36 cursor-pointer flex items-center justify-center border"
-                >
-                  <BiCloudUpload size={20} />
-                  <input type="file" id="file_1" className="hidden" />
-                </label>
-                <label
-                  htmlFor="file_1"
-                  className="rounded h-36 cursor-pointer flex items-center justify-center border"
-                >
-                  <BiCloudUpload size={20} />
-                  <input type="file" id="file_1" className="hidden" />
-                </label>
-                <label
-                  htmlFor="file_1"
-                  className="rounded h-36 cursor-pointer flex items-center justify-center border"
-                >
-                  <BiCloudUpload size={20} />
-                  <input type="file" id="file_1" className="hidden" />
-                </label>
+                {filesLength.map((index) => (
+                  <label
+                    key={index}
+                    htmlFor={`${index}`}
+                    className="rounded h-36 cursor-pointer flex items-center justify-center border py-2 relative"
+                  >
+                    <input
+                      type="file"
+                      id={`${index}`}
+                      className="hidden"
+                      onChange={(e) => handleImage(e, index)}
+                    />
+                    {previewImages[index] !== undefined && (
+                      <img
+                        src={previewImages[index]}
+                        className="object-contain h-full w-full"
+                      />
+                    )}
+                    <div className="absolute top-0 left-0 h-full w-full z-10 flex justify-center items-center">
+                      <BiCloudUpload size={20} />
+                    </div>
+                  </label>
+                ))}
               </div>
             </div>
           </form>
@@ -101,7 +152,7 @@ export default function AddProduct() {
       </div>
 
       <div className="flex flex-col gap-8 w-full md:w-4/12 p-5 bg-white">
-        <div className="flex flex-col gap-5 [&_span]:text-red-500 [&_span]:text-xs [&_span]:ml-3">
+        <div className="flex flex-col gap-5 [&_span]:text-red-500 [&_span]:text-xs">
           <p className="text-xl">Status</p>
           <div className="[&_label]:cursor-pointer flex items-center gap-8">
             <div className="flex gap-2 items-center">
@@ -127,18 +178,20 @@ export default function AddProduct() {
               </label>
             </div>
           </div>
-          <span>{errors?.status?.message}</span>
+          {errors?.status?.message && <span>{errors?.status?.message}</span>}
 
           <div>
             <Input
               placeholder="Quantity"
               classNames={{
-                inputWrapper: "bg-deep-gray-50 px-2",
+                inputWrapper: "bg-deep-gray-50",
                 input: "border-0 outline-none",
               }}
               {...register("quantity")}
             />
-            <span>{errors?.quantity?.message}</span>
+            {errors?.quantity?.message && (
+              <span>{errors?.quantity?.message}</span>
+            )}
           </div>
 
           <div>
@@ -150,7 +203,7 @@ export default function AddProduct() {
               }}
               {...register("price")}
             />
-            <span>{errors?.price?.message}</span>
+            {errors?.price?.message && <span>{errors?.price?.message}</span>}
           </div>
 
           <Button
@@ -161,6 +214,7 @@ export default function AddProduct() {
           </Button>
         </div>
       </div>
+      <ServerResponseModal isOpen={isOpen} onClose={onClose} />
     </ContainerLG>
   );
 }

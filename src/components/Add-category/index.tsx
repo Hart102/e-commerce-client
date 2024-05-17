@@ -38,7 +38,7 @@ export default function AddCategory({
         {(onClose) => (
           <div className="w-full md:w-5/12 mx-auto">
             <ModalBody>
-              <form className="bg-white rounded-lg px-5 py-4 flex flex-col gap-4 text-sm [&_span]:text-red-500 [&_span]:text-xs">
+              <form className="bg-white rounded-lg px-5 pt-4 pb-8 flex flex-col gap-4 text-sm [&_span]:text-red-500 [&_span]:text-xs">
                 <div className="flex justify-end">
                   <FaTimes
                     size={30}
@@ -48,10 +48,24 @@ export default function AddCategory({
                 </div>
                 <div className="flex flex-col gap-4 px-4">
                   <div>
-                    <p className="text-xl mb-5">Create Product Categories</p>
+                    <p className="text-lg mb-5">Create Product Categories</p>
                   </div>
-                  <p className="text-xl">Status</p>
-                  <div className="[&_label]:cursor-pointer flex items-center gap-8">
+
+                  <div>
+                    <Input
+                      placeholder="Category Name"
+                      classNames={{
+                        inputWrapper: "px-0",
+                        input: "border-0 outline-none bg-deep-gray-50 px-2",
+                      }}
+                      {...register("name")}
+                    />
+                    {errors?.name?.message && (
+                      <span>{errors?.name?.message}</span>
+                    )}
+                  </div>
+
+                  <div className="[&_label]:cursor-pointer flex items-center gap-4 text-neutral-500">
                     <div className="flex gap-2 items-center">
                       <input
                         type="radio"
@@ -60,7 +74,7 @@ export default function AddCategory({
                         {...register("status")}
                       />
                       <label htmlFor="active" className="text-app-gray-200">
-                        Active
+                        Publish
                       </label>
                     </div>
                     <div className="flex gap-2 items-center">
@@ -71,28 +85,19 @@ export default function AddCategory({
                         {...register("status")}
                       />
                       <label htmlFor="disable" className="text-app-gray-200">
-                        Disabled
+                        Disable
                       </label>
                     </div>
                   </div>
-                  <span>{errors?.status?.message}</span>
-                </div>
-
-                <div>
-                  <Input
-                    placeholder="Category Name"
-                    classNames={{
-                      input: "border-0 outline-none bg-deep-gray-50 px-2",
-                    }}
-                    {...register("name")}
-                  />
-                  <span className="ml-4">{errors?.name?.message}</span>
+                  {errors?.status?.message && (
+                    <span>{errors?.status?.message}</span>
+                  )}
                 </div>
 
                 <div className="px-4">
                   <Button
                     onClick={handleSubmit(onSubmit)}
-                    className="bg-black text-white rounded px-10"
+                    className="w-full bg-black text-white rounded"
                   >
                     CREATE
                   </Button>
