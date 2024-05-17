@@ -214,7 +214,7 @@ export default function AddProduct() {
           </Button>
         </div>
       </div>
-      <ServerResponseModal isOpen={isOpen} onClose={onClose} />
+      <ServerResponseModal status={true} isOpen={isOpen} onClose={onClose} />
     </ContainerLG>
   );
 }

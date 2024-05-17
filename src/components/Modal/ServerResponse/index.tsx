@@ -1,11 +1,14 @@
-import { Modal, ModalContent, ModalBody, Button } from "@nextui-org/react";
+import { Modal, ModalContent, ModalBody } from "@nextui-org/react";
+import { FaTimes, FaCheckDouble } from "react-icons/fa";
 
 export default function ServerResponseModal({
   isOpen,
   onClose,
+  status,
 }: {
   isOpen: boolean;
   onClose: () => void;
+  status: boolean;
 }) {
   return (
     <Modal
@@ -13,22 +16,34 @@ export default function ServerResponseModal({
       isOpen={isOpen}
       onClose={onClose}
       classNames={{ closeButton: "hidden" }}
-      className="fixed top-0 left-0 h-screen w-screen bg-overLay"
+      className="fixed -top-1 -left-1 h-screen w-screen bg-overLay"
     >
       <ModalContent className="flex flex-col justify-center items-center">
         {(onClose) => (
-          <div className="w-full md:w-5/12 mx-auto text-center bg-white rounded-xl">
+          <div className="w-full md:w-4/12 mx-auto text-center bg-deep-gray-300 rounded-xl p-5">
+            <div className="flex justify-end">
+              <FaTimes
+                size={30}
+                onClick={onClose}
+                className="border rounded-full p-2 cursor-pointer"
+              />
+            </div>
             <ModalBody>
-              <div className="flex flex-col gap-10">
-                some messages
-                <div>
-                  <Button
-                    onClick={onClose}
-                    className="bg-black text-white rounded-full px-10"
-                  >
-                    Close
-                  </Button>
-                </div>
+              <div className="flex flex-col gap-2">
+                {status == true ? (
+                  <FaCheckDouble
+                    size={60}
+                    className="text-green-500 border border-green-500 rounded-full p-2 mx-auto"
+                  />
+                ) : (
+                  <FaTimes
+                    size={60}
+                    className="text-red-500 border border-red-500 rounded-full p-2 mx-auto"
+                  />
+                )}
+                <p className="text-neutral-500 first-letter:capitalize">
+                  some messages
+                </p>
               </div>
             </ModalBody>
           </div>
