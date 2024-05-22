@@ -8,7 +8,7 @@ export const products = [
     name: "Breathable slim sport vest",
     price: "$ 150",
     category: "fashion",
-    units: 2,
+    quantity: 2,
     size: "MD",
     description:
       "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.",
@@ -21,7 +21,7 @@ export const products = [
     name: "female ware",
     price: "$ 150",
     category: "Electronics",
-    units: 8,
+    quantity: 8,
     size: "SM",
     description:
       "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.",
@@ -34,7 +34,7 @@ export const products = [
     name: "Breathable slim sport vest",
     price: "$ 150",
     category: "Electronics",
-    units: 17,
+    quantity: 17,
     size: "LG",
     description:
       "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.",
@@ -47,7 +47,7 @@ export const products = [
     name: "female ware",
     price: "$ 150",
     category: "Jewerrey",
-    units: 30,
+    quantity: 30,
     size: "XL",
     description:
       "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.",
@@ -60,7 +60,7 @@ export const products = [
     name: "men tshirt",
     price: "$ 150",
     category: "fashion",
-    units: 5,
+    quantity: 5,
     size: "MD",
     description:
       "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.",

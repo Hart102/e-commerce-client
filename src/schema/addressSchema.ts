@@ -5,6 +5,7 @@ export const addAddressSchema = yup.object().shape({
   city: yup.string().required("This field is required"),
   state: yup.string().required("This field is required"),
   country: yup.string().required("This field is required"),
+  zipcode: yup.string().required("This field is required"),
   phone: yup.string().required("This field is required"),
 });
 

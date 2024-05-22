@@ -8,7 +8,7 @@ import {
 import { FaTimes } from "react-icons/fa";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
-import { addAddressSchema } from "../../schema/addressSchema";
+import { addAddressSchema } from "@/schema/addressSchema";
 
 export default function AddAddress({
   isOpen,
@@ -40,13 +40,13 @@ export default function AddAddress({
         isOpen={isOpen}
         onClose={onClose}
         classNames={{ closeButton: "hidden" }}
-        className="fixed top-0 left-0 h-screen w-screen bg-overLay"
+        className="fixed top-0 -left-1 h-screen w-screen bg-overLay"
       >
         <ModalContent className="flex flex-col justify-center items-center">
           {(onClose) => (
             <div className="w-full md:w-6/12 mx-auto">
               <ModalBody>
-                <form className="bg-white rounded-lg p-5 flex flex-col gap-12 text-sm">
+                <form className="bg-white rounded-lg p-5 flex flex-col gap-12 text-sm z-10">
                   <div>
                     <div className="flex justify-end">
                       <FaTimes
@@ -100,6 +100,15 @@ export default function AddAddress({
                           {...register("country")}
                         />
                         <span>{errors?.country?.message}</span>
+                      </div>
+                      <div>
+                        <Input
+                          label="Zip Code"
+                          placeholder="11400"
+                          classNames={InputProps}
+                          {...register("zipcode")}
+                        />
+                        <span>{errors?.zipcode?.message}</span>
                       </div>
                       <div>
                         <Input

@@ -12,14 +12,17 @@ import {
   Button,
   useDisclosure,
 } from "@nextui-org/react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { BiAddToQueue } from "react-icons/bi";
-import AddCategory from "../../../components/Add-category";
-import { products } from "../../../dummy/products";
+import AddCategory from "@/components/Add-category";
+import ServerResponseModal from "@/components/Modal/ServerResponse";
+import { products } from "@/dummy/products";
 
 export default function Categories() {
   const navigation = useNavigate();
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const [status] = useState<boolean>(false);
   const actions = ["View", "Delete"];
 
   const viewProduct = (id: string) => navigation(`/dashboard/orders/${id}`);
@@ -98,6 +101,13 @@ export default function Categories() {
         </Table>
       </div>
       <AddCategory isOpen={isOpen} onClose={onClose} />
+
+      <ServerResponseModal
+        status={status}
+        isOpen={status}
+        onClose={onClose}
+        message="something went wrong please try again."
+      />
     </>
   );
 }

@@ -1,10 +1,10 @@
 import { Button, Image } from "@nextui-org/react";
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { ContainerLG, ContainerMD, ContainerSM } from "../../layout/Container";
-import { ProductType } from "../../types/index";
+import { ContainerLG, ContainerMD, ContainerSM } from "@/layout/Container";
+import { ProductType } from "@/types/index";
 
-import { products } from "../../dummy/products";
+import { products } from "@/dummy/products";
 
 export default function SingleProduct() {
   const location = useParams();

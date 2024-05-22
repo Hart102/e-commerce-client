@@ -8,7 +8,7 @@ import {
   TableHeader,
   TableRow,
 } from "@nextui-org/react";
-import { products } from "../../../dummy/products";
+import { products } from "@/dummy/products";
 
 export default function SingleOrder() {
   return (

@@ -10,9 +10,9 @@ import {
 import { BiCloudUpload } from "react-icons/bi";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
-import { ProductSchema } from "../../../schema/addProductSchema";
-import { ContainerLG } from "../../../layout/Container";
-import ServerResponseModal from "../../../components/Modal/ServerResponse";
+import { ProductSchema } from "@/schema/addProductSchema";
+import { ContainerLG } from "@/layout/Container";
+import ServerResponseModal from "@/components/Modal/ServerResponse";
 
 export default function AddProduct() {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -214,7 +214,12 @@ export default function AddProduct() {
           </Button>
         </div>
       </div>
-      <ServerResponseModal status={true} isOpen={isOpen} onClose={onClose} />
+      <ServerResponseModal
+        status={true}
+        isOpen={isOpen}
+        onClose={onClose}
+        message="server response"
+      />
     </ContainerLG>
   );
 }

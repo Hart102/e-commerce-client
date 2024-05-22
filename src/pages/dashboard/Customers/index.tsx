@@ -13,7 +13,7 @@ import {
 } from "@nextui-org/react";
 import { BiSearch } from "react-icons/bi";
 import { useNavigate } from "react-router-dom";
-import { products } from "../../../dummy/products";
+import { products } from "@/dummy/products";
 
 export default function Customers() {
   const navigation = useNavigate();
@@ -45,6 +45,7 @@ export default function Customers() {
           />
         </form>
       </div>
+
       <Table
         classNames={{
           base: "text-center",

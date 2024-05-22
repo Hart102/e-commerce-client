@@ -8,7 +8,7 @@ import {
 import { FaTimes } from "react-icons/fa";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
-import { addCategorySchema } from "../../schema/addCategorySchema";
+import { addCategorySchema } from "@/schema/addCategorySchema";
 
 export default function AddCategory({
   isOpen,
@@ -32,7 +32,7 @@ export default function AddCategory({
       isOpen={isOpen}
       onClose={onClose}
       classNames={{ closeButton: "hidden" }}
-      className="fixed top-0 left-0 h-screen w-screen bg-overLay"
+      className="fixed -top-1 -left-1 h-screen w-screen bg-overLay"
     >
       <ModalContent className="flex flex-col justify-center items-center">
         {(onClose) => (

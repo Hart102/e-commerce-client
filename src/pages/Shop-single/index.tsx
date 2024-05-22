@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { Image, Button } from "@nextui-org/react";
+import { useNavigate, useParams } from "react-router-dom";
 import { FaShoppingBag, FaEye } from "react-icons/fa";
 import { Element, Link } from "react-scroll";
-import { products } from "../../dummy/products";
-import { ProductType } from "../../types/index";
-import { useNavigate, useParams } from "react-router-dom";
+import { products } from "@/dummy/products";
+import { ProductType } from "@/types/index";
 
 export default function ShopSingle() {
   const navigation = useNavigate();

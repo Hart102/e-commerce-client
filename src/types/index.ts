@@ -9,4 +9,6 @@ export type ProductType = {
   description: string;
   createdAt: string;
   status: string;
+  isChecked: boolean;
+  totalPrice: string | number;
 };
