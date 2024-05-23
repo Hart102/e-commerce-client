@@ -22,8 +22,8 @@ export default function Customers() {
   const viewProduct = (id: string) => navigation(`/dashboard/orders/${id}`);
 
   return (
-    <>
-      <div className="hidden px-4 md:flex items-center justify-between">
+    <div className="bg-white rounded-xl p-5 flex flex-col gap-8">
+      <div className="hidden px-4 md:flex items-center justify-between border-b pb-4">
         <div className="flex items-baseline gap-2">
           <b className="text-3xl">150</b>
           <p className="text-neutral-400 text-sm italic">Customers</p>
@@ -100,6 +100,6 @@ export default function Customers() {
           </TableRow>
         </TableBody>
       </Table>
-    </>
+    </div>
   );
 }

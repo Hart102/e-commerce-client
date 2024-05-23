@@ -1,22 +1,18 @@
-import { Link } from "react-router-dom";
-import {
-  BiGridAlt,
-  BiLogoProductHunt,
-  BiUserPlus,
-  BiCategoryAlt,
-  BiCartAdd,
-  BiLogOut,
-} from "react-icons/bi";
+import { Link, useLocation } from "react-router-dom";
+import { BiGridAlt, BiLogOut } from "react-icons/bi";
 import { Button } from "@nextui-org/react";
 
-const sideBarLinks = [
-  { icon: BiLogoProductHunt, title: "Products", href: "/dashboard/products" },
-  { icon: BiCategoryAlt, title: "Categories", href: "/dashboard/categories" },
-  { icon: BiCartAdd, title: "Orders", href: "/dashboard/orders" },
-  { icon: BiUserPlus, title: "Customers", href: "/dashboard/customers" },
-];
+export default function SideBar({
+  status,
+  sidebarlinks,
+  urlCount,
+}: {
+  status?: boolean;
+  sidebarlinks: { icon: React.ElementType; title: string; href: string }[];
+  urlCount: number;
+}) {
+  const location = useLocation();
 
-export default function SideBar() {
   return (
     <aside className="bg-white p-5 rounded-l-xl w-full md:w-3/12 hidden md:flex flex-col gap-8">
       <Link
@@ -29,7 +25,9 @@ export default function SideBar() {
       <div className="flex flex-col gap-4 justify-between">
         <Link
           to="/dashboard_1/products"
-          className="flex items-center gap-2 px-2 py-3 rounded hover:bg-deep-gray-300"
+          className={`items-center gap-2 px-2 py-3 rounded hover:bg-deep-gray-300 ${
+            status ? "flex" : "hidden"
+          }`}
         >
           <BiGridAlt size={18} />
           Dashboard
@@ -37,24 +35,27 @@ export default function SideBar() {
 
         <div className="flex flex-col justify-between gap-2 md:h-[400px]">
           <div className="flex flex-col gap-2">
-            <p className="px-2 py-3 rounded bg-deep-gray-300">
+            <p className={`px-2 py-3 ${status ? "block" : "hidden"}`}>
               PRODUCT MANAGEMENT
             </p>
 
             <div className="flex flex-col gap-2">
-              {sideBarLinks.map((link) => (
+              {sidebarlinks.map((link) => (
                 <Link
-                  key={link.href}
-                  to={link.href}
-                  className="flex items-center gap-2 px-2 py-3 rounded hover:bg-deep-gray-300"
+                  key={link?.title}
+                  to={link?.href}
+                  className={`flex items-center gap-2 px-2 py-3 rounded ${
+                    location.pathname.slice(urlCount).replace("-", " ") ==
+                      link?.title.toLowerCase() && "bg-black text-white"
+                  }`}
                 >
                   <link.icon size={18} />
-                  {link.title}
+                  {link?.title}
                 </Link>
               ))}
             </div>
           </div>
-
+          <div className="border-b"></div>
           <div>
             <Button className="flex items-center gap-2 bg-deep-gray-300 rounded">
               <BiLogOut />

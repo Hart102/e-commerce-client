@@ -29,8 +29,8 @@ export default function Categories() {
 
   return (
     <>
-      <div className="bg-deep-gray-200 p-4 md:p-8">
-        <div className="hidden px-4 md:flex items-center justify-between">
+      <div className="bg-white rounded-xl p-5 flex flex-col gap-8">
+        <div className="hidden px-4 md:flex items-center justify-between border-b pb-4">
           <div className="flex items-baseline gap-2">
             <b className="text-3xl">4</b>
             <p className="text-neutral-400 text-sm italic">Categories</p>

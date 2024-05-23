@@ -23,8 +23,8 @@ export default function Orders() {
   const viewProduct = (id: string) => navigation(`/dashboard/orders/${id}`);
 
   return (
-    <>
-      <div className="hidden px-4 md:flex items-center justify-between">
+    <div className="bg-white rounded-xl p-5 flex flex-col gap-8">
+      <div className="hidden px-4 md:flex items-center justify-between border-b pb-4">
         <div className="flex items-baseline gap-2">
           <b className="text-3xl">100</b>
           <p className="text-neutral-400 text-sm italic">Orders</p>
@@ -110,6 +110,6 @@ export default function Orders() {
           </TableRow>
         </TableBody>
       </Table>
-    </>
+    </div>
   );
 }

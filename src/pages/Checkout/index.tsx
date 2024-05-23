@@ -22,7 +22,6 @@ export default function Shiipping() {
   const navigation = useNavigate();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [checkoutItems, setCheckoutItems] = useState<ProductType[]>([]);
-  const [formData, setFormData] = useState();
   const [sum, setSum] = useState<{ subTotal: number; total: number }>({
     subTotal: 0,
     total: 0,
@@ -44,7 +43,6 @@ export default function Shiipping() {
   } = useForm<debitCardSchema>({ resolver: yupResolver(debitCardSchema) });
 
   const onSubmit = (data: debitCardSchema) => {
-    setFormData(data);
     console.log(data);
   };
 
