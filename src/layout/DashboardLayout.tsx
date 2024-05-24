@@ -18,9 +18,15 @@ const links = [
 export default function DashboardLayout() {
   return (
     <div className="w-full relative md:p-5 flex">
-      <SideBar status={true} sidebarlinks={links} urlCount={11} />
+      <div
+        // ref={sidebarRef}
+        className="w-full md:w-[300px] bg-white min-h-screen absolute md:fixed rounded-l-2xl
+            md:left-3 delay-150 duration-300 -translate-x-full md:-translate-x-0 py-10 md:py-0 -z-10 overflow-x-hidden"
+      >
+        <SideBar status={true} sidebarlinks={links} urlCount={11} />
+      </div>
 
-      <div className="relative right-0 w-full flex flex-col gap-4">
+      <div className="absolute right-4 w-full md:w-9/12 flex flex-col gap-4">
         <Header />
         <div className="w-full p-5 flex flex-col gap-5 overflow-x-scroll">
           <Outlet />

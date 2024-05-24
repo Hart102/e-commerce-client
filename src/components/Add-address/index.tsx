@@ -46,7 +46,7 @@ export default function AddAddress({
           {(onClose) => (
             <div className="w-full md:w-6/12 mx-auto">
               <ModalBody>
-                <form className="bg-white rounded-lg p-5 flex flex-col gap-12 text-sm z-10">
+                <form className="bg-white rounded-lg p-5 flex flex-col gap-12 z-10">
                   <div>
                     <div className="flex justify-end">
                       <FaTimes
@@ -56,7 +56,9 @@ export default function AddAddress({
                       />
                     </div>
                     <div className="flex flex-col gap-1 md:px-10">
-                      <p>NEW SHIPPING ADDRESS</p>
+                      <h1 className="text-xl font-bold">
+                        New Shipping Address
+                      </h1>
                       <p className="text-neutral-500">
                         Add new shipping address for your order delivery.
                       </p>

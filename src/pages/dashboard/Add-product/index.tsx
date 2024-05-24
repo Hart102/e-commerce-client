@@ -7,17 +7,20 @@ import {
   SelectItem,
   useDisclosure,
 } from "@nextui-org/react";
+import axios from "axios";
 import { BiCloudUpload } from "react-icons/bi";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
 import { ProductSchema } from "@/schema/addProductSchema";
 import { ContainerLG } from "@/layout/Container";
 import ServerResponseModal from "@/components/Modal/ServerResponse";
+import { api, token } from "@/lib";
 
 export default function AddProduct() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [files, setFiles] = useState<File[]>([]);
   const [previewImages, setPreviewImages] = useState<string[]>([]);
+  const [modalData, setModalData] = useState({ isError: false, message: "" });
   const filesLength: number[] = [0, 1, 2, 3];
 
   const categories: string[] = ["fasion", "electronics", "jewelry"];
@@ -42,7 +45,7 @@ export default function AddProduct() {
     }
   };
 
-  const onSubmit = (data: ProductSchema) => {
+  const onSubmit = async (data: ProductSchema) => {
     const formData = new FormData();
     files.forEach((file: File) => formData.append("file", file));
     formData.append("name", data.productName);
@@ -52,8 +55,20 @@ export default function AddProduct() {
     formData.append("status", data.status);
     formData.append("description", data.description);
 
-    console.log(data);
-    onOpen();
+    const request = await axios.put(
+      `${api}/api/products/create_product`,
+      formData,
+      { headers: { Authorization: token } }
+    );
+    const response = await request.data;
+
+    if (response.error) {
+      setModalData({ isError: true, message: response.error });
+      onOpen();
+    } else {
+      setModalData({ isError: false, message: response.message });
+      onOpen();
+    }
   };
 
   return (
@@ -62,13 +77,16 @@ export default function AddProduct() {
         <div className="flex flex-col gap-4">
           <p className="text-xl ml-3">Product Information</p>
 
-          <form className="flex flex-col gap-4 [&_span]:text-red-500 [&_span]:text-xs [&_span]:ml-31">
+          <form
+            encType="multipart/form-data"
+            className="flex flex-col gap-4 [&_span]:text-red-500 [&_span]:text-xs [&_span]:ml-31"
+          >
             <div>
               <Input
                 placeholder="Product Name"
                 classNames={{
                   base: "bg-deep-gray-50",
-                  input: "border-0 outline-none",
+                  input: "border-0 outline-none bg-transparent",
                 }}
                 {...register("productName")}
               />
@@ -215,10 +233,10 @@ export default function AddProduct() {
         </div>
       </div>
       <ServerResponseModal
-        status={true}
+        isError={modalData.isError}
         isOpen={isOpen}
         onClose={onClose}
-        message="server response"
+        message={modalData.message}
       />
     </ContainerLG>
   );

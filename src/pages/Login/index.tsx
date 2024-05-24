@@ -1,66 +1,95 @@
-import { Input, Button, Image } from "@nextui-org/react";
+import axios from "axios";
+import { Input, Button } from "@nextui-org/react";
 import { Link } from "react-router-dom";
-import { FaAngleRight, FaGoogle, FaTwitter, FaFacebook } from "react-icons/fa";
-import { ContainerLG } from "../../layout/Container";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { useForm } from "react-hook-form";
+import { LoginSchema } from "@/schema/register_login_schema";
+import { api } from "@/lib";
+
+interface CookieOptions {
+  name: string;
+  value: string;
+  days?: number;
+}
 
 export default function Login() {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginSchema>({ resolver: yupResolver(LoginSchema) });
+
+  const onSubmit = async (data: LoginSchema) => {
+    const request = await axios.post(`${api}/api/user/login`, data);
+    const response = await request.data;
+
+    // SET COOKIE FUNCTION
+    const setCookie = (options: CookieOptions) => {
+      let expires = "";
+      if (options.days) {
+        const date = new Date();
+        date.setTime(date.getTime() + options.days * 24 * 60 * 60 * 1000);
+        expires = "; expires=" + date.toUTCString();
+      }
+      document.cookie =
+        options.name + "=" + (options.value || "") + expires + "; path=/";
+    };
+    setCookie({ name: "online_store", value: response.token });
+
+    console.log(response);
+  };
+
   const InputProps = {
     label: "mb-16",
     inputWrapper: "px-0 flex",
-    input: "p-2 outline-none border-b",
-    base: "text-sm text-neutral-500 mb-2 py-2",
+    input: "p-2 outline-none",
+    base: "text-sm text-neutral-500 mb-2 py- bg-deep-gray-50",
   };
 
   return (
-    <ContainerLG>
-      <div className="w-full md:w-4/12 hidden md:flex justify-center gap-8 md:bg-deep-gray-200">
-        <Image
-          width={500}
-          className="h-full"
-          src="https://contents.mediadecathlon.com/p2188247/1cr1/…dc/crop-top-t-shirt-grey.jpg?format=auto&f=1024x0"
-        />
-      </div>
+    <div className="bg-white my-5 py-20 px-5">
+      <form className="w-full md:w-5/12 mx-auto mt-10 p-5 md:px-10">
+        <h1 className="text-2xl font-semibold mb-10">Welcome Back !</h1>
 
-      <div className="w-full md:w-4/12 md:py-10 md:px-16 py-10 px-5 bg-white">
-        <form className="flex flex-col gap-5">
+        <div className="flex flex-col gap-8 [&_span]:text-xs [&_span]:text-red-500">
           <div>
-            <Input placeholder="Email" classNames={InputProps} />
-            <Input placeholder="Password" classNames={InputProps} />
+            <Input
+              type="email"
+              label="Email"
+              labelPlacement="outside"
+              placeholder="tim@gmail.com"
+              classNames={InputProps}
+              {...register("email")}
+            />
+            <span>{errors?.email?.message}</span>
           </div>
-          <div className="flex justify-between text-neutral-500">
-            <div className="flex items-center gap-2">
-              <input type="checkbox" />
-              <p>keep me logged in</p>
-            </div>
-            <Link to="" className="flex items-center gap-1">
-              Register
-              <FaAngleRight />
-            </Link>
+          <div>
+            <Input
+              type="password"
+              label="Password"
+              labelPlacement="outside"
+              placeholder="****"
+              classNames={InputProps}
+              {...register("password")}
+            />
+            <span>{errors?.password?.message}</span>
           </div>
+        </div>
 
-          <Button className="bg-black text-white w-full rounded-full my-7">
+        <div className="flex justify-end">
+          <Link to="" className="text-sm text-neutral-500">
+            Register
+          </Link>
+        </div>
+        <div className="py-5">
+          <Button
+            onClick={handleSubmit(onSubmit)}
+            className="w-full font-semibold bg-black text-white rounded-full"
+          >
             LOGIN
           </Button>
-
-          <div className="flex flex-col items-center justify-center gap-4 text-neutral-500 my- my-5">
-            <p>LOGIN BY</p>
-            <div className="flex gap-4">
-              <FaGoogle
-                size={30}
-                className="rounded-full bg-neutral-300 p-2 cursor-pointer"
-              />
-              <FaTwitter
-                size={30}
-                className="rounded-full bg-neutral-300 p-2 cursor-pointer"
-              />
-              <FaFacebook
-                size={30}
-                className="rounded-full bg-neutral-300 p-2 cursor-pointer"
-              />
-            </div>
-          </div>
-        </form>
-      </div>
-    </ContainerLG>
+        </div>
+      </form>
+    </div>
   );
 }

@@ -29,28 +29,36 @@ export default function Address() {
           className="py-1 px-2 border rounded-full flex items-center gap-1 hover:bg-black hover:text-white"
         >
           <FaMapMarkerAlt />
-          <p className="text-sm">ADD ADDRESS</p>
+          <p className="text-sm font-semibold">ADD ADDRESS</p>
         </Button>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <label htmlFor="2" className="border rounded p-5 cursor-pointer">
-          <FaMapMarkerAlt />
-          <div className="flex flex-col gap-1 mt-4">
-            <p>No, 7 aba oweri road</p>
-            <p>Aba, Abia state</p>
-            <p>Nigeria</p>
-            <p>440102</p>
-            <p>090123455</p>
-          </div>
-          <div className="flex justify-end">
+        <label
+          htmlFor="2"
+          className="flex flex-col gap-4 bg-deep-gray-200 rounded-lg cursor-pointer p-4"
+        >
+          <div className="flex items-center justify-between gap-2">
+            <FaMapMarkerAlt />
             <input type="radio" name="location" id="2" />
           </div>
-          <div className="flex items-center gap-2">
-            <Button className="p-0">Edit</Button>
-            <Button className="p-0 text-red-500" onClick={openCofirmation}>
-              Delete
-            </Button>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-2 gap-y-4">
+            <div>
+              <b>STREET:</b>
+              <p>No, 7 aba oweri road</p>
+            </div>
+            <div>
+              <b>STATE/COUNTRY:</b>
+              <p>Aba, Abia State. Nigeria</p>
+            </div>
+            <div>
+              <b>POSTAL CODE:</b>
+              <p>440102</p>
+            </div>
+            <div>
+              <b>PHONE:</b>
+              <p>090123455</p>
+            </div>
           </div>
         </label>
       </div>

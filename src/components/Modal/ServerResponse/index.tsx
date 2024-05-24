@@ -4,12 +4,12 @@ import { FaTimes, FaCheckDouble } from "react-icons/fa";
 export default function ServerResponseModal({
   isOpen,
   onClose,
-  status,
+  isError,
   message,
 }: {
   isOpen: boolean;
   onClose: () => void;
-  status: boolean;
+  isError?: boolean;
   message: string;
 }) {
   return (
@@ -32,7 +32,7 @@ export default function ServerResponseModal({
             </div>
             <ModalBody>
               <div className="flex flex-col gap-2">
-                {status == true ? (
+                {!isError ? (
                   <FaCheckDouble
                     size={60}
                     className="text-green-500 border border-green-500 rounded-full p-2 mx-auto"

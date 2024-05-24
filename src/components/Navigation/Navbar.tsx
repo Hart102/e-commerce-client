@@ -22,7 +22,7 @@ export default function Header() {
   const toggleMenu = () => (!isTrue ? setIsTrue(true) : setIsTrue(false));
 
   return (
-    <nav className="bg-deep-gray-200 w-full fixed top-0 left-0 z-20 text-sm">
+    <nav className="bg-deep-gray-200 w-full fixed top-0 left-0 z-40 text-sm">
       <div className="container bg-deep-gray-200 relative mx-auto flex flex-col md:flex-row items-center justify-between gap-2 md:gap-4 py-3 px-4 md:px-14 z-40">
         <div className="w-full md:w-auto flex gap-4 items-baseline justify-between">
           <Link to="/" className="text-2xl font-bold first-letter:text-3xl">

@@ -18,13 +18,10 @@ import Customers from "./pages/dashboard/Customers";
 import Categories from "./pages/dashboard/Categories";
 
 // USER
-
 import User from "./pages/user/Address"
 import UserDasboardLayout from "./layout/UserDasboardLayout";
 import PaymentMethod from "./pages/user/PaymentMethod";
-
-
-
+import AccountSetting from "@/pages/user/AccountSetting";
 
 export const router = createBrowserRouter([
   {
@@ -58,6 +55,7 @@ export const router = createBrowserRouter([
     children: [
       { path: "/user/dashboard/address", element: <User /> },
       { path: "/user/dashboard/payment-method", element: <PaymentMethod /> },
+      { path: "/user/dashboard/settings", element: <AccountSetting /> },
     ],
   },
 ]);

@@ -16,7 +16,7 @@ export default function ConfirmationModal({
       isOpen={isOpen}
       onClose={onClose}
       classNames={{ closeButton: "hidden" }}
-      className="fixed -top-1 -left-1 h-screen w-screen bg-overLay"
+      className="fixed -top-1 left-0 h-screen w-screen bg-overLay z-20 p-3"
     >
       <ModalContent className="flex flex-col justify-center items-center">
         {(onClose) => (
