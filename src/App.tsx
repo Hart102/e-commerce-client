@@ -16,9 +16,10 @@ import Orders from "./pages/dashboard/Orders";
 import SingleOrder from "./pages/dashboard/SingleOrder";
 import Customers from "./pages/dashboard/Customers";
 import Categories from "./pages/dashboard/Categories";
+import ProductView from "./pages/dashboard/ProductView";
 
 // USER
-import User from "./pages/user/Address"
+import User from "./pages/user/Address";
 import UserDasboardLayout from "./layout/UserDasboardLayout";
 import PaymentMethod from "./pages/user/PaymentMethod";
 import AccountSetting from "@/pages/user/AccountSetting";
@@ -33,7 +34,7 @@ export const router = createBrowserRouter([
 
       { path: "shop/cart", element: <Cart /> },
       { path: "/shop/checkout", element: <Checkout /> },
-      { path: "/shop/single/:id", element: <SingleProduct /> },
+      { path: "/shop/single/", element: <SingleProduct /> },
     ],
   },
 
@@ -47,6 +48,7 @@ export const router = createBrowserRouter([
       { path: "/dashboard/orders/:id", element: <SingleOrder /> },
       { path: "/dashboard/customers", element: <Customers /> },
       { path: "/dashboard/categories", element: <Categories /> },
+      { path: "/dashboard/product-view", element: <ProductView /> },
     ],
   },
   {

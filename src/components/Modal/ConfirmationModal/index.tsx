@@ -5,10 +5,12 @@ export default function ConfirmationModal({
   isOpen,
   onClose,
   message,
+  onContinue,
 }: {
   isOpen: boolean;
   onClose: () => void;
   message: string;
+  onContinue: () => void;
 }) {
   return (
     <Modal
@@ -47,7 +49,9 @@ export default function ConfirmationModal({
                 >
                   Cancel
                 </Button>
-                <Button className="border rounded-full">Continue</Button>
+                <Button onClick={onContinue} className="border rounded-full">
+                  Continue
+                </Button>
               </div>
             </ModalBody>
           </div>

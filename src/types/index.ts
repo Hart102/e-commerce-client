@@ -12,3 +12,23 @@ export type ProductType = {
   isChecked: boolean;
   totalPrice: string | number;
 };
+
+export type AddressType = {
+  id: string;
+  user_id: string;
+  address_line: string;
+  city: string;
+  country: string;
+  phone_number: string;
+  state: string;
+  zip_code: string;
+};
+
+export type PaymentCardType = {
+  id: string;
+  user_id: string;
+  card_number: string;
+  card_name: string;
+  cvv: string;
+  expiry_date: string;
+};

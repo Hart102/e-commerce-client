@@ -10,6 +10,7 @@ import { FaBars, FaTimes, FaSearch, FaTools } from "react-icons/fa";
 import { BiCartAdd } from "react-icons/bi";
 import { BiGridAlt, BiLogOut } from "react-icons/bi";
 import { Link } from "react-router-dom";
+import { getCartCount } from "@/lib";
 
 const navBarLink = [
   { title: "Fashion", href: "" },
@@ -20,9 +21,14 @@ const navBarLink = [
 export default function Header() {
   const [isTrue, setIsTrue] = useState<boolean>(false);
   const toggleMenu = () => (!isTrue ? setIsTrue(true) : setIsTrue(false));
+  const [cartCount, setCartCount] = useState<string | number>();
+
+  setInterval(() => {
+    setCartCount(getCartCount());
+  }, 3000);
 
   return (
-    <nav className="bg-deep-gray-200 w-full fixed top-0 left-0 z-40 text-sm">
+    <nav className="bg-deep-gray-200 w-full sticky top-0 left-10 z-40 text-sm">
       <div className="container bg-deep-gray-200 relative mx-auto flex flex-col md:flex-row items-center justify-between gap-2 md:gap-4 py-3 px-4 md:px-14 z-40">
         <div className="w-full md:w-auto flex gap-4 items-baseline justify-between">
           <Link to="/" className="text-2xl font-bold first-letter:text-3xl">
@@ -36,7 +42,6 @@ export default function Header() {
             <FaTimes onClick={toggleMenu} className="block md:hidden" />
           )}
         </div>
-
         <div
           className={`absolute md:relative top-[60px] md:top-0 w-full md:w-7/12 p-5 
           md:p-0 flex flex-col-reverse md:flex-row justify-between gap-4 delay-150 
@@ -57,7 +62,6 @@ export default function Header() {
               </Link>
             ))}
           </div>
-
           <div className="w-full md:w-auto flex items-center gap-8 pb-5 border-b md:border-0">
             <div className="w-full border rounded px-2 md:hidden flex items-center gap-4">
               <FaSearch className="text-deep-gray-100" />
@@ -76,10 +80,12 @@ export default function Header() {
           </div>
           <div className="flex items-center justify-between p-2 gap-8">
             <FaSearch className="hidden md:block" />
-            <Link to="/shop/cart" className="flex items-center gap-2">
+            <Link to="/shop/cart" className="flex items-center gap-">
               <BiCartAdd size={17} />
+              <span className="bg-red-500 text-white text-xs px-1.5 py-0.5 rounded-full -mt-5">
+                {cartCount}
+              </span>
             </Link>
-
             <Dropdown>
               <DropdownTrigger>
                 <div className="flex items-center gap-2 cursor-pointer">

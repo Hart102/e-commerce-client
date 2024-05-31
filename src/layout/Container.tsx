@@ -7,7 +7,7 @@ type ContainerProps = {
 function ContainerLG({ children, columnReverse }: ContainerProps) {
   return (
     <div
-      className={`flex ${columnReverse} md:flex-row text-sm md:p-5 p-4 justify-center bg-white md:bg-transparent`}
+      className={`flex ${columnReverse} md:flex-row text-sm md:p-0 p-4 justify-center bg-white md:bg-transparent`}
     >
       {children}
     </div>
@@ -16,7 +16,7 @@ function ContainerLG({ children, columnReverse }: ContainerProps) {
 
 function ContainerMD({ children }: ContainerProps) {
   return (
-    <div className="w-full md:w-7/12 flex flex-col gap-8 md:bg-deep-gray-200 md:p-10">
+    <div className="w-full md:w-7/12 md- flex flex-col gap-8 md:bg-deep-gray-2001 md:p-10">
       {children}
     </div>
   );

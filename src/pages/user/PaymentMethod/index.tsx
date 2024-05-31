@@ -8,9 +8,14 @@ export default function PaymentMethod() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [message, setMessage] = useState<string>("");
 
-  const confirmCardRemoval = () => {
+  const removeCard = () => {
     setMessage("Are you sure you want to remove card ?");
     onOpen();
+  };
+
+  const confirmRemoval = () => {
+    onClose();
+    alert("Coming soon");
   };
 
   return (
@@ -30,15 +35,20 @@ export default function PaymentMethod() {
 
             <Button
               size="sm"
-              className="text-sm flex gap-1 items-center"
-              onClick={confirmCardRemoval}
+              className="text-sm flex gap-1 items-center text-red-500"
+              onClick={removeCard}
             >
               <BiTrashAlt /> Remove
             </Button>
           </div>
         </div>
       </div>
-      <ConfirmationModal isOpen={isOpen} onClose={onClose} message={message} />
+      <ConfirmationModal
+        isOpen={isOpen}
+        onClose={onClose}
+        onContinue={confirmRemoval}
+        message={message}
+      />
     </>
   );
 }

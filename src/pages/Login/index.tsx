@@ -20,7 +20,7 @@ export default function Login() {
   } = useForm<LoginSchema>({ resolver: yupResolver(LoginSchema) });
 
   const onSubmit = async (data: LoginSchema) => {
-    const request = await axios.post(`${api}/api/user/login`, data);
+    const request = await axios.post(`${api}/user/login`, data);
     const response = await request.data;
 
     // SET COOKIE FUNCTION

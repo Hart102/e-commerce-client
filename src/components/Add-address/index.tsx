@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   Modal,
   ModalContent,
@@ -5,10 +6,13 @@ import {
   Button,
   Input,
 } from "@nextui-org/react";
+import axios from "axios";
 import { FaTimes } from "react-icons/fa";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
 import { addAddressSchema } from "@/schema/addressSchema";
+import { api, authentication_token } from "@/lib";
+import ServerResponseModal from "@/components/Modal/ServerResponse";
 
 export default function AddAddress({
   isOpen,
@@ -17,14 +21,29 @@ export default function AddAddress({
   isOpen: boolean;
   onClose: () => void;
 }) {
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [modalData, setModalData] = useState({ isError: false, message: "" });
+
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<addAddressSchema>({ resolver: yupResolver(addAddressSchema) });
 
-  const onSubmit = (data: addAddressSchema) => {
-    console.log(data);
+  const onSubmit = async (data: addAddressSchema) => {
+    const request = await axios.post(`${api}/user/add-address`, data, {
+      headers: { Authorization: authentication_token },
+    });
+    const response = await request.data;
+
+    if (response.error) {
+      setModalData({ isError: true, message: response.error });
+      setIsModalOpen(true);
+    } else {
+      setModalData({ isError: false, message: response.message });
+      setIsModalOpen(true);
+      onClose();
+    }
   };
 
   const InputProps = {
@@ -34,7 +53,7 @@ export default function AddAddress({
     base: "text-sm text-neutral-500 mb-2 py-2",
   };
   return (
-    <div>
+    <>
       <Modal
         size={"2xl"}
         isOpen={isOpen}
@@ -138,6 +157,13 @@ export default function AddAddress({
           )}
         </ModalContent>
       </Modal>
-    </div>
+
+      <ServerResponseModal
+        isError={modalData.isError}
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        message={modalData.message}
+      />
+    </>
   );
 }

@@ -1,13 +1,20 @@
 import { Button, Image } from "@nextui-org/react";
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { ContainerLG, ContainerMD, ContainerSM } from "@/layout/Container";
 import { ProductType } from "@/types/index";
-
-import { products } from "@/dummy/products";
+import axios from "axios";
+import {
+  api,
+  imageUrl,
+  authentication_token,
+  setCartCount,
+  getCartCount,
+} from "@/lib";
 
 export default function SingleProduct() {
-  const location = useParams();
+  const location = useLocation();
+  const navigation = useNavigate();
   const [product, setProduct] = useState<ProductType>();
   const [selectedImageIndex, setSelectedImageIndex] = useState<number>(0);
   const [selectedSize, setSelectedSize] = useState<string>();
@@ -15,67 +22,71 @@ export default function SingleProduct() {
   const sizes = ["XS", "S", "M", "L", "XL"];
 
   const selectImage = (imageIndex: number) => setSelectedImageIndex(imageIndex);
-
   const setSize = (text: string) => setSelectedSize(text);
   const increaseQty = () => setQuantity(quantity + 1);
   const deCreaseQty = () => quantity !== 0 && setQuantity(quantity - 1);
 
-  const addToCart = () => {
-    const cartItem = {
-      id: product?.id,
-      size: selectedSize,
-      quantity: quantity,
-    };
-    console.log(cartItem);
+  const addToCart = async () => {
+    const { data } = await axios.put(
+      `${api}/cart/add-to-cart`,
+      {
+        productId: product?.id,
+        size: selectedSize || "",
+        quantity: quantity,
+      },
+      { headers: { Authorization: authentication_token } }
+    );
+    if (data.total_items) {
+      setCartCount(data.total_items);
+      getCartCount();
+    }
   };
 
   useEffect(() => {
-    const selectedPrducts = products.find((item) => item.id === location.id);
-    setProduct(selectedPrducts);
-  }, [location]);
+    if (location.state == undefined) return navigation("/");
+    setProduct(location.state);
+  }, [location, navigation]);
 
   return (
     <ContainerLG columnReverse="flex-col">
       <ContainerMD>
-        <div className="flex justify-center items-center pt-10">
+        <div className="flex justify-center items-center pt-">
           <Image
-            width={300}
-            height={300}
-            src={product?.images[selectedImageIndex]}
+            src={imageUrl(product?.images[selectedImageIndex] || "")}
+            classNames={{ img: "w-[550px] h-[500px]" }}
           />
         </div>
       </ContainerMD>
-
       <ContainerSM>
         <div className="text-center flex flex-col gap-8">
           <div className="border-b pb-8 flex flex-col gap-5">
             <p className="first-letter:capitalize text-xl font-bold">
               {product?.name}
             </p>
-            <b className="text-lg">{product?.price}</b>
+            <div className="flex gap-3 mx-auto">
+              PRICE: <b>{product?.price}</b>
+            </div>
           </div>
-
           <div>
-            <p className="text-neutral-400">PRODUCT</p>
+            <p>PRODUCT</p>
             <div className="flex gap-4 items-center justify-center pt-3">
               {product &&
                 product?.images.map((image, index) => (
                   <Image
                     key={index}
-                    src={image}
-                    width={40}
-                    height={40}
+                    src={imageUrl(image)}
                     alt="product image"
-                    className="object-contain cursor-pointer"
+                    classNames={{
+                      img: "rounded-full h-[50px] w-[50px] cursor-pointer",
+                    }}
                     onClick={() => selectImage(index)}
                   />
                 ))}
             </div>
           </div>
-
           {product && product?.category == "fashion" && (
             <div className="md:px-4 flex flex-col gap-4">
-              <p className="text-neutral-400">SIZE</p>
+              <p>SIZE</p>
               <div className="grid grid-cols-5 gap-4">
                 {sizes &&
                   sizes.map((size, index) => (
@@ -92,9 +103,8 @@ export default function SingleProduct() {
               </div>
             </div>
           )}
-
           <div className="flex flex-col gap-4">
-            <p className="text-neutral-400">QUANTIY</p>
+            <p>QUANTIY</p>
             <div className="flex items-center justify-center gap-5">
               <div className="border rounded-full h-[25px] w-[25px] flex items-center justify-center">
                 <Button onClick={deCreaseQty}>-</Button>
@@ -106,7 +116,6 @@ export default function SingleProduct() {
             </div>
           </div>
         </div>
-
         <div className="flex flex-col gap-2">
           <Button
             onClick={addToCart}
