@@ -3,7 +3,7 @@ import {
   Image,
   Accordion,
   AccordionItem,
-  Input,
+  // Input,
   useDisclosure,
 } from "@nextui-org/react";
 import { useEffect, useState, useMemo } from "react";
@@ -11,13 +11,18 @@ import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
 import { FaMapMarkerAlt } from "react-icons/fa";
 import AddAddress from "@/components/Add-address";
-import { ProductType, AddressType, PaymentCardType } from "@/types/index";
-import { yupResolver } from "@hookform/resolvers/yup";
-import { useForm } from "react-hook-form";
-import { debitCardSchema } from "@/schema/DebitCardSchema";
+import {
+  ProductType,
+  AddressType,
+  PaymentCardType,
+  OrderDetailsType,
+} from "@/types/index";
+// import { yupResolver } from "@hookform/resolvers/yup";
+// import { useForm } from "react-hook-form";
+// import { debitCardSchema } from "@/schema/DebitCardSchema";
 import { api, imageUrl, authentication_token } from "@/lib";
 import ServerResponseModal from "@/components/Modal/ServerResponse";
-import MasterCardImage from "@/assets/mastercard.svg";
+// import MasterCardImage from "@/assets/mastercard.svg";
 
 export default function Shiipping() {
   const location = useLocation();
@@ -28,28 +33,42 @@ export default function Shiipping() {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [modalData, setModalData] = useState({ isError: false, message: "" });
   const [paymentCards, setPaymentCards] = useState<PaymentCardType[]>([]);
+  const [orderDetails, setOrderDetails] = useState<OrderDetailsType>({
+    addressId: "",
+    // paymentCardId: "",
+    productsId: [],
+    totalPrice: 0,
+  });
   const [sum, setSum] = useState<{ subTotal: number; total: number }>({
     subTotal: 0,
     total: 0,
   });
 
+  // const {
+  //   register,
+  //   handleSubmit,
+  //   reset,
+  //   formState: { errors },
+  // } = useForm<debitCardSchema>({ resolver: yupResolver(debitCardSchema) });
+
   const calculateSum = useMemo(() => {
     let subTotal: number = 0;
     checkoutItems.forEach((item) => {
-      subTotal += Number(item.price.slice(1)) * Number(item.quantity);
+      subTotal += Number(item.price.slice(3)) * Number(item.quantity);
     });
     const total: number = subTotal + 18.0;
+    subTotal = Math.floor(subTotal);
     return { subTotal, total };
   }, [checkoutItems]);
 
-  const getUserAddress = async () => {
+  const fetchUserAddress = async () => {
     const { data } = await axios.get(`${api}/user/get-address`, {
       headers: { Authorization: authentication_token },
     });
     if (!data.error) setUserDetails(data);
   };
 
-  const getPaymentCards = async () => {
+  const fetchPaymentCards = async () => {
     const { data } = await axios.get(`${api}/checkout/get-payment-card`, {
       headers: { Authorization: authentication_token },
     });
@@ -58,54 +77,84 @@ export default function Shiipping() {
       setIsModalOpen(true);
     } else {
       setPaymentCards(data.cards);
-      console.log(paymentCards);
     }
   };
 
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors },
-  } = useForm<debitCardSchema>({ resolver: yupResolver(debitCardSchema) });
+  const selectDeliveryAddress = (id: string) =>
+    setOrderDetails({ ...orderDetails, addressId: id });
+
+  // const selectPaymentCard = (id: string) =>
+  //   setOrderDetails({ ...orderDetails, paymentCardId: id });
+
   // Add New Payment Card
-  const onSubmit = async (data: debitCardSchema) => {
-    const request = await axios.put(`${api}/checkout/add-payment-card`, data, {
-      headers: { Authorization: authentication_token },
-    });
-    const response = await request.data;
-    if (response.error) {
-      setModalData({ isError: true, message: response.error });
-      setIsModalOpen(true);
-    } else {
-      setModalData({ isError: false, message: response.message });
-      setIsModalOpen(true);
-      onClose();
-      reset();
-    }
-  };
+  // const AddNewCard = async (data: debitCardSchema) => {
+  //   const request = await axios.put(`${api}/checkout/add-payment-card`, data, {
+  //     headers: { Authorization: authentication_token },
+  //   });
+  //   const response = await request.data;
+  //   if (response.error) {
+  //     setModalData({ isError: true, message: response.error });
+  //     setIsModalOpen(true);
+  //   } else {
+  //     setModalData({ isError: false, message: response.message });
+  //     fetchPaymentCards();
+  //     setIsModalOpen(true);
+  //     onClose();
+  //     reset();
+  //   }
+  // };
 
   useEffect(() => {
     if (location.state == undefined || authentication_token == undefined) {
       return navigation("/");
     }
-    getUserAddress();
-    getPaymentCards();
+    fetchUserAddress();
+    fetchPaymentCards();
     setCheckoutItems(location.state);
     setSum(calculateSum);
-  }, [location, navigation, calculateSum]);
+    setOrderDetails({
+      addressId: userDetails[0]?.id,
+      paymentCardId: paymentCards[0]?.id,
+      productsId: checkoutItems.map((item) => item.id),
+      totalPrice: calculateSum.total,
+    });
+  }, [
+    location,
+    navigation,
+    calculateSum,
+    // checkoutItems,
+    // paymentCards,
+    // userDetails,
+  ]);
 
-  const InputProps = {
-    label: "mb-16",
-    inputWrapper: "px-0 flex",
-    input: "p-2 outline-none border rounded-lg",
-    base: "text-sm text-neutral-500 mb-2 py-2",
+  // Place Order function
+  const placeOder = async () => {
+    const { data } = await axios.post(
+      `${api}/checkout/accept-payment`,
+      orderDetails,
+      { headers: { Authorization: authentication_token } }
+    );
+    if (data.error) {
+      setModalData({ isError: true, message: data.error });
+      setIsModalOpen(true);
+    } else {
+      setModalData({ isError: false, message: data.message });
+      setIsModalOpen(true);
+    }
+    console.log(data);
   };
+
+  // const InputProps = {
+  //   label: "mb-16",
+  //   inputWrapper: "px-0 flex",
+  //   input: "p-2 outline-none border rounded-lg",
+  //   base: "text-sm text-neutral-500 mb-2 py-2",
+  // };
   return (
     <>
       <div className="flex flex-col md:flex-row md:p-0 p-4 justify-center">
         <div className="w-full md:w-7/12 md- flex flex-col gap-8 md:p-10 border-r">
-          {/* SELCET ADDRESS */}
+          {/* Select Delivery Address */}
           <Accordion>
             <AccordionItem
               key="1"
@@ -149,6 +198,7 @@ export default function Shiipping() {
                           type="radio"
                           name="location"
                           id={`${address?.id}`}
+                          onClick={() => selectDeliveryAddress(address?.id)}
                         />
                       </div>
                     </label>
@@ -157,8 +207,8 @@ export default function Shiipping() {
             </AccordionItem>
           </Accordion>
 
-          {/* SELECT CARD */}
-          <Accordion>
+          {/* Select payment card */}
+          {/* <Accordion>
             <AccordionItem
               key="2"
               aria-label="02. SELECT PAYMENT CARD"
@@ -172,7 +222,12 @@ export default function Shiipping() {
                 {paymentCards &&
                   paymentCards.map((card) => (
                     <div key={card?.id} className="flex gap-4">
-                      <input type="radio" id={`${card?.id}`} name="radio" />
+                      <input
+                        type="radio"
+                        id={`${card?.id}`}
+                        name="radio"
+                        onClick={() => selectPaymentCard(card?.id)}
+                      />
                       <label
                         htmlFor={`${card?.id}`}
                         className="flex gap-4 items-center border-b cursor-pointer"
@@ -187,10 +242,10 @@ export default function Shiipping() {
                   ))}
               </div>
             </AccordionItem>
-          </Accordion>
+          </Accordion> */}
 
-          {/* ADD NEW CARD */}
-          <Accordion>
+          {/* Add new card */}
+          {/* <Accordion>
             <AccordionItem
               key="2"
               aria-label="03. ADD NEW CARD"
@@ -208,7 +263,6 @@ export default function Shiipping() {
                     support Mastercard tercard, Visa, Discover and Stripe.
                   </p>
                 </div>
-
                 <form className="[&_span]:text-xs [&_span]:text-red-500">
                   <div>
                     <Input
@@ -250,36 +304,40 @@ export default function Shiipping() {
                       <span>{errors?.cvv?.message}</span>
                     </div>
                   </div>
+                  <Button
+                    onClick={handleSubmit(AddNewCard)}
+                    className={`bg-dark-blue-100 text-white rounded px-8 hover:opacity-85`}
+                  >
+                    SAVE CARD
+                  </Button>
                 </form>
               </div>
             </AccordionItem>
-          </Accordion>
-
+          </Accordion> */}
           <div className="flex mt-5">
             <Button
-              onClick={handleSubmit(onSubmit)}
+              onClick={placeOder}
               className={`bg-dark-blue-100 text-white rounded px-8 hover:opacity-85`}
             >
               PLACE ORDER
             </Button>
           </div>
         </div>
-
         <div className="flex flex-col gap-8 w-full md:w-4/12 md:py-10 md:px-12 py-10 px-5">
           <p className="text-lg">SUMMARY</p>
           <div className="flex flex-col gap-4 border-b pb-3 [&_b]:text-neutral-600 [&_p]:text-neutral-700 text-lg">
             <div className="flex items-center justify-between">
               <p>SUBTOTAL</p>
-              <p>${sum?.subTotal}</p>
+              <p>NGN {sum?.subTotal}</p>
             </div>
             <div className="flex items-center justify-between">
               <p>SHIPPING FEE</p>
-              <p>$18.00</p>
+              <p>NGN 18.00</p>
             </div>
           </div>
           <div className="flex justify-between text-lg">
             <b>TOTAL</b>
-            <b>${sum?.total}</b>
+            <b>NGN {sum?.total}</b>
           </div>
           <div className="w-full flex flex-col gap-4">
             <p className="text-lg">IN YOUR CART</p>
@@ -307,7 +365,7 @@ export default function Shiipping() {
                     )}
                     <p>Qauntity: ({product?.quantity})</p>
                     <p className="text-lg mt-2 font-semibold">
-                      {product?.price}
+                      NGN {product?.totalPrice}
                     </p>
                   </div>
                 </div>
@@ -317,7 +375,6 @@ export default function Shiipping() {
         </div>
       </div>
       <AddAddress isOpen={isOpen} onClose={onClose} />
-
       <ServerResponseModal
         isError={modalData.isError}
         isOpen={isModalOpen}

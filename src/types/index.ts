@@ -32,3 +32,10 @@ export type PaymentCardType = {
   cvv: string;
   expiry_date: string;
 };
+
+export type OrderDetailsType = {
+  addressId?: string | undefined;
+  paymentCardId?: string | undefined;
+  productsId?: string[];
+  totalPrice?: string | number;
+};

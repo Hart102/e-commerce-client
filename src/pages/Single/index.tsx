@@ -1,9 +1,8 @@
+import axios from "axios";
 import { Button, Image } from "@nextui-org/react";
 import { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { ContainerLG, ContainerMD, ContainerSM } from "@/layout/Container";
 import { ProductType } from "@/types/index";
-import axios from "axios";
 import {
   api,
   imageUrl,
@@ -48,16 +47,16 @@ export default function SingleProduct() {
   }, [location, navigation]);
 
   return (
-    <ContainerLG columnReverse="flex-col">
-      <ContainerMD>
-        <div className="flex justify-center items-center pt-">
+    <div className="flex md:flex-row text-sm md:p-0 p-4 justify-center">
+      <div className="w-full md:w-7/12 md- flex flex-col gap-8 md:bg-deep-gray-2001 md:p-10">
+        <div className="flex justify-center items-center">
           <Image
             src={imageUrl(product?.images[selectedImageIndex] || "")}
             classNames={{ img: "w-[550px] h-[500px]" }}
           />
         </div>
-      </ContainerMD>
-      <ContainerSM>
+      </div>
+      <div className="flex flex-col gap-8 w-full md:w-4/12 md:py-10 md:px-12 py-10 px-5">
         <div className="text-center flex flex-col gap-8">
           <div className="border-b pb-8 flex flex-col gap-5">
             <p className="first-letter:capitalize text-xl font-bold">
@@ -130,7 +129,7 @@ export default function SingleProduct() {
             BUY NOW
           </Link>
         </div>
-      </ContainerSM>
-    </ContainerLG>
+      </div>
+    </div>
   );
 }

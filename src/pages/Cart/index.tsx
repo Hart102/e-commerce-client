@@ -3,7 +3,6 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { FaTrashAlt } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-import { ContainerSM } from "@/layout/Container";
 import { ProductType } from "@/types/index";
 import { api, authentication_token, imageUrl, setCartCount } from "@/lib";
 import Loader from "@/components/Loader";
@@ -27,7 +26,7 @@ export default function CheckoutSummary() {
   };
 
   const calculateTotalPriceOfEachItem = (item: ProductType) => {
-    const priceWithoutDollarSign = Number(item.price.slice(1));
+    const priceWithoutDollarSign = Number(item.price.slice(3));
     return (item.totalPrice = `${(
       priceWithoutDollarSign * item.quantity
     ).toFixed(2)}`);
@@ -36,7 +35,7 @@ export default function CheckoutSummary() {
   const calculateSum = () => {
     let subTotal: number = 0;
     cartItems.forEach((item) => {
-      subTotal += Number(item.price.slice(1));
+      subTotal += Number(item.price.slice(3));
     });
     const total: number = subTotal + 18.0;
     return { subTotal, total };
@@ -73,7 +72,7 @@ export default function CheckoutSummary() {
     navigation("/shop/checkout", { state: selectedItems });
 
   useEffect(() => {
-    if (authentication_token == null) return navigation("/shop/login");
+    if (authentication_token == null) return navigation("/login");
     setIsLoading(true);
     const fetchCartItems = async () => {
       const { data } = await axios.get(`${api}/cart/get-cart-items`, {
@@ -86,7 +85,7 @@ export default function CheckoutSummary() {
             ...product,
             quantity: 1,
             isChecked: false,
-            totalPrice: product.price.slice(1),
+            totalPrice: product.price.slice(3),
           }))
         );
       }
@@ -99,10 +98,7 @@ export default function CheckoutSummary() {
   ) : (
     <div className="flex flex-col md:flex-row md:p-0 p-4 justify-center">
       <div className="w-full md:w-7/12 flex flex-col md:py-5 md:px-3">
-        <div className="flex flex-col gap-2">
-          Cart Items ({cartItems?.length})
-          <div className="bg-dark-blue-100 py-[2px] rounded-full"></div>
-        </div>
+        <span>CART ITEMS ({cartItems?.length})</span>
         {/* Desktop */}
         <div className="w-full hidden md:flex flex-col gap-2 mt-5">
           {cartItems &&
@@ -161,11 +157,11 @@ export default function CheckoutSummary() {
                         </div>
                       </div>
                       <h2 className="text-xl self-end">
-                        ${product?.totalPrice}
+                        NGN {product?.totalPrice}
                       </h2>
                     </div>
                   </div>
-                  <div className="bg-deep-gray-50 py-1 rounded-full"></div>
+                  <div className="bg-deep-gray-200 shadow-sm py-1 rounded-full"></div>
                 </div>
               </label>
             ))}
@@ -231,27 +227,27 @@ export default function CheckoutSummary() {
             </label>
           ))}
       </div>
-      <ContainerSM>
+      <div className="flex flex-col gap-8 w-full md:w-4/12 md:py-10 md:px-12 py-10 px-5">
         <p className="text-xl">SUMMARY</p>
         <div className="flex flex-col gap-4 border-b pb-3 ">
           <div className="flex items-center justify-between">
             <p className="text-neutral-700">SUBTOTAL</p>
-            <p className="text-xl">${total.subTotal}</p>
+            <p className="text-xl">NGN {total.subTotal}</p>
           </div>
           <div className="flex items-center justify-between">
             <p className="text-neutral-700">SHIPPING FEE</p>
-            <p className="text-xl">$18.00</p>
+            <p className="text-xl">NGN 18.00</p>
           </div>
         </div>
         <div className="flex justify-between text-lg">
           <b>TOTAL</b>
-          <p className="text-xl">${total.total}</p>
+          <p className="text-xl">NGN {total.total}</p>
         </div>
         <div className="flex flex-col gap-8 justify-between h-full pb-10">
           <Button
             onClick={handleCheckout}
             disabled={selectedItems.length === 0}
-            className={`w-full rounded font-bold bg-dark-blue-100 mt-5 text-white ${
+            className={`w-full rounded-full font-bold bg-dark-blue-100 mt-5 text-white ${
               selectedItems.length === 0
                 ? "cursor-not-allowed opacity-55"
                 : "cursor-pointer"
@@ -261,7 +257,7 @@ export default function CheckoutSummary() {
           </Button>
           <p>NEED HELP ?</p>
         </div>
-      </ContainerSM>
+      </div>
     </div>
   );
 }
