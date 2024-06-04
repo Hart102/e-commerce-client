@@ -1,8 +1,18 @@
-import { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { BiGridAlt, BiLogOut } from "react-icons/bi";
 import { Button, useDisclosure } from "@nextui-org/react";
 import ConfirmationModal from "@/components/Modal/ConfirmationModal";
+import { authentication_token } from "@/lib";
+
+function checkAuthentication(
+  token: string | null,
+  navigation: (to: string) => void
+) {
+  if (token == null) {
+    navigation("/login");
+  }
+}
 
 export default function SideBar({
   status,
@@ -16,13 +26,23 @@ export default function SideBar({
   closeMenu?: () => void;
 }) {
   const location = useLocation();
+  const navigation = useNavigate();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [message, setMessage] = useState<string>("");
 
-  const logout = () => {
+  const confirmLogout = () => {
     setMessage("Are you sure you want to logout?");
     onOpen();
   };
+
+  const logout = () => {
+    onClose();
+    alert("Coming soon");
+  };
+
+  useEffect(() => {
+    checkAuthentication(authentication_token, navigation);
+  }, [navigation]);
 
   return (
     <>
@@ -35,7 +55,6 @@ export default function SideBar({
         >
           Spline.One
         </Link>
-
         <div className="flex flex-col gap-4 justify-between">
           <Link
             to="/dashboard_1/products"
@@ -46,13 +65,11 @@ export default function SideBar({
             <BiGridAlt size={18} />
             Dashboard
           </Link>
-
           <div className="flex flex-col justify-between gap-2 md:h-[400px]">
             <div className="flex flex-col gap-2">
               <p className={`px-2 py-3 ${status ? "block" : "hidden"}`}>
                 PRODUCT MANAGEMENT
               </p>
-
               <div className="flex flex-col gap-2">
                 {sidebarlinks.map((link) => (
                   <Link
@@ -73,7 +90,7 @@ export default function SideBar({
             <div className="border-b"></div>
             <div>
               <Button
-                onClick={logout}
+                onClick={confirmLogout}
                 className="flex items-center gap-2 bg-deep-gray-300 rounded"
               >
                 <BiLogOut />
@@ -83,8 +100,12 @@ export default function SideBar({
           </div>
         </div>
       </aside>
-
-      <ConfirmationModal isOpen={isOpen} onClose={onClose} message={message} />
+      <ConfirmationModal
+        isOpen={isOpen}
+        onClose={onClose}
+        message={message}
+        onContinue={logout}
+      />
     </>
   );
 }

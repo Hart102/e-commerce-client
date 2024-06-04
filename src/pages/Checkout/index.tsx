@@ -14,7 +14,7 @@ import AddAddress from "@/components/Add-address";
 import {
   ProductType,
   AddressType,
-  PaymentCardType,
+  // PaymentCardType,
   OrderDetailsType,
 } from "@/types/index";
 // import { yupResolver } from "@hookform/resolvers/yup";
@@ -32,7 +32,8 @@ export default function Shiipping() {
   const [userDetails, setUserDetails] = useState<AddressType[]>([]);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [modalData, setModalData] = useState({ isError: false, message: "" });
-  const [paymentCards, setPaymentCards] = useState<PaymentCardType[]>([]);
+  // const [paymentCards, setPaymentCards] = useState<PaymentCardType[]>([]);
+  const [isLoading, setLoading] = useState<boolean>(false);
   const [orderDetails, setOrderDetails] = useState<OrderDetailsType>({
     addressId: "",
     // paymentCardId: "",
@@ -75,9 +76,10 @@ export default function Shiipping() {
     if (data.error) {
       setModalData({ isError: true, message: data.error });
       setIsModalOpen(true);
-    } else {
-      setPaymentCards(data.cards);
     }
+    //  else {
+    //   setPaymentCards(data.cards);
+    // }
   };
 
   const selectDeliveryAddress = (id: string) =>
@@ -112,9 +114,10 @@ export default function Shiipping() {
     fetchPaymentCards();
     setCheckoutItems(location.state);
     setSum(calculateSum);
+
     setOrderDetails({
       addressId: userDetails[0]?.id,
-      paymentCardId: paymentCards[0]?.id,
+      // paymentCardId: paymentCards[0]?.id,
       productsId: checkoutItems.map((item) => item.id),
       totalPrice: calculateSum.total,
     });
@@ -129,19 +132,19 @@ export default function Shiipping() {
 
   // Place Order function
   const placeOder = async () => {
+    setLoading(true);
     const { data } = await axios.post(
       `${api}/checkout/accept-payment`,
       orderDetails,
       { headers: { Authorization: authentication_token } }
     );
+    setLoading(false);
     if (data.error) {
       setModalData({ isError: true, message: data.error });
       setIsModalOpen(true);
     } else {
-      setModalData({ isError: false, message: data.message });
-      setIsModalOpen(true);
+      window.open(data.payment_url, "_blank");
     }
-    console.log(data);
   };
 
   // const InputProps = {
@@ -170,7 +173,7 @@ export default function Shiipping() {
                   size="sm"
                   type="button"
                   onPress={onOpen}
-                  className="py-1 px-2 border rounded-full flex items-center gap-1 hover:bg-black hover:text-white"
+                  className="py-1 px-2 bg-deep-gray-200 rounded flex items-center gap-1 hover:bg-dark-blue-100 hover:text-white"
                 >
                   <FaMapMarkerAlt />
                   <p className="text-sm">ADD ADDRESS</p>
@@ -182,7 +185,7 @@ export default function Shiipping() {
                     <label
                       key={address?.id}
                       htmlFor={`${address?.id}`}
-                      className="border rounded p-5 cursor-pointer"
+                      className="bg-deep-gray-200 rounded p-5 cursor-pointer"
                     >
                       <FaMapMarkerAlt />
                       <div className="flex flex-col gap-1 mt-4">
@@ -317,9 +320,11 @@ export default function Shiipping() {
           <div className="flex mt-5">
             <Button
               onClick={placeOder}
-              className={`bg-dark-blue-100 text-white rounded px-8 hover:opacity-85`}
+              className={`bg-dark-blue-100 text-white rounded px-8 hover:opacity-85 ${
+                isLoading && "opacity-55"
+              }`}
             >
-              PLACE ORDER
+              {isLoading ? "PROCESSING ORDER" : "PLACE ORDER"}
             </Button>
           </div>
         </div>

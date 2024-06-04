@@ -37,11 +37,12 @@ export default function Products() {
 
   const fetchProducts = async () => {
     setIsLoading(true);
-    const response = await axios.get(`${api}/products/`, {
+    const { data } = await axios.get(`${api}/products/`, {
       headers: { Authorization: authentication_token },
     });
     setIsLoading(false);
-    setProducts(response.data);
+    setProducts(data);
+    console.log(data);
   };
   const openCofirmation = (id: string) => {
     setProductId(id);

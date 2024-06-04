@@ -12,7 +12,6 @@ import { BiCloudUpload } from "react-icons/bi";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
 import { ProductSchema } from "@/schema/addProductSchema";
-import { ContainerLG } from "@/layout/Container";
 import ServerResponseModal from "@/components/Modal/ServerResponse";
 import { api, authentication_token } from "@/lib";
 
@@ -50,7 +49,7 @@ export default function AddProduct() {
     files.forEach((file: File) => formData.append("file", file));
     formData.append("name", data.productName);
     formData.append("category", data.category);
-    formData.append("price", data.price);
+    formData.append("price", `NGN ${data.price}`);
     formData.append("quantity", data.quantity);
     formData.append("status", data.status);
     formData.append("description", data.description);
@@ -77,7 +76,7 @@ export default function AddProduct() {
 
   return (
     <>
-      <ContainerLG columnReverse="flex-col">
+      <div className="flex flex-col md:flex-row text-sm md:p-0 p-4 justify-center bg-white md:bg-transparent">
         <form className="w-full md:w-10/12 flex flex-col gap-8 md:bg-deep-gray-200 md:p-5">
           <div className="flex flex-col gap-4">
             <p className="text-xl ml-3">Product Information</p>
@@ -196,7 +195,7 @@ export default function AddProduct() {
             {errors?.status?.message && <span>{errors?.status?.message}</span>}
             <div>
               <Input
-                placeholder="Quantity"
+                placeholder="Quantity Eg: 15"
                 classNames={{
                   inputWrapper: "bg-deep-gray-50",
                   input: "border-0 outline-none",
@@ -208,14 +207,17 @@ export default function AddProduct() {
               )}
             </div>
             <div>
-              <Input
-                placeholder="Price"
-                classNames={{
-                  inputWrapper: "bg-deep-gray-50 px-2",
-                  input: "border-0 outline-none",
-                }}
-                {...register("price")}
-              />
+              <div className="flex items-center bg-deep-gray-50 pl-1">
+                <p>NGN</p>
+                <Input
+                  placeholder="0.00"
+                  classNames={{
+                    inputWrapper: "px-2",
+                    input: "border-0 outline-none",
+                  }}
+                  {...register("price")}
+                />
+              </div>
               {errors?.price?.message && <span>{errors?.price?.message}</span>}
             </div>
             <Button
@@ -229,7 +231,7 @@ export default function AddProduct() {
             </Button>
           </div>
         </form>
-      </ContainerLG>
+      </div>
       <ServerResponseModal
         isError={modalData.isError}
         isOpen={isOpen}
