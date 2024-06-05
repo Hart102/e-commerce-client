@@ -3,7 +3,7 @@ import {
   Image,
   Accordion,
   AccordionItem,
-  // Input,
+  Input,
   useDisclosure,
 } from "@nextui-org/react";
 import { useEffect, useState, useMemo } from "react";
@@ -17,9 +17,9 @@ import {
   // PaymentCardType,
   OrderDetailsType,
 } from "@/types/index";
-// import { yupResolver } from "@hookform/resolvers/yup";
-// import { useForm } from "react-hook-form";
-// import { debitCardSchema } from "@/schema/DebitCardSchema";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { useForm } from "react-hook-form";
+import { debitCardSchema } from "@/schema/DebitCardSchema";
 import { api, imageUrl, authentication_token } from "@/lib";
 import ServerResponseModal from "@/components/Modal/ServerResponse";
 // import MasterCardImage from "@/assets/mastercard.svg";
@@ -29,7 +29,7 @@ export default function Shiipping() {
   const navigation = useNavigate();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [checkoutItems, setCheckoutItems] = useState<ProductType[]>([]);
-  const [userDetails, setUserDetails] = useState<AddressType[]>([]);
+  const [userAddress, setUserAddress] = useState<AddressType[]>([]);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [modalData, setModalData] = useState({ isError: false, message: "" });
   // const [paymentCards, setPaymentCards] = useState<PaymentCardType[]>([]);
@@ -45,12 +45,12 @@ export default function Shiipping() {
     total: 0,
   });
 
-  // const {
-  //   register,
-  //   handleSubmit,
-  //   reset,
-  //   formState: { errors },
-  // } = useForm<debitCardSchema>({ resolver: yupResolver(debitCardSchema) });
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<debitCardSchema>({ resolver: yupResolver(debitCardSchema) });
 
   const calculateSum = useMemo(() => {
     let subTotal: number = 0;
@@ -66,27 +66,26 @@ export default function Shiipping() {
     const { data } = await axios.get(`${api}/user/get-address`, {
       headers: { Authorization: authentication_token },
     });
-    if (!data.error) setUserDetails(data);
+    if (!data.error) setUserAddress(data);
   };
 
-  const fetchPaymentCards = async () => {
-    const { data } = await axios.get(`${api}/checkout/get-payment-card`, {
-      headers: { Authorization: authentication_token },
-    });
-    if (data.error) {
-      setModalData({ isError: true, message: data.error });
-      setIsModalOpen(true);
-    }
-    //  else {
-    //   setPaymentCards(data.cards);
-    // }
-  };
+  // const fetchPaymentCards = async () => {
+  //   const { data } = await axios.get(`${api}/checkout/get-payment-card`, {
+  //     headers: { Authorization: authentication_token },
+  //   });
+  //   if (data.error) {
+  //     setModalData({ isError: true, message: data.error });
+  //     setIsModalOpen(true);
+  //   } else {
+  //     setPaymentCards(data.cards);
+  //   }
+  // };
 
   const selectDeliveryAddress = (id: string) =>
-    setOrderDetails({ ...orderDetails, addressId: id });
+    setOrderDetails((prev) => ({ ...prev, addressId: id }));
 
   // const selectPaymentCard = (id: string) =>
-  //   setOrderDetails({ ...orderDetails, paymentCardId: id });
+  //   setOrderDetails((prev) => ({ ...prev, paymentCardId: id }));
 
   // Add New Payment Card
   // const AddNewCard = async (data: debitCardSchema) => {
@@ -106,57 +105,65 @@ export default function Shiipping() {
   //   }
   // };
 
+  const setData = () => {
+    setOrderDetails((prev) => ({
+      ...prev,
+      addressId: userAddress[0]?.id,
+      // paymentCardId: paymentCards[0]?.id,
+      productsId: checkoutItems.map((item) => item.id),
+      totalPrice: calculateSum.total,
+    }));
+  };
+
   useEffect(() => {
     if (location.state == undefined || authentication_token == undefined) {
       return navigation("/");
     }
     fetchUserAddress();
-    fetchPaymentCards();
+    // fetchPaymentCards();
     setCheckoutItems(location.state);
     setSum(calculateSum);
 
-    setOrderDetails({
-      addressId: userDetails[0]?.id,
-      // paymentCardId: paymentCards[0]?.id,
-      productsId: checkoutItems.map((item) => item.id),
-      totalPrice: calculateSum.total,
-    });
+    setData();
+    // }
   }, [
     location,
     navigation,
     calculateSum,
     // checkoutItems,
     // paymentCards,
-    // userDetails,
+    // userAddress,
   ]);
 
   // Place Order function
-  const placeOder = async () => {
+  const placeOder = async (data: debitCardSchema) => {
     setLoading(true);
-    const { data } = await axios.post(
+    const response = await axios.post(
       `${api}/checkout/accept-payment`,
       orderDetails,
       { headers: { Authorization: authentication_token } }
     );
     setLoading(false);
-    if (data.error) {
-      setModalData({ isError: true, message: data.error });
+    if (response.data.error) {
+      setModalData({ isError: true, message: response.data.error });
       setIsModalOpen(true);
     } else {
-      window.open(data.payment_url, "_blank");
+      reset();
+      window.open(response.data.payment_url, "_blank");
     }
+    console.log(data);
   };
 
-  // const InputProps = {
-  //   label: "mb-16",
-  //   inputWrapper: "px-0 flex",
-  //   input: "p-2 outline-none border rounded-lg",
-  //   base: "text-sm text-neutral-500 mb-2 py-2",
-  // };
+  const InputProps = {
+    label: "mb-16",
+    inputWrapper: "px-0 flex",
+    input: "p-2 outline-none border rounded-lg",
+    base: "text-sm text-neutral-500 mb-2 py-2",
+  };
   return (
     <>
-      <div className="flex flex-col md:flex-row md:p-0 p-4 justify-center">
-        <div className="w-full md:w-7/12 md- flex flex-col gap-8 md:p-10 border-r">
+      <div className="flex flex-col-reverse md:flex-row md:p-0 p-4 justify-center">
+        <div className="w-full md:w-7/12 md- flex flex-col gap-8 md:p-10 border-deep-gray-200 border-r">
           {/* Select Delivery Address */}
           <Accordion>
             <AccordionItem
@@ -173,21 +180,21 @@ export default function Shiipping() {
                   size="sm"
                   type="button"
                   onPress={onOpen}
-                  className="py-1 px-2 bg-deep-gray-200 rounded flex items-center gap-1 hover:bg-dark-blue-100 hover:text-white"
+                  className="py-1 px-2 rounded flex items-center gap-1 border"
                 >
-                  <FaMapMarkerAlt />
+                  <FaMapMarkerAlt className="text-deep-red-100" />
                   <p className="text-sm">ADD ADDRESS</p>
                 </Button>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {userDetails &&
-                  userDetails?.map((address) => (
+                {userAddress &&
+                  userAddress?.map((address) => (
                     <label
                       key={address?.id}
                       htmlFor={`${address?.id}`}
                       className="bg-deep-gray-200 rounded p-5 cursor-pointer"
                     >
-                      <FaMapMarkerAlt />
+                      <FaMapMarkerAlt className="text-deep-red-100" />
                       <div className="flex flex-col gap-1 mt-4">
                         <p>{address?.address_line}</p>
                         <p>
@@ -201,7 +208,11 @@ export default function Shiipping() {
                           type="radio"
                           name="location"
                           id={`${address?.id}`}
-                          onClick={() => selectDeliveryAddress(address?.id)}
+                          checked={
+                            orderDetails &&
+                            address?.id == orderDetails?.addressId
+                          }
+                          onChange={() => selectDeliveryAddress(address?.id)}
                         />
                       </div>
                     </label>
@@ -210,49 +221,11 @@ export default function Shiipping() {
             </AccordionItem>
           </Accordion>
 
-          {/* Select payment card */}
-          {/* <Accordion>
+          <Accordion>
             <AccordionItem
               key="2"
-              aria-label="02. SELECT PAYMENT CARD"
-              title="02. SELECT PAYMENT CARD"
-              classNames={{
-                heading: "text-lg",
-                indicator: "-rotate-90",
-              }}
-            >
-              <div className="flex flex-col gap-8 mb-3 md:ml-7">
-                {paymentCards &&
-                  paymentCards.map((card) => (
-                    <div key={card?.id} className="flex gap-4">
-                      <input
-                        type="radio"
-                        id={`${card?.id}`}
-                        name="radio"
-                        onClick={() => selectPaymentCard(card?.id)}
-                      />
-                      <label
-                        htmlFor={`${card?.id}`}
-                        className="flex gap-4 items-center border-b cursor-pointer"
-                      >
-                        <Image src={MasterCardImage} width={50} />
-                        <div>
-                          <p>****1234</p>
-                          <p>Expires in {card?.expiry_date}</p>
-                        </div>
-                      </label>
-                    </div>
-                  ))}
-              </div>
-            </AccordionItem>
-          </Accordion> */}
-
-          {/* Add new card */}
-          {/* <Accordion>
-            <AccordionItem
-              key="2"
-              aria-label="03. ADD NEW CARD"
-              title="03. ADD NEW CARD"
+              aria-label="02. PAYMENT"
+              title="02. PAYMENT"
               classNames={{
                 heading: "text-lg",
                 indicator: "-rotate-90",
@@ -307,20 +280,15 @@ export default function Shiipping() {
                       <span>{errors?.cvv?.message}</span>
                     </div>
                   </div>
-                  <Button
-                    onClick={handleSubmit(AddNewCard)}
-                    className={`bg-dark-blue-100 text-white rounded px-8 hover:opacity-85`}
-                  >
-                    SAVE CARD
-                  </Button>
                 </form>
               </div>
             </AccordionItem>
-          </Accordion> */}
+          </Accordion>
+
           <div className="flex mt-5">
             <Button
-              onClick={placeOder}
-              className={`bg-dark-blue-100 text-white rounded px-8 hover:opacity-85 ${
+              onClick={handleSubmit(placeOder)}
+              className={`bg-deep-green-100 text-white rounded-full px-8 hover:opacity-85 ${
                 isLoading && "opacity-55"
               }`}
             >
@@ -388,4 +356,48 @@ export default function Shiipping() {
       />
     </>
   );
+}
+
+{
+  /* Select payment card */
+}
+{
+  /* <Accordion>
+            <AccordionItem
+              key="2"
+              aria-label="02. SELECT PAYMENT CARD"
+              title="02. SELECT PAYMENT CARD"
+              classNames={{
+                heading: "text-lg",
+                indicator: "-rotate-90",
+              }}
+            >
+              <div className="flex flex-col gap-8 mb-3">
+                {paymentCards &&
+                  paymentCards.map((card, index) => (
+                    <div key={card?.id} className="flex gap-4">
+                      <input
+                        type="radio"
+                        id={`${card?.id}`}
+                        name="radio"
+                        checked={
+                          paymentCards && card?.id == paymentCards[index]?.id
+                        }
+                        onClick={() => selectPaymentCard(card?.id)}
+                      />
+                      <label
+                        htmlFor={`${card?.id}`}
+                        className="flex gap-4 items-center border-b cursor-pointer"
+                      >
+                        <Image src={MasterCardImage} width={30} />
+                        <div>
+                          <p>****1234</p>
+                          <p>Expires in {card?.expiry_date}</p>
+                        </div>
+                      </label>
+                    </div>
+                  ))}
+              </div>
+            </AccordionItem>
+          </Accordion> */
 }

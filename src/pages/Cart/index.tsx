@@ -112,7 +112,7 @@ export default function CheckoutSummary() {
                   <Button
                     size="sm"
                     onClick={() => removeItemFromCart(index)}
-                    className="flex justify-end items-center gap-1 text-xs mb-2 text-red-500"
+                    className="flex justify-end items-center gap-1 text-xs mb-2 text-deep-red-100"
                   >
                     <FaTrashAlt size={10} />
                     <p>Remove</p>
@@ -216,7 +216,7 @@ export default function CheckoutSummary() {
                 <div className="flex justify-end">
                   <Button
                     size="sm"
-                    className="flex items-center gap-2 text-xs text-red-500"
+                    className="flex items-center gap-2 text-xs text-deep-red-100"
                     onClick={() => removeItemFromCart(index)}
                   >
                     <FaTrashAlt />
@@ -229,7 +229,7 @@ export default function CheckoutSummary() {
       </div>
       <div className="flex flex-col gap-8 w-full md:w-4/12 md:py-10 md:px-12 py-10 px-5">
         <p className="text-xl">SUMMARY</p>
-        <div className="flex flex-col gap-4 border-b pb-3 ">
+        <div className="flex flex-col gap-4 border-b pb-3">
           <div className="flex items-center justify-between">
             <p className="text-neutral-700">SUBTOTAL</p>
             <p className="text-xl">NGN {total.subTotal}</p>
@@ -247,7 +247,7 @@ export default function CheckoutSummary() {
           <Button
             onClick={handleCheckout}
             disabled={selectedItems.length === 0}
-            className={`w-full rounded-full font-bold bg-dark-blue-100 mt-5 text-white ${
+            className={`w-full rounded-full font-bold bg-deep-green-100 mt-5 text-white ${
               selectedItems.length === 0
                 ? "cursor-not-allowed opacity-55"
                 : "cursor-pointer"

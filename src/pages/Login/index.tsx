@@ -48,7 +48,7 @@ export default function Login() {
 
   return (
     <div className="bg-white px-5">
-      <form className="w-full md:w-5/12 mx-auto p-5 md:px-10">
+      <form className="w-full md:w-5/12 mx-auto p-5 md:px-16">
         <h1 className="text-2xl font-semibold mb-10">Welcome Back !</h1>
 
         <div className="flex flex-col gap-8 [&_span]:text-xs [&_span]:text-red-500">
@@ -84,7 +84,7 @@ export default function Login() {
         <div className="py-5">
           <Button
             onClick={handleSubmit(onSubmit)}
-            className="w-full font-semibold bg-dark-blue-100 text-white rounded-full"
+            className="w-full font-semibold bg-deep-green-100 text-white rounded-full"
           >
             LOGIN
           </Button>

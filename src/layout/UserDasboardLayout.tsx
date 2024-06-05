@@ -31,11 +31,11 @@ export default function UserDasboardLayout() {
   return (
     <>
       <Navbar />
-      <div className="bg-white w-full min-h-screen py-14 md:mt-10">
+      <div className="w-screen bg-white">
         <div className="w-full md:w-10/12 mx-auto relative flex">
           <div
             ref={sidebarRef}
-            className="w-full md:w-3/12 bg-white min-h-screen absolute md:fixed 
+            className="w-full md:w-3/12 min-h-screen absolute md:fixed 
             md:left-10 delay-150 duration-300 -translate-x-full md:-translate-x-0 py-10 md:py-0 z-20"
           >
             <SideBar

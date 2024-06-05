@@ -10,7 +10,12 @@ export default {
         "deep-gray-200": "#F7F7F7",
         "deep-gray-300": "#F3F2F4",
         "deep-blue-100": "#007AFF",
-        "dark-blue-100": "#10182F",
+        // "deep-green-100": "#10182F",
+        // "deep-green-100": "#040028", //unsed
+
+        "deep-red-100": "#FF5757",
+        "deep-purple-100": "#8C52FF",
+        "deep-green-100": "#1E474E",
 
         overLay: "rgba(0, 0, 0, 0.5)",
       },
@@ -22,3 +27,4 @@ export default {
 // 18181B
 
 // Dark blue: #10182F
+// dark blue belnder: #262648

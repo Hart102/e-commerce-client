@@ -82,10 +82,12 @@ export default function Products() {
   ) : (
     <>
       <div className="bg-white rounded-xl p-5 flex flex-col gap-4 md:gap-8">
-        <div className="hidden px-4 md:flex items-center justify-between border-b pb-5">
+        <div className="hidden px-4 md:flex items-center justify-between border-b1 pb-51">
           <div className="flex items-baseline gap-2">
-            <b className="text-3xl">{products && products?.length}</b>
-            <p className="text-neutral-400 text-sm italic">Products</p>
+            <b className="text-3xl text-deep-green-100">
+              {products && products?.length}
+            </b>
+            <p className="text-sm italic">Products</p>
           </div>
           <form className="flex w-1/2 items-center gap-2 bg-deep-gray-200 rounded px-2">
             <BiSearch size={18} className="text-deep-gray-100" />
@@ -105,7 +107,7 @@ export default function Products() {
           <div>
             <Link
               to="/dashboard/add-products"
-              className="py-2 px-2 rounded flex items-center gap-1 font-semibold bg-deep-gray-200 hover:bg-white"
+              className="py-2 px-2 rounded flex items-center gap-1 font-semibold bg-deep-green-100 text-white"
             >
               <BiAddToQueue />
               <p className="text-sm">ADD PRODUCT</p>
@@ -115,7 +117,7 @@ export default function Products() {
         <Table
           classNames={{
             base: "text-center1",
-            th: "text-neutral-400 uppercase",
+            th: "text-white bg-deep-green-100 uppercase",
             tbody: "py-4 text-sm text-center",
             td: "first-letter:capitalize",
           }}

@@ -223,7 +223,7 @@ export default function AddProduct() {
             <Button
               onClick={handleSubmit(onSubmit)}
               disabled={isLoading}
-              className={`bg-black text-white py-2 px-3 rounded font-semibold text-sm hover:opacity-65 ${
+              className={`bg-deep-green-100 text-white py-2 px-3 rounded font-semibold text-sm hover:opacity-65 ${
                 isLoading && "opacity-55"
               }`}
             >

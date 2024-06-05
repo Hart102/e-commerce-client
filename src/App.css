@@ -4,12 +4,13 @@
 
 body{
     /* background-color: #F3F2F4; */
-    overflow-x: hidden;
+  overflow-x: hidden;
+    /* background: #FBF1D8; */
 }
  
 
 
-::-webkit-scrollbar {
+/* ::-webkit-scrollbar {
   width: 3px;
 }
 
@@ -19,7 +20,7 @@ body{
 
 ::-webkit-scrollbar-thumb {
   background: #000;
-}
+} */
 
 
 

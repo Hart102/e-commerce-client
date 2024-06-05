@@ -46,7 +46,7 @@ export default function SideBar({
 
   return (
     <>
-      <aside className="bg-white p-5 w-full flex flex-col gap-8">
+      <aside className="p-5 w-full flex flex-col gap-8">
         <Link
           to="/dashboard_1/products"
           className={`text-2xl font-bold first-letter:text-3xl ${
@@ -78,7 +78,8 @@ export default function SideBar({
                     onClick={closeMenu}
                     className={`flex items-center gap-2 p-2 rounded ${
                       location.pathname.slice(urlCount).replace("-", " ") ==
-                        link?.title.toLowerCase() && "bg-black text-white"
+                        link?.title.toLowerCase() &&
+                      "bg-deep-green-100 text-white"
                     }`}
                   >
                     <link.icon size={18} />

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Button, useDisclosure } from "@nextui-org/react";
-import { FaMapMarkerAlt } from "react-icons/fa";
+import { FaMapMarkerAlt, FaTrashAlt, FaPencilAlt } from "react-icons/fa";
 import AddAddress from "@/components/Add-address";
 import ConfirmationModal from "@/components/Modal/ConfirmationModal";
 
@@ -19,53 +19,59 @@ export default function Address() {
     }
   };
 
+  const deleteAddress = () => {
+    alert("coming soon");
+    setIsModalOpen(false);
+  };
+
   return (
     <>
-      <div className="flex justify-end pb-4">
+      <div className="flex justify-end">
         <Button
           size="sm"
           type="button"
           onPress={onOpen}
-          className="py-1 px-2 border rounded-full flex items-center gap-1 hover:bg-black hover:text-white"
+          className="py-1 px-2 border rounded-lg flex items-center gap-1 bg-deep-green-100 text-white"
         >
           <FaMapMarkerAlt />
           <p className="text-sm font-semibold">ADD ADDRESS</p>
         </Button>
       </div>
-
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <label
           htmlFor="2"
-          className="flex flex-col gap-4 bg-deep-gray-200 rounded-lg cursor-pointer p-4"
+          className="flex flex-col gap-4 rounded-lg cursor-pointer p-4"
         >
-          <div className="flex items-center justify-between gap-2">
-            <FaMapMarkerAlt />
-            <input type="radio" name="location" id="2" />
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-2 gap-y-4">
-            <div>
-              <b>STREET:</b>
-              <p>No, 7 aba oweri road</p>
-            </div>
-            <div>
-              <b>STATE/COUNTRY:</b>
-              <p>Aba, Abia State. Nigeria</p>
-            </div>
-            <div>
-              <b>POSTAL CODE:</b>
-              <p>440102</p>
-            </div>
-            <div>
-              <b>PHONE:</b>
-              <p>090123455</p>
+          <div>
+            <div className="bg-deep-gray-2001 rounded p-5 cursor-pointer">
+              <FaMapMarkerAlt className="text-deep-red-100" />
+              <div className="flex flex-col gap-1 mt-4">
+                <p>No, 7 aba oweri road</p>
+                <p>Aba, Abia state</p>
+                <p>Nigeria</p>
+                <p>090123456</p>
+              </div>
+              <div className="flex gap-10 text-sm justify-between mt-4">
+                <Button className="flex items-center gap-1 px-0 hover:underline font-semibold text-deep-green-100">
+                  <FaTrashAlt />
+                  Edit
+                </Button>
+                <Button
+                  onClick={openCofirmation}
+                  className="flex items-center gap-1 px-0 hover:underline font-semibold text-deep-red-100 "
+                >
+                  <FaPencilAlt />
+                  Delete
+                </Button>
+              </div>
             </div>
           </div>
         </label>
       </div>
-
       <AddAddress isOpen={isOpen} onClose={onClose} />
       <ConfirmationModal
         isOpen={isModalOpen}
+        onContinue={deleteAddress}
         onClose={openCofirmation}
         message={message}
       />
