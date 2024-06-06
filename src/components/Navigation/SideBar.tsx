@@ -92,7 +92,7 @@ export default function SideBar({
             <div>
               <Button
                 onClick={confirmLogout}
-                className="flex items-center gap-2 bg-deep-gray-300 rounded"
+                className="flex items-center gap-2 rounded hover:bg-deep-green-100 hover:text-white"
               >
                 <BiLogOut />
                 Log out
