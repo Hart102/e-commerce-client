@@ -29,7 +29,7 @@ export default function Header() {
   }, 3000);
 
   return (
-    <nav className="w-screen bg-deep-green-1001 bg-deep-green-100 text-white border-b border-[#EAE4CE] sticky top-0 left-0 z-40">
+    <nav className="w-screen bg-deep-green-100 text-white border-b border-[#EAE4CE] fixed top-0 left-0 z-40">
       <div className="container relative mx-auto flex flex-col md:flex-row items-center justify-between gap-2 md:gap-4 py-3 px-4 md:px-14 z-40">
         <div className="w-full md:w-auto flex gap-4 items-baseline justify-between">
           <Link to="/" className="text-2xl font-bold first-letter:text-3xl">
