@@ -6,7 +6,7 @@ import Home from "./pages/Home";
 import SingleProduct from "./pages/Single";
 import Cart from "./pages/Cart";
 import Checkout from "./pages/Checkout";
-import Login from "./pages/Login";
+import Login from "./pages/login";
 
 // DASHBOARD
 import DashboardLayout from "./layout/DashboardLayout";
