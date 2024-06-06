@@ -49,8 +49,8 @@ export default function AddAddress({
   const InputProps = {
     label: "mb-16",
     inputWrapper: "px-0 flex",
-    input: "p-2 outline-none border-b",
-    base: "text-sm text-neutral-500 mb-2 py-2",
+    input: "p-2 outline-none border- bg-deep-gray-50",
+    base: "text-sm text-neutral-5001 mb-2 py-2",
   };
   return (
     <>
@@ -65,7 +65,7 @@ export default function AddAddress({
           {(onClose) => (
             <div className="w-full md:w-6/12 mx-auto">
               <ModalBody>
-                <form className="bg-white rounded-lg p-5 flex flex-col gap-12 z-10">
+                <form className="bg-white rounded-lg p-5 flex flex-col gap-12 relative">
                   <div>
                     <div className="flex justify-end">
                       <FaTimes
@@ -75,12 +75,10 @@ export default function AddAddress({
                       />
                     </div>
                     <div className="flex flex-col gap-1 md:px-10">
-                      <h1 className="text-xl font-bold">
+                      <h1 className="text-3xl font-bold">
                         New Shipping Address
                       </h1>
-                      <p className="text-neutral-500">
-                        Add new shipping address for your order delivery.
-                      </p>
+                      <p>Add new shipping address for your order delivery.</p>
                     </div>
                   </div>
                   <div className="md:px-10 md:py-2">
@@ -145,7 +143,7 @@ export default function AddAddress({
                       <Button
                         variant="light"
                         onClick={handleSubmit(onSubmit)}
-                        className="bg-black text-white rounded-full px-20 mt-5"
+                        className="bg-deep-green-100 font-semibold text-white rounded-full px-20 mt-5"
                       >
                         SAVE
                       </Button>
