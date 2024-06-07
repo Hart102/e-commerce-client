@@ -12,6 +12,7 @@ export default function Address() {
   const [message, setMessage] = useState<string>("");
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [userAddress, setUserAddress] = useState<AddressType[]>([]);
+  const [index, setIndex] = useState<number>(0);
 
   const fetchUserAddress = async () => {
     const { data } = await axios.get(`${api}/user/get-address`, {
@@ -20,19 +21,29 @@ export default function Address() {
     if (!data.error) setUserAddress(data);
   };
 
-  const openCofirmation = () => {
+  const openCofirmation = (index: number) => {
     if (isModalOpen) {
       setIsModalOpen(false);
       setMessage("");
     } else {
       setIsModalOpen(true);
+      setIndex(index);
       setMessage("Are you sure you want to delete address");
     }
   };
 
-  const deleteAddress = () => {
-    alert("coming soon");
+  const deleteAddress = async () => {
     setIsModalOpen(false);
+    const { data } = await axios.delete(`${api}/user/delete-address`, {
+      headers: { Authorization: authentication_token },
+      data: { id: userAddress[index]?.id },
+    });
+    if (!data.error) {
+      userAddress.splice(index, 1);
+    }else{
+      setIsModalOpen(true);
+      setMessage(data.error);
+    }
   };
 
   useEffect(() => {
@@ -54,7 +65,7 @@ export default function Address() {
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {userAddress &&
-          userAddress?.map((address) => (
+          userAddress?.map((address, index) => (
             <div
               key={address?.id}
               className="bg-deep-gray-200 rounded p-5 cursor-pointer"
@@ -74,7 +85,7 @@ export default function Address() {
                   Edit
                 </Button>
                 <Button
-                  onClick={openCofirmation}
+                  onClick={() => openCofirmation(index)}
                   className="flex items-center gap-1 px-0 hover:underline font-semibold text-deep-red-100 "
                 >
                   <FaPencilAlt />

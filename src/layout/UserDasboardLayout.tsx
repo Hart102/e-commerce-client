@@ -31,7 +31,7 @@ export default function UserDasboardLayout() {
   return (
     <>
       <Navbar />
-      <div className="w-screen bg-white">
+      <div className="w-screen bg-white mt-20">
         <div className="w-full md:w-10/12 mx-auto relative flex">
           <div
             ref={sidebarRef}
@@ -60,5 +60,3 @@ export default function UserDasboardLayout() {
     </>
   );
 }
-
-// -translate-x-full md:-translate-x-0 z-20 delay-150 duration-300 mt-10 md:pt-0
