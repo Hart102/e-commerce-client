@@ -40,7 +40,7 @@ export default function Address() {
     });
     if (!data.error) {
       userAddress.splice(index, 1);
-    }else{
+    } else {
       setIsModalOpen(true);
       setMessage(data.error);
     }
@@ -105,4 +105,3 @@ export default function Address() {
     </>
   );
 }
-a;
