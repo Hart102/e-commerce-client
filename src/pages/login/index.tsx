@@ -17,6 +17,7 @@ interface CookieOptions {
 export default function Login() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const navigation = useNavigate();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [response, setResponse] = useState<{
     isError: boolean;
     message: string;
@@ -28,9 +29,10 @@ export default function Login() {
   } = useForm<LoginSchema>({ resolver: yupResolver(LoginSchema) });
 
   const onSubmit = async (data: LoginSchema) => {
+    setIsLoading(true);
     const request = await axios.post(`${api}/user/login`, data);
     const response = await request.data;
-
+    setIsLoading(false);
     if (response.error) {
       setResponse({ ...response, isError: true, message: response.error });
       onOpen();
@@ -66,7 +68,7 @@ export default function Login() {
 
   return (
     <>
-      <div className="bg-white px-5">
+      <div className="p-5">
         <form className="w-full md:w-5/12 mx-auto p-5 md:px-16">
           <h1 className="text-2xl font-semibold mb-10">Welcome Back !</h1>
 
@@ -103,9 +105,10 @@ export default function Login() {
           <div className="py-5">
             <Button
               onClick={handleSubmit(onSubmit)}
+              disabled={isLoading}
               className="w-full font-semibold bg-deep-green-100 text-white rounded-full"
             >
-              LOGIN
+              {!isLoading ? "LOGIN" : "PLEASE WAIT"}
             </Button>
           </div>
         </form>

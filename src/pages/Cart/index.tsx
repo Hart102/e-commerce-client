@@ -96,7 +96,7 @@ export default function CheckoutSummary() {
   return isLoading ? (
     <Loader />
   ) : (
-    <div className="flex flex-col md:flex-row md:p-0 p-4 justify-center">
+    <div className="flex flex-col md:flex-row md:px-0 pt-16 p-4 justify-center">
       <div className="w-full md:w-7/12 flex flex-col md:py-5 md:px-3">
         <span>CART ITEMS ({cartItems?.length})</span>
         {/* Desktop */}

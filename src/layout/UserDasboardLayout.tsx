@@ -4,6 +4,7 @@ import SideBar from "@/components/Navigation/SideBar";
 import { BiBell, BiCreditCard, BiCartAdd, BiGridAlt } from "react-icons/bi";
 import { FaMapMarkerAlt, FaToggleOn } from "react-icons/fa";
 import Navbar from "@/components/Navigation/Navbar";
+import { Button } from "@nextui-org/react";
 
 const links = [
   { icon: BiCartAdd, title: "Your Orders", href: "" },
@@ -46,6 +47,15 @@ export default function UserDasboardLayout() {
             />
           </div>
           <div className="w-full bg-white md:w-9/12 min-h-screen py-5 px-10 flex flex-col gap-5 border-l md:absolute right-0">
+            <div className="flex justify-end">
+              <Button
+                size="sm"
+                type="button"
+                className="py-1 px-2 rounded-lg flex items-center gap-1 bg-deep-red-100 text-white"
+              >
+                VERIFY PAYMENT
+              </Button>
+            </div>
             <div
               onClick={handleToggle}
               className="flex md:hidden z-20 -ml-4 items-center gap-1 w-[80px]"

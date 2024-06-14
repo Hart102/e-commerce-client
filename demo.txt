@@ -10,7 +10,7 @@ import { useEffect, useState, useMemo } from "react";
 import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
 import { FaMapMarkerAlt } from "react-icons/fa";
-// import AddAddress from "@/components/Add-address";
+import AddAddress from "@/components/Add-address";
 import {
   ProductType,
   AddressType,
@@ -21,24 +21,31 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
 import { debitCardSchema } from "@/schema/DebitCardSchema";
 import { api, imageUrl, authentication_token } from "@/lib";
+import ServerResponseModal from "@/components/Modal/ServerResponse";
 import {
   ModalLayout,
+  modalBody,
   ConfirmationModal,
-  ResponseModal,
 } from "@/components/Modal/index";
+
+// import ModalLayout from "@/components/Modal/emptyModal";
+// import ConfirmationModal from "@/components/Modal/modalBody/ConfirmationModal";
+// import MasterCardImage from "@/assets/mastercard.svg";
 
 export default function Shiipping() {
   const location = useLocation();
   const navigation = useNavigate();
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [currentTemplate, setCurrentTemplate] = useState<string>("");
   const [checkoutItems, setCheckoutItems] = useState<ProductType[]>([]);
-  const [response, setResponse] = useState({ isError: false, message: "" });
-
   const [userAddress, setUserAddress] = useState<AddressType[]>([]);
+  // const [message, setMessage] =useState<string>()
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [modalData, setModalData] = useState({ isError: false, message: "" });
+  // const [paymentCards, setPaymentCards] = useState<PaymentCardType[]>([]);
   const [isLoading, setLoading] = useState<boolean>(false);
   const [orderDetails, setOrderDetails] = useState<OrderDetailsType>({
     addressId: "",
+    // paymentCardId: "",
     productsId: [],
     totalPrice: 0,
   });
@@ -53,13 +60,6 @@ export default function Shiipping() {
     reset,
     formState: { errors },
   } = useForm<debitCardSchema>({ resolver: yupResolver(debitCardSchema) });
-
-  const openModal = (template: string, data: debitCardSchema) => {
-    if (template in templates) {
-      onOpen();
-      setCurrentTemplate(template);
-    }
-  };
 
   const calculateSum = useMemo(() => {
     let subTotal: number = 0;
@@ -78,8 +78,41 @@ export default function Shiipping() {
     if (!data.error) setUserAddress(data);
   };
 
+  // const fetchPaymentCards = async () => {
+  //   const { data } = await axios.get(`${api}/checkout/get-payment-card`, {
+  //     headers: { Authorization: authentication_token },
+  //   });
+  //   if (data.error) {
+  //     setModalData({ isError: true, message: data.error });
+  //     setIsModalOpen(true);
+  //   } else {
+  //     setPaymentCards(data.cards);
+  //   }
+  // };
+
   const selectDeliveryAddress = (id: string) =>
     setOrderDetails((prev) => ({ ...prev, addressId: id }));
+
+  // const selectPaymentCard = (id: string) =>
+  //   setOrderDetails((prev) => ({ ...prev, paymentCardId: id }));
+
+  // Add New Payment Card
+  // const AddNewCard = async (data: debitCardSchema) => {
+  //   const request = await axios.put(`${api}/checkout/add-payment-card`, data, {
+  //     headers: { Authorization: authentication_token },
+  //   });
+  //   const response = await request.data;
+  //   if (response.error) {
+  //     setModalData({ isError: true, message: response.error });
+  //     setIsModalOpen(true);
+  //   } else {
+  //     setModalData({ isError: false, message: response.message });
+  //     fetchPaymentCards();
+  //     setIsModalOpen(true);
+  //     onClose();
+  //     reset();
+  //   }
+  // };
 
   const setData = () => {
     setOrderDetails((prev) => ({
@@ -96,9 +129,12 @@ export default function Shiipping() {
       return navigation("/");
     }
     fetchUserAddress();
+    // fetchPaymentCards();
     setCheckoutItems(location.state);
     setSum(calculateSum);
+
     setData();
+    // }
   }, [
     location,
     navigation,
@@ -110,7 +146,6 @@ export default function Shiipping() {
 
   // Place Order function
   const placeOder = async (data: debitCardSchema) => {
-    return console.log("place order");
     setLoading(true);
     const response = await axios.post(
       `${api}/checkout/accept-payment`,
@@ -119,8 +154,8 @@ export default function Shiipping() {
     );
     setLoading(false);
     if (response.data.error) {
-      setResponse({ ...response, isError: true, message: response.data.error });
-      openModal("serverResponse");
+      setModalData({ isError: true, message: response.data.error });
+      setIsModalOpen(true);
     } else {
       reset();
       window.open(response.data.payment_url, "_blank");
@@ -128,23 +163,26 @@ export default function Shiipping() {
     console.log(data);
   };
 
-  const order = async (data: debitCardSchema) => {
-    console.log(data);
-    console.log("something fine");
-  };
+  const [currentTemplate, setCurrentTemplate] = useState<string>();
 
   const templates = {
     verifyPayment: (
       <ConfirmationModal
         message="After payment, visit your dashboard to confirm your payment"
         onCancle={() => onClose()}
-        // onContinue={() => handleSubmit(placeOder)}
-        onContinue={handleSubmit(order)}
+        onContinue={() => handleSubmit(placeOder)}
       />
     ),
     serverResponse: (
-      <ResponseModal isError={response.isError} message={response.message} />
+      <p className="text-neutral-5001 first-letter:capitalize text-xl"></p>
     ),
+  };
+
+  const openModal = (template: string) => {
+    if (template in templates) {
+      onOpen();
+      setCurrentTemplate(template);
+    }
   };
 
   const InputProps = {
@@ -280,8 +318,8 @@ export default function Shiipping() {
 
           <div className="flex mt-5">
             <Button
-              onClick={() => handleSubmit(openModal("verifyPayment"))}
-              // onClick={() => openModal("verifyPayment")}
+              // onClick={handleSubmit(placeOder)}
+              onClick={() => openModal("verifyPayment")}
               className={`bg-deep-green-100 text-white rounded-full px-8 hover:opacity-85 ${
                 isLoading && "opacity-55"
               }`}
@@ -344,7 +382,14 @@ export default function Shiipping() {
       <ModalLayout isOpen={isOpen} onClose={onClose}>
         {templates[currentTemplate]}
       </ModalLayout>
+      {/* <AddAddress isOpen={isOpen} onClose={onClose} />
+      <ServerResponseModal
+        isError={modalData.isError}
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        message={modalData.message}
+      /> */}
     </>
   );
 }
-a
+

@@ -1,0 +1,37 @@
+import React from "react";
+import { Modal, ModalContent, ModalBody } from "@nextui-org/react";
+import { FaTimes } from "react-icons/fa";
+
+export default function ModalLayout({
+  isOpen,
+  onClose,
+  children,
+}: React.PropsWithChildren<{
+  isOpen: boolean;
+  onClose?: () => void;
+}>) {
+  return (
+    <Modal
+      size={"2xl"}
+      isOpen={isOpen}
+      onClose={onClose}
+      classNames={{ closeButton: "hidden" }}
+      className="fixed -top-1 left-0 h-screen w-screen bg-overLay z-20 p-3"
+    >
+      <ModalContent className="flex flex-col justify-center items-center">
+        {(onClose) => (
+          <div className="w-full md:w-4/12 mx-auto text-center bg-deep-gray-300 rounded-xl p-5">
+            <div className="flex justify-end">
+              <FaTimes
+                size={30}
+                onClick={onClose}
+                className="border rounded-full p-2 cursor-pointer"
+              />
+            </div>
+            <ModalBody>{children}</ModalBody>
+          </div>
+        )}
+      </ModalContent>
+    </Modal>
+  );
+}

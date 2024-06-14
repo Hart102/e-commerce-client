@@ -99,7 +99,7 @@ export default function Address() {
       <ConfirmationModal
         isOpen={isModalOpen}
         onContinue={deleteAddress}
-        // onClose={openCofirmation}
+        onClose={() => openCofirmation(0)}
         message={message}
       />
     </>
