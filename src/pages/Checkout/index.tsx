@@ -10,13 +10,7 @@ import { useEffect, useState, useMemo } from "react";
 import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
 import { FaMapMarkerAlt } from "react-icons/fa";
-// import AddAddress from "@/components/Add-address";
-import {
-  ProductType,
-  AddressType,
-  // PaymentCardType,
-  OrderDetailsType,
-} from "@/types/index";
+import { ProductType, AddressType, OrderDetailsType } from "@/types/index";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
 import { debitCardSchema } from "@/schema/DebitCardSchema";
@@ -54,7 +48,7 @@ export default function Shiipping() {
     formState: { errors },
   } = useForm<debitCardSchema>({ resolver: yupResolver(debitCardSchema) });
 
-  const openModal = (template: string, data: debitCardSchema) => {
+  const openModal = (template: string) => {
     if (template in templates) {
       onOpen();
       setCurrentTemplate(template);
@@ -108,9 +102,20 @@ export default function Shiipping() {
     // userAddress,
   ]);
 
-  // Place Order function
-  const placeOder = async (data: debitCardSchema) => {
-    return console.log("place order");
+  const templates = {
+    verifyPayment: (
+      <ConfirmationModal
+        message="After payment, visit your dashboard to confirm your payment"
+        onCancle={() => onClose()}
+        onContinue={() => order()}
+      />
+    ),
+    serverResponse: (
+      <ResponseModal isError={response.isError} message={response.message} />
+    ),
+  };
+
+  const order = async () => {
     setLoading(true);
     const response = await axios.post(
       `${api}/checkout/accept-payment`,
@@ -125,26 +130,13 @@ export default function Shiipping() {
       reset();
       window.open(response.data.payment_url, "_blank");
     }
-    console.log(data);
   };
 
-  const order = async (data: debitCardSchema) => {
+  // Place Order function
+  const placeOder = async (data: debitCardSchema) => {
+    console.log("clicked");
     console.log(data);
-    console.log("something fine");
-  };
-
-  const templates = {
-    verifyPayment: (
-      <ConfirmationModal
-        message="After payment, visit your dashboard to confirm your payment"
-        onCancle={() => onClose()}
-        // onContinue={() => handleSubmit(placeOder)}
-        onContinue={handleSubmit(order)}
-      />
-    ),
-    serverResponse: (
-      <ResponseModal isError={response.isError} message={response.message} />
-    ),
+    openModal("verifyPayment");
   };
 
   const InputProps = {
@@ -280,8 +272,7 @@ export default function Shiipping() {
 
           <div className="flex mt-5">
             <Button
-              onClick={() => handleSubmit(openModal("verifyPayment"))}
-              // onClick={() => openModal("verifyPayment")}
+              onClick={handleSubmit(placeOder)}
               className={`bg-deep-green-100 text-white rounded-full px-8 hover:opacity-85 ${
                 isLoading && "opacity-55"
               }`}
@@ -347,4 +338,3 @@ export default function Shiipping() {
     </>
   );
 }
-a
