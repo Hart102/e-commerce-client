@@ -1,3 +1,10 @@
+export type ModalTemplatesType = {
+  verifyPaymentModal: JSX.Element;
+  serverResponseModal: JSX.Element;
+  loaderModal: JSX.Element;
+  [key: string]: JSX.Element;
+};
+
 export type ProductType = {
   id: string;
   images: string[];

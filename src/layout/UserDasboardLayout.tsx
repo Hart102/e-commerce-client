@@ -13,7 +13,7 @@ import {
   ResponseModal,
   LoadingGif,
 } from "@/components/Modal/index";
-import { ModalTemplates } from "@/types/index";
+import { ModalTemplatesType } from "@/types/index";
 
 const links = [
   { icon: BiCartAdd, title: "Your Orders", href: "" },
@@ -34,7 +34,7 @@ export default function UserDasboardLayout() {
   const [currentTemplate, setCurrentTemplate] = useState<string>("");
   const [response, setResponse] = useState({ isError: false, message: "" });
 
-  const templates: ModalTemplates = {
+  const templates: ModalTemplatesType = {
     loaderModal: <LoadingGif />,
     serverResponseModal: (
       <ResponseModal isError={response.isError} message={response.message} />
@@ -89,9 +89,7 @@ export default function UserDasboardLayout() {
       }
     }, 3000);
     return () => clearInterval(intervalId);
-  }, [api, authentication_token]);
-
-  console.log(paymentStatus);
+  }, []);
 
   return (
     <>

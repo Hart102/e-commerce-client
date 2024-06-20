@@ -6,9 +6,9 @@ export default function Header() {
   const location = useLocation();
 
   return (
-    <nav className="bg-white rounded-tr-xl p-5 border-b">
+    <nav className="bg-white rounded-tr-xl p-5 shadow">
       <div className="container mx-auto flex justify-between items-center">
-        <p className="text-lg font-semibold uppercase text-deep-green-100">
+        <p className="text-lg font-semibold first-letter:uppercase text-deep-green-100">
           {location.pathname.slice(11).replace("-", " ")}
         </p>
 

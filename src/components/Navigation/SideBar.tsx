@@ -5,14 +5,14 @@ import { Button, useDisclosure } from "@nextui-org/react";
 import ConfirmationModal from "@/components/Modal/ConfirmationModal";
 import { authentication_token } from "@/lib";
 
-function checkAuthentication(
-  token: string | null,
+const checkAuthentication = (
+  token: string | undefined,
   navigation: (to: string) => void
-) {
-  if (token == null) {
+) => {
+  if (token === undefined) {
     navigation("/login");
   }
-}
+};
 
 export default function SideBar({
   status,
@@ -49,7 +49,7 @@ export default function SideBar({
       <aside className="p-5 w-full flex flex-col gap-8">
         <Link
           to="/dashboard_1/products"
-          className={`text-2xl font-bold first-letter:text-3xl ${
+          className={`text-2xl font-bold first-letter:text-3xl text-deep-green-100 ${
             status ? "block" : "hidden"
           }`}
         >
@@ -88,7 +88,7 @@ export default function SideBar({
                 ))}
               </div>
             </div>
-            <div className="border-b"></div>
+            <div className="border-b border-deep-green-50"></div>
             <div>
               <Button
                 onClick={confirmLogout}

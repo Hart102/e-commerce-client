@@ -38,7 +38,6 @@ export default function Login() {
       onOpen();
       return;
     }
-
     // SET COOKIE FUNCTION
     const setCookie = (options: CookieOptions) => {
       let expires = "";

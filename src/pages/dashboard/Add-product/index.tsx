@@ -1,4 +1,5 @@
-import { useState, ChangeEvent } from "react";
+import { useState, ChangeEvent, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import {
   Input,
   Textarea,
@@ -12,24 +13,39 @@ import { BiCloudUpload } from "react-icons/bi";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
 import { ProductSchema } from "@/schema/addProductSchema";
-import ServerResponseModal from "@/components/Modal/ServerResponse";
 import { api, authentication_token } from "@/lib";
+import { ModalLayout, ResponseModal, LoadingGif } from "@/components/Modal";
 
 export default function AddProduct() {
+  const location = useLocation();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [files, setFiles] = useState<File[]>([]);
   const [previewImages, setPreviewImages] = useState<string[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [modalData, setModalData] = useState({ isError: false, message: "" });
+  const [currentTemplate, setCurrenttemplate] = useState<string>("");
+  const [response, setResponse] = useState({ isError: false, message: "" });
+  const [data, setData] = useState({
+    name: "",
+    price: "",
+    quantity: 0,
+    status: "",
+    category: "",
+    description: "",
+    images: ["9qvzbh", "jetpkz", "2vwiup", "vhz8yq"],
+  });
   const filesLength: number[] = [0, 1, 2, 3];
   const categories: string[] = ["fasion", "electronics", "jewelry"];
 
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors },
-  } = useForm<ProductSchema>({ resolver: yupResolver(ProductSchema) });
+  type TemplateType = {
+    [key: string]: JSX.Element;
+    loaderModal: JSX.Element;
+    responseModal: JSX.Element;
+  };
+
+  useEffect(() => {
+    setData(location.state);
+  }, [location]);
+
+  // console.log(product);
 
   const handleImage = (e: ChangeEvent<HTMLInputElement>, index: number) => {
     const selectedFile = e.target.files && e.target.files[0];
@@ -44,7 +60,31 @@ export default function AddProduct() {
     }
   };
 
+  const templates: TemplateType = {
+    loaderModal: <LoadingGif />,
+    responseModal: (
+      <ResponseModal isError={response.isError} message={response.message} />
+    ),
+  };
+
+  const changeModalContent = (template: string) => {
+    if (template in templates) {
+      onOpen();
+      setCurrenttemplate(template);
+    }
+  };
+
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<ProductSchema>({ resolver: yupResolver(ProductSchema) });
+
   const onSubmit = async (data: ProductSchema) => {
+    console.log(data);
+    return;
+    changeModalContent("loaderModal");
     const formData = new FormData();
     files.forEach((file: File) => formData.append("file", file));
     formData.append("name", data.productName);
@@ -54,24 +94,39 @@ export default function AddProduct() {
     formData.append("status", data.status);
     formData.append("description", data.description);
 
-    setIsLoading(true);
     const request = await axios.put(
       `${api}/products/create_product`,
       formData,
       { headers: { Authorization: authentication_token } }
     );
     const response = await request.data;
-    setIsLoading(false);
     if (response.error) {
-      setModalData({ isError: true, message: response.error });
+      setResponse({ isError: true, message: response.error });
       onOpen();
     } else {
-      setModalData({ isError: false, message: response.message });
+      setResponse({ isError: false, message: response.message });
       onOpen();
       reset();
       setFiles([]);
       setPreviewImages([]);
     }
+    changeModalContent("responseModal");
+  };
+
+  // const [productName, setProductName] = useState("");
+  const handleInputChange = (e) => {
+    // setProductName(e.target.value);
+    setData((prev) => {
+      return {
+        ...prev,
+        name: e.target.value || data.name,
+        category: e.category || data.category,
+        price: e.price || data.price,
+        quantity: e.quantity || data.quantity,
+        status: e.status || data.status,
+        description: e.description || data.description,
+      };
+    });
   };
 
   return (
@@ -84,11 +139,13 @@ export default function AddProduct() {
               <div>
                 <Input
                   placeholder="Product Name"
+                  value={data.name}
                   classNames={{
                     base: "bg-deep-gray-50",
                     input: "border-0 outline-none bg-transparent",
                   }}
                   {...register("productName")}
+                  onChange={handleInputChange}
                 />
                 {errors?.productName?.message && (
                   <span>{errors?.productName?.message}</span>
@@ -107,6 +164,7 @@ export default function AddProduct() {
                     value: "capitalize",
                     innerWrapper: "text-start flex",
                   }}
+                  value={data.category}
                   {...register("category")}
                 >
                   {categories.map((category) => (
@@ -129,6 +187,7 @@ export default function AddProduct() {
                       input: "outline-none",
                       base: "h-32 bg-deep-gray-50",
                     }}
+                    value={data.description}
                     {...register("description")}
                   />
                   <span>{errors?.description?.message}</span>
@@ -200,6 +259,7 @@ export default function AddProduct() {
                   inputWrapper: "bg-deep-gray-50",
                   input: "border-0 outline-none",
                 }}
+                value={data.quantity}
                 {...register("quantity")}
               />
               {errors?.quantity?.message && (
@@ -215,6 +275,7 @@ export default function AddProduct() {
                     inputWrapper: "px-2",
                     input: "border-0 outline-none",
                   }}
+                  value={data.price}
                   {...register("price")}
                 />
               </div>
@@ -222,22 +283,16 @@ export default function AddProduct() {
             </div>
             <Button
               onClick={handleSubmit(onSubmit)}
-              disabled={isLoading}
-              className={`bg-deep-green-100 text-white py-2 px-3 rounded font-semibold text-sm hover:opacity-65 ${
-                isLoading && "opacity-55"
-              }`}
+              className="bg-deep-green-100 text-white py-2 px-3 rounded font-semibold text-sm hover:opacity-65"
             >
-              {isLoading ? "PROCESSING..." : "UPLOAD PRODUCT"}
+              CREATE PRODUCT
             </Button>
           </div>
         </form>
       </div>
-      <ServerResponseModal
-        isError={modalData.isError}
-        isOpen={isOpen}
-        onClose={onClose}
-        message={modalData.message}
-      />
+      <ModalLayout isOpen={isOpen} onClose={onClose}>
+        {templates[currentTemplate]}
+      </ModalLayout>
     </>
   );
 }

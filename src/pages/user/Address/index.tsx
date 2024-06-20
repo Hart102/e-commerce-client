@@ -57,7 +57,7 @@ export default function Address() {
           size="sm"
           type="button"
           onPress={onOpen}
-          className="py-1 px-2 border rounded-lg flex items-center gap-1 bg-deep-green-100 text-white"
+          className="py-1 px-2 rounded flex items-center gap-1 bg-deep-green-50 text-white"
         >
           <FaMapMarkerAlt />
           <p className="text-sm font-semibold">ADD ADDRESS</p>

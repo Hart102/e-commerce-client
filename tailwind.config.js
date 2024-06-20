@@ -15,6 +15,7 @@ export default {
 
         "deep-red-100": "#FF5757",
         "deep-purple-100": "#8C52FF",
+        "deep-green-50": "#4DAF78",
         "deep-green-100": "#1E474E",
 
         overLay: "rgba(0, 0, 0, 0.5)",
