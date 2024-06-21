@@ -6,6 +6,7 @@ import {
   Button,
   Select,
   SelectItem,
+  Image,
   useDisclosure,
 } from "@nextui-org/react";
 import axios from "axios";
@@ -13,27 +14,27 @@ import { BiCloudUpload } from "react-icons/bi";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
 import { ProductSchema } from "@/schema/addProductSchema";
-import { api, authentication_token } from "@/lib";
+import { api, authentication_token, imageUrl } from "@/lib";
 import { ModalLayout, ResponseModal, LoadingGif } from "@/components/Modal";
+
+// type ReplacedImageType = {
+//   index: number;
+//   imageId: string;
+// };
 
 export default function AddProduct() {
   const location = useLocation();
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [files, setFiles] = useState<File[]>([]);
-  const [previewImages, setPreviewImages] = useState<string[]>([]);
   const [currentTemplate, setCurrenttemplate] = useState<string>("");
   const [response, setResponse] = useState({ isError: false, message: "" });
-  const [data, setData] = useState({
-    name: "",
-    price: "",
-    quantity: 0,
-    status: "",
-    category: "",
-    description: "",
-    images: ["9qvzbh", "jetpkz", "2vwiup", "vhz8yq"],
-  });
+  const [files, setFiles] = useState<File[]>([]);
+  const [previewImages, setPreviewImages] = useState<string[]>([]);
+  const [productImages, setproductImages] = useState<string[]>([]);
+  // const [replacedImages, setReplacedImages] = useState<ReplacedImageType[]>([]);
   const filesLength: number[] = [0, 1, 2, 3];
   const categories: string[] = ["fasion", "electronics", "jewelry"];
+
+  const [replaced, setReplaced] = useState<string[]>([]);
 
   type TemplateType = {
     [key: string]: JSX.Element;
@@ -41,12 +42,53 @@ export default function AddProduct() {
     responseModal: JSX.Element;
   };
 
+  type FormFields =
+    | "productName"
+    | "quantity"
+    | "category"
+    | "description"
+    | "status"
+    | "price";
+
+  const {
+    register,
+    handleSubmit,
+    reset,
+    setValue,
+    formState: { errors },
+  } = useForm<ProductSchema>({
+    resolver: yupResolver(ProductSchema),
+    //  Set default values for input fields when editing a product.
+    defaultValues: {
+      productName: location.state?.name || "",
+      category: location.state?.category || "",
+      price: location.state?.price || "",
+      quantity: location.state?.quantity || 0,
+      status: location.state?.status || "",
+      description: location.state?.description || "",
+    },
+  });
+
+  /**
+   * This effect hook is used to handle editing of products.
+   * It sets the form values and preview images when the location state is available.
+   */
   useEffect(() => {
-    setData(location.state);
-  }, [location]);
+    if (location.state) {
+      const { name, category, price, quantity, status, description, images } =
+        location.state;
+      setValue("productName", name);
+      setValue("category", category);
+      setValue("price", price);
+      setValue("quantity", quantity);
+      setValue("status", status);
+      setValue("description", description);
 
-  // console.log(product);
+      setproductImages(images);
+    }
+  }, [location, setValue]);
 
+  // Handle Image Selection
   const handleImage = (e: ChangeEvent<HTMLInputElement>, index: number) => {
     const selectedFile = e.target.files && e.target.files[0];
     if (selectedFile) {
@@ -57,6 +99,18 @@ export default function AddProduct() {
       newPreviewImages[index] = URL.createObjectURL(selectedFile);
       setFiles(newFiles);
       setPreviewImages(newPreviewImages);
+
+      if (!replaced.includes(productImages[index])) {
+        setReplaced([...replaced, productImages[index]]);
+      }
+
+      // //Edit
+      // if (!replacedImages.some((img) => img.index === index)) {
+      //   setReplacedImages([
+      //     ...replacedImages,
+      //     { index, imageId: productImages[index] },
+      //   ]);
+      // }
     }
   };
 
@@ -74,16 +128,13 @@ export default function AddProduct() {
     }
   };
 
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors },
-  } = useForm<ProductSchema>({ resolver: yupResolver(ProductSchema) });
+  // Handles Editing Of Products
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setValue(name as FormFields, value);
+  };
 
-  const onSubmit = async (data: ProductSchema) => {
-    console.log(data);
-    return;
+  const handleApiRequest = async (data: ProductSchema, endpoint: string) => {
     changeModalContent("loaderModal");
     const formData = new FormData();
     files.forEach((file: File) => formData.append("file", file));
@@ -93,40 +144,43 @@ export default function AddProduct() {
     formData.append("quantity", data.quantity);
     formData.append("status", data.status);
     formData.append("description", data.description);
-
-    const request = await axios.put(
-      `${api}/products/create_product`,
-      formData,
-      { headers: { Authorization: authentication_token } }
-    );
-    const response = await request.data;
-    if (response.error) {
-      setResponse({ isError: true, message: response.error });
+    //Edit
+    if (location.state !== null) {
+      formData.append("id", location.state.id);
+      formData.append("replacedImages", JSON.stringify(replaced));
+      // replacedImages.map((image) =>
+      //   formData.append("replacedImages", JSON.stringify(image))
+      // );
+    }
+    try {
+      const request = await axios.put(`${api}/products/${endpoint}`, formData, {
+        headers: { Authorization: authentication_token },
+      });
+      const response = await request.data;
+      if (response.error) {
+        setResponse({ isError: true, message: response.error });
+        onOpen();
+      } else {
+        setResponse({ isError: false, message: response.message });
+        onOpen();
+        reset();
+        setFiles([]);
+        setPreviewImages([]);
+      }
+    } catch (error) {
+      setResponse({
+        isError: true,
+        message: "Something went wrong. Please try again.",
+      });
       onOpen();
-    } else {
-      setResponse({ isError: false, message: response.message });
-      onOpen();
-      reset();
-      setFiles([]);
-      setPreviewImages([]);
     }
     changeModalContent("responseModal");
   };
 
-  // const [productName, setProductName] = useState("");
-  const handleInputChange = (e) => {
-    // setProductName(e.target.value);
-    setData((prev) => {
-      return {
-        ...prev,
-        name: e.target.value || data.name,
-        category: e.category || data.category,
-        price: e.price || data.price,
-        quantity: e.quantity || data.quantity,
-        status: e.status || data.status,
-        description: e.description || data.description,
-      };
-    });
+  const onSubmit = (data: ProductSchema) => {
+    location.state == null
+      ? handleApiRequest(data, "create")
+      : handleApiRequest(data, "edit");
   };
 
   return (
@@ -139,7 +193,6 @@ export default function AddProduct() {
               <div>
                 <Input
                   placeholder="Product Name"
-                  value={data.name}
                   classNames={{
                     base: "bg-deep-gray-50",
                     input: "border-0 outline-none bg-transparent",
@@ -164,7 +217,6 @@ export default function AddProduct() {
                     value: "capitalize",
                     innerWrapper: "text-start flex",
                   }}
-                  value={data.category}
                   {...register("category")}
                 >
                   {categories.map((category) => (
@@ -187,7 +239,6 @@ export default function AddProduct() {
                       input: "outline-none",
                       base: "h-32 bg-deep-gray-50",
                     }}
-                    value={data.description}
                     {...register("description")}
                   />
                   <span>{errors?.description?.message}</span>
@@ -195,12 +246,13 @@ export default function AddProduct() {
               </div>
               <div className="px-2">
                 <p className="text-xl">Product Images</p>
-                <div className="grid grid-cols-2 gap-4 p-4 bg-deep-gray-50">
+                <div className="grid grid-cols-2 gap-8 p-4 bg-deep-gray-50">
+                  {/* <Image src={imageUrl(previewImages[1])} alt="" /> */}
                   {filesLength.map((index) => (
                     <label
                       key={index}
                       htmlFor={`${index}`}
-                      className="rounded h-36 cursor-pointer flex items-center justify-center border py-2 relative"
+                      className="rounded h-36 cursor-pointer flex items-center justify-center border my-2 py-2 relative"
                     >
                       <input
                         type="file"
@@ -208,9 +260,38 @@ export default function AddProduct() {
                         className="hidden"
                         onChange={(e) => handleImage(e, index)}
                       />
-                      {previewImages[index] !== undefined && (
-                        <img
-                          src={previewImages[index]}
+                      {/* // <Image
+                        //   src={
+                        //     previewImages[index] ||
+                        //     imageUrl(previewImages[index])
+                        //   }
+                        //   className="object-contain h-full w-full"
+                        // /> */}
+                      {/* {previewImages[index] !== undefined ||
+                        (replacementFiles.length > 0 && (
+                          <Image
+                            src={
+                              // imageUrl(replacementFiles[index]) ||
+                              previewImages.length > 0
+                                ? previewImages[index]
+                                : imageUrl(replacementFiles[index])
+                            }
+                            classNames={{
+                              img: "h-[130px] w-[200px]",
+                            }}
+                          />
+                        ))} */}
+
+                      {(previewImages[index] !== undefined ||
+                        productImages[index] !== undefined) && (
+                        <Image
+                          src={
+                            previewImages[index] ||
+                            imageUrl(productImages[index])
+                          }
+                          alt="Product Image"
+                          width={200}
+                          height={130}
                           className="object-contain h-full w-full"
                         />
                       )}
@@ -259,7 +340,6 @@ export default function AddProduct() {
                   inputWrapper: "bg-deep-gray-50",
                   input: "border-0 outline-none",
                 }}
-                value={data.quantity}
                 {...register("quantity")}
               />
               {errors?.quantity?.message && (
@@ -275,7 +355,6 @@ export default function AddProduct() {
                     inputWrapper: "px-2",
                     input: "border-0 outline-none",
                   }}
-                  value={data.price}
                   {...register("price")}
                 />
               </div>
@@ -285,7 +364,7 @@ export default function AddProduct() {
               onClick={handleSubmit(onSubmit)}
               className="bg-deep-green-100 text-white py-2 px-3 rounded font-semibold text-sm hover:opacity-65"
             >
-              CREATE PRODUCT
+              {location.state == null ? "CREATE PRODUCT" : "EDIT PRODUCT"}
             </Button>
           </div>
         </form>
