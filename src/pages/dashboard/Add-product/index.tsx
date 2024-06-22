@@ -17,10 +17,6 @@ import { ProductSchema } from "@/schema/addProductSchema";
 import { api, authentication_token, imageUrl } from "@/lib";
 import { ModalLayout, ResponseModal, LoadingGif } from "@/components/Modal";
 
-// type ReplacedImageType = {
-//   index: number;
-//   imageId: string;
-// };
 
 export default function AddProduct() {
   const location = useLocation();
@@ -30,11 +26,9 @@ export default function AddProduct() {
   const [files, setFiles] = useState<File[]>([]);
   const [previewImages, setPreviewImages] = useState<string[]>([]);
   const [productImages, setproductImages] = useState<string[]>([]);
-  // const [replacedImages, setReplacedImages] = useState<ReplacedImageType[]>([]);
+  const [replacedImages, setReplacedImages] = useState<string[]>([]);
   const filesLength: number[] = [0, 1, 2, 3];
   const categories: string[] = ["fasion", "electronics", "jewelry"];
-
-  const [replaced, setReplaced] = useState<string[]>([]);
 
   type TemplateType = {
     [key: string]: JSX.Element;
@@ -68,7 +62,6 @@ export default function AddProduct() {
       description: location.state?.description || "",
     },
   });
-
   /**
    * This effect hook is used to handle editing of products.
    * It sets the form values and preview images when the location state is available.
@@ -83,7 +76,6 @@ export default function AddProduct() {
       setValue("quantity", quantity);
       setValue("status", status);
       setValue("description", description);
-
       setproductImages(images);
     }
   }, [location, setValue]);
@@ -100,17 +92,9 @@ export default function AddProduct() {
       setFiles(newFiles);
       setPreviewImages(newPreviewImages);
 
-      if (!replaced.includes(productImages[index])) {
-        setReplaced([...replaced, productImages[index]]);
+      if (!replacedImages.includes(productImages[index])) {
+        setReplacedImages([...replacedImages, productImages[index]]);
       }
-
-      // //Edit
-      // if (!replacedImages.some((img) => img.index === index)) {
-      //   setReplacedImages([
-      //     ...replacedImages,
-      //     { index, imageId: productImages[index] },
-      //   ]);
-      // }
     }
   };
 
@@ -147,10 +131,10 @@ export default function AddProduct() {
     //Edit
     if (location.state !== null) {
       formData.append("id", location.state.id);
-      formData.append("replacedImages", JSON.stringify(replaced));
-      // replacedImages.map((image) =>
-      //   formData.append("replacedImages", JSON.stringify(image))
-      // );
+      formData.append("replacedImagesImages", JSON.stringify(replacedImages));
+      if (files.length < 1) {
+        formData.append("images", JSON.stringify(productImages));
+      }
     }
     try {
       const request = await axios.put(`${api}/products/${endpoint}`, formData, {
@@ -247,7 +231,6 @@ export default function AddProduct() {
               <div className="px-2">
                 <p className="text-xl">Product Images</p>
                 <div className="grid grid-cols-2 gap-8 p-4 bg-deep-gray-50">
-                  {/* <Image src={imageUrl(previewImages[1])} alt="" /> */}
                   {filesLength.map((index) => (
                     <label
                       key={index}
@@ -260,28 +243,6 @@ export default function AddProduct() {
                         className="hidden"
                         onChange={(e) => handleImage(e, index)}
                       />
-                      {/* // <Image
-                        //   src={
-                        //     previewImages[index] ||
-                        //     imageUrl(previewImages[index])
-                        //   }
-                        //   className="object-contain h-full w-full"
-                        // /> */}
-                      {/* {previewImages[index] !== undefined ||
-                        (replacementFiles.length > 0 && (
-                          <Image
-                            src={
-                              // imageUrl(replacementFiles[index]) ||
-                              previewImages.length > 0
-                                ? previewImages[index]
-                                : imageUrl(replacementFiles[index])
-                            }
-                            classNames={{
-                              img: "h-[130px] w-[200px]",
-                            }}
-                          />
-                        ))} */}
-
                       {(previewImages[index] !== undefined ||
                         productImages[index] !== undefined) && (
                         <Image
