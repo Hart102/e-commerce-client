@@ -20,7 +20,7 @@ export default function DashboardLayout() {
     <div className="w-full relative md:p-5 flex">
       <div
         // ref={sidebarRef}
-        className="w-full md:w-[300px] min-h-screen absolute md:fixed rounded-l-2xl shadow-lg
+        className="w-full md:w-[300px] min-h-screen absolute md:fixed rounded-l-2xl border-r border-dotted
             md:left-3 delay-150 duration-300 -translate-x-full md:-translate-x-0 py-10 md:py-0 -z-10"
       >
         <SideBar status={true} sidebarlinks={links} urlCount={11} />

@@ -46,16 +46,16 @@ export default function SideBar({
 
   return (
     <>
-      <aside className="p-5 w-full flex flex-col gap-8">
+      <aside className="px-5 w-full flex flex-col gap-8">
         <Link
           to="/dashboard_1/products"
-          className={`text-2xl font-bold first-letter:text-3xl text-deep-green-100 ${
+          className={`text-2xl font-bold first-letter:text-3xl text-dark-gray-100 ${
             status ? "block" : "hidden"
           }`}
         >
           Spline.One
         </Link>
-        <div className="flex flex-col gap-4 justify-between">
+        <div className="flex flex-col gap-4 justify-between text-dark-gray-100">
           <Link
             to="/dashboard_1/products"
             className={`items-center gap-2 px-2 py-3 rounded hover:bg-deep-gray-300 ${
@@ -65,10 +65,10 @@ export default function SideBar({
             <BiGridAlt size={18} />
             Dashboard
           </Link>
-          <div className="flex flex-col justify-between gap-2 md:h-[400px]">
-            <div className="flex flex-col gap-2">
-              <p className={`px-2 py-3 ${status ? "block" : "hidden"}`}>
-                PRODUCT MANAGEMENT
+          <div className="flex flex-col justify-between gap-2 md:min-h-[400px]">
+            <div>
+              <p className={`px-2 py-3 text-sm ${status ? "block" : "hidden"}`}>
+                Store Management
               </p>
               <div className="flex flex-col gap-2">
                 {sidebarlinks.map((link) => (
@@ -76,10 +76,10 @@ export default function SideBar({
                     key={link?.title}
                     to={link?.href}
                     onClick={closeMenu}
-                    className={`flex items-center gap-2 p-2 rounded ${
+                    className={`flex items-center gap-2 p-2 rounded-lg ${
                       location.pathname.slice(urlCount).replace("-", " ") ==
                         link?.title.toLowerCase() &&
-                      "bg-deep-green-100 text-white"
+                      "bg-deep-green-2001 bg-deep-green-50 text-deep-green-100"
                     }`}
                   >
                     <link.icon size={18} />
@@ -88,11 +88,11 @@ export default function SideBar({
                 ))}
               </div>
             </div>
-            <div className="border-b border-deep-green-50"></div>
+            <div className="border-b border-dotted bg-dark-gray-200 py-1 rounded"></div>
             <div>
               <Button
                 onClick={confirmLogout}
-                className="flex items-center gap-2 rounded hover:bg-deep-green-100 hover:text-white"
+                className="flex items-center gap-2 rounded hover:bg-deep-green-200 hover:text-white"
               >
                 <BiLogOut />
                 Log out

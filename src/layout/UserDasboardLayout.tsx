@@ -13,7 +13,7 @@ import {
   ResponseModal,
   LoadingGif,
 } from "@/components/Modal/index";
-import { ModalTemplatesType } from "@/types/index";
+import { ModalTemplateType } from "@/types/index";
 
 const links = [
   { icon: BiCartAdd, title: "Your Orders", href: "" },
@@ -34,9 +34,9 @@ export default function UserDasboardLayout() {
   const [currentTemplate, setCurrentTemplate] = useState<string>("");
   const [response, setResponse] = useState({ isError: false, message: "" });
 
-  const templates: ModalTemplatesType = {
+  const templates: ModalTemplateType = {
     loaderModal: <LoadingGif />,
-    serverResponseModal: (
+    responseModal: (
       <ResponseModal isError={response.isError} message={response.message} />
     ),
   };
@@ -59,10 +59,10 @@ export default function UserDasboardLayout() {
   const confirmPayment = async () => {
     onOpen();
     changeModalContent("loaderModal");
-    const { data } = await axios.get(`${api}/payment/confirm-payment`, {
+    const { data } = await axios.get(`${api}/transactions/confirm-payment`, {
       headers: { Authorization: authentication_token },
     });
-    changeModalContent("serverResponseModal");
+    changeModalContent("responseModal");
     if (data.error) {
       setResponse({ ...response, isError: true, message: data.error });
     } else {
@@ -74,7 +74,7 @@ export default function UserDasboardLayout() {
     const intervalId = setInterval(async () => {
       try {
         const { data } = await axios.get(
-          `${api}/payment/getUncompleted-payment`,
+          `${api}/transactions/getUncompleted-payment`,
           {
             headers: { Authorization: authentication_token },
           }
@@ -103,7 +103,7 @@ export default function UserDasboardLayout() {
               radius="none"
               type="button"
               onClick={confirmPayment}
-              className="py-1 px-2 text-sm font-semibold text-white border-l"
+              className="px-2 text-sm font-semibold text-dark-gray-100 hover:underline"
             >
               VERIFY PAYMENT
             </Button>

@@ -320,7 +320,7 @@ export default function Shiipping() {
             <Button
               // onClick={handleSubmit(placeOder)}
               onClick={() => openModal("verifyPayment")}
-              className={`bg-deep-green-100 text-white rounded-full px-8 hover:opacity-85 ${
+              className={`bg-deep-green-200 text-white rounded-full px-8 hover:opacity-85 ${
                 isLoading && "opacity-55"
               }`}
             >

@@ -17,7 +17,7 @@ const help = [
 
 export default function Footer() {
   return (
-    <footer className="bg-deep-green-100 text-white py-10 text-sm">
+    <footer className="bg-deep-green-200 text-white py-10 text-sm">
       <div className="w-10/12 mx-auto py-5 grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-4">
         <div className="flex flex-col gap-3">
           <h3 className="font-bold text-3xl">treeCard</h3>

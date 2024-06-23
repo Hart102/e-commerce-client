@@ -247,7 +247,7 @@ export default function CheckoutSummary() {
           <Button
             onClick={handleCheckout}
             disabled={selectedItems.length === 0}
-            className={`w-full rounded-full font-bold bg-deep-green-100 mt-5 text-white ${
+            className={`w-full rounded-full font-bold bg-deep-green-200 mt-5 text-white ${
               selectedItems.length === 0
                 ? "cursor-not-allowed opacity-55"
                 : "cursor-pointer"

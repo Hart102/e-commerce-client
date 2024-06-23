@@ -97,7 +97,7 @@ export default function Login() {
           </div>
 
           <div className="flex justify-end">
-            <Link to="" className="text-sm text-deep-green-100 hover:underline">
+            <Link to="" className="text-sm text-deep-green-200 hover:underline">
               Register
             </Link>
           </div>
@@ -105,7 +105,7 @@ export default function Login() {
             <Button
               onClick={handleSubmit(onSubmit)}
               disabled={isLoading}
-              className="w-full font-semibold bg-deep-green-100 text-white rounded-full"
+              className="w-full font-semibold bg-deep-green-200 text-white rounded-full"
             >
               {!isLoading ? "LOGIN" : "PLEASE WAIT"}
             </Button>

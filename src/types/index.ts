@@ -1,8 +1,7 @@
-export type ModalTemplatesType = {
-  verifyPaymentModal: JSX.Element;
-  serverResponseModal: JSX.Element;
-  loaderModal: JSX.Element;
+export type ModalTemplateType = {
   [key: string]: JSX.Element;
+  loaderModal: JSX.Element;
+  responseModal: JSX.Element;
 };
 
 export type ProductType = {
@@ -45,4 +44,47 @@ export type OrderDetailsType = {
   paymentCardId?: string | undefined;
   productsId?: string[];
   totalPrice?: string | number;
+};
+
+export type OrderType = {
+  id: string;
+  images: string[];
+  productId: string;
+  quantity: number;
+  price: number;
+  status: string;
+  createdAt: Date;
+  firstname: string;
+  transaction_reference: string;
+  user_id: number;
+  payment_status: string;
+  product_id: number;
+  shipping_address_id: number;
+  total_price: string;
+  name: string;
+};
+
+export type CustomerOrderType = {
+  address_line: string;
+  city: string;
+  country: string;
+  createdAt: string;
+  demanded_quantity: number;
+  email: string;
+  firstname: string;
+  id: number;
+  images: string[];
+  lastname: string;
+  name: string;
+  password: string;
+  payment_status: string;
+  phone: string | null;
+  phone_number: string;
+  product_id: number;
+  shipping_address_id: number;
+  state: string;
+  total_price: string;
+  transaction_reference: string;
+  user_id: number;
+  zipe_code?: string;
 };

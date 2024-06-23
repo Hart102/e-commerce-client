@@ -17,7 +17,6 @@ import { ProductSchema } from "@/schema/addProductSchema";
 import { api, authentication_token, imageUrl } from "@/lib";
 import { ModalLayout, ResponseModal, LoadingGif } from "@/components/Modal";
 
-
 export default function AddProduct() {
   const location = useLocation();
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -30,12 +29,11 @@ export default function AddProduct() {
   const filesLength: number[] = [0, 1, 2, 3];
   const categories: string[] = ["fasion", "electronics", "jewelry"];
 
-  type TemplateType = {
+  type ModalTemplateType = {
     [key: string]: JSX.Element;
     loaderModal: JSX.Element;
     responseModal: JSX.Element;
   };
-
   type FormFields =
     | "productName"
     | "quantity"
@@ -97,41 +95,38 @@ export default function AddProduct() {
       }
     }
   };
-
-  const templates: TemplateType = {
+  const templates: ModalTemplateType = {
     loaderModal: <LoadingGif />,
     responseModal: (
       <ResponseModal isError={response.isError} message={response.message} />
     ),
   };
-
   const changeModalContent = (template: string) => {
     if (template in templates) {
       onOpen();
       setCurrenttemplate(template);
     }
   };
-
   // Handles Editing Of Products
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setValue(name as FormFields, value);
   };
-
   const handleApiRequest = async (data: ProductSchema, endpoint: string) => {
     changeModalContent("loaderModal");
+    const price = location.state == null ? `NGN ${data.price}` : data.price;
     const formData = new FormData();
     files.forEach((file: File) => formData.append("file", file));
     formData.append("name", data.productName);
     formData.append("category", data.category);
-    formData.append("price", `NGN ${data.price}`);
+    formData.append("price", price);
     formData.append("quantity", data.quantity);
     formData.append("status", data.status);
     formData.append("description", data.description);
     //Edit
     if (location.state !== null) {
       formData.append("id", location.state.id);
-      formData.append("replacedImagesImages", JSON.stringify(replacedImages));
+      formData.append("replacedImageIds", JSON.stringify(replacedImages));
       if (files.length < 1) {
         formData.append("images", JSON.stringify(productImages));
       }
@@ -309,7 +304,7 @@ export default function AddProduct() {
             </div>
             <div>
               <div className="flex items-center bg-deep-gray-50 pl-1">
-                <p>NGN</p>
+                {location.state == null && <p>NGN</p>}
                 <Input
                   placeholder="0.00"
                   classNames={{
@@ -323,7 +318,7 @@ export default function AddProduct() {
             </div>
             <Button
               onClick={handleSubmit(onSubmit)}
-              className="bg-deep-green-100 text-white py-2 px-3 rounded font-semibold text-sm hover:opacity-65"
+              className="bg-deep-green-200 text-white py-2 px-3 rounded font-semibold text-sm hover:opacity-65"
             >
               {location.state == null ? "CREATE PRODUCT" : "EDIT PRODUCT"}
             </Button>

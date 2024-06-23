@@ -75,7 +75,7 @@ export default function AccountSetting() {
 
           <Button
             onClick={handleSubmit(handleDetails)}
-            className="bg-deep-green-100 text-white rounded-lg mt-5"
+            className="bg-deep-green-200 text-white rounded-lg mt-5"
           >
             Save Details
           </Button>
@@ -103,7 +103,7 @@ export default function AccountSetting() {
             </div>
           </div>
 
-          <Button className="bg-deep-green-100 text-white rounded-lg">
+          <Button className="bg-deep-green-200 text-white rounded-lg">
             Save Password
           </Button>
         </form>

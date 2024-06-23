@@ -16,7 +16,7 @@ export default function ModalLayout({
       isOpen={isOpen}
       onClose={onClose}
       classNames={{ closeButton: "hidden" }}
-      className="fixed -top-1 left-0 h-screen w-screen bg-overLay z-20 p-3"
+      className="fixed -top-1 left-0 h-screen w-screen bg-overLay z-20 py-3 px-4"
     >
       <ModalContent className="flex flex-col justify-center items-center">
         {(onClose) => (
@@ -25,7 +25,7 @@ export default function ModalLayout({
               <FaTimes
                 size={30}
                 onClick={onClose}
-                className="border rounded-full p-2 cursor-pointer"
+                className="border rounded-full p-2 cursor-pointer hover:bg-deep-green-50"
               />
             </div>
             <ModalBody>{children}</ModalBody>

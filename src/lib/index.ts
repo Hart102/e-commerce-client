@@ -55,3 +55,9 @@ export const divideAndInsertBr = (text: string) => {
 
   return `${firstPart}<br>${secondPart}`;
 };
+
+export const dateOptions: { year: "numeric"; month: "long"; day: "numeric" } = {
+  year: "numeric",
+  month: "long",
+  day: "numeric",
+};

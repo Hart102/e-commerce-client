@@ -14,7 +14,7 @@ import {
   ProductType,
   AddressType,
   OrderDetailsType,
-  ModalTemplatesType,
+  ModalTemplateType,
 } from "@/types/index";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
@@ -84,7 +84,7 @@ export default function Shiipping() {
     calculatedSum.total,
   ]);
 
-  const templates: ModalTemplatesType = {
+  const templates: ModalTemplateType = {
     loaderModal: <LoadingGif />,
     serverResponseModal: (
       <ResponseModal isError={response.isError} message={response.message} />
@@ -108,7 +108,7 @@ export default function Shiipping() {
   const placeOrder = async () => {
     changeModalContent("loaderModal");
     const response = await axios.post(
-      `${api}/payment/accept-payment`,
+      `${api}/transactions/accept-payment`,
       orderDetails,
       { headers: { Authorization: authentication_token } }
     );
@@ -267,7 +267,7 @@ export default function Shiipping() {
           <div className="flex mt-5">
             <Button
               onClick={handleSubmit(validateInput)}
-              className="bg-deep-green-100 text-white rounded-full px-8 hover:opacity-85"
+              className="bg-deep-green-200 text-white rounded-full px-8 hover:opacity-85"
             >
               PLACE ORDER
             </Button>

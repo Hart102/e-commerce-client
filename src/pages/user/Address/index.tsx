@@ -80,7 +80,7 @@ export default function Address() {
                 <p>{address?.phone_number}</p>
               </div>
               <div className="flex gap-10 text-sm justify-between mt-4">
-                <Button className="flex items-center gap-1 px-0 hover:underline font-semibold text-deep-green-100">
+                <Button className="flex items-center gap-1 px-0 hover:underline font-semibold text-deep-green-200">
                   <FaTrashAlt />
                   Edit
                 </Button>

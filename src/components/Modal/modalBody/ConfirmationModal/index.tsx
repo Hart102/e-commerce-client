@@ -22,11 +22,14 @@ export default function ConfirmationModal({
       <div className="flex justify-around pt-5">
         <Button
           onPress={onCancle}
-          className="border rounded-full bg-black text-white"
+          className="border rounded-full hover:bg-deep-green-50"
         >
           Cancel
         </Button>
-        <Button onClick={onContinue} className="border rounded-full">
+        <Button
+          onClick={onContinue}
+          className="border rounded-full hover:bg-deep-green-50"
+        >
           Continue
         </Button>
       </div>

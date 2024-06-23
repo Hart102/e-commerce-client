@@ -31,7 +31,7 @@ export default function Categories() {
     <>
       <div className="bg-white rounded-xl p-5 flex flex-col gap-8">
         <div className="hidden px-4 md:flex items-center justify-between">
-          <div className="flex items-baseline gap-2 text-deep-green-100">
+          <div className="flex items-baseline gap-2 text-deep-green-200">
             <b className="text-3xl">4</b>
             <p className="text-sm italic">Categories</p>
           </div>
@@ -41,7 +41,7 @@ export default function Categories() {
               // to="/dashboard/add-category"
 
               onPress={onOpen}
-              className="py-1 px-2 rounded flex items-center gap-1 font-semibold bg-deep-green-100 text-white"
+              className="py-1 px-2 rounded flex items-center gap-1 font-semibold bg-deep-green-200 text-white"
             >
               <BiAddToQueue />
               <p className="text-sm">ADD CATEGORY</p>
@@ -51,7 +51,7 @@ export default function Categories() {
         <Table
           classNames={{
             base: "text-center",
-            th: "text-white bg-deep-green-100",
+            th: "text-white bg-deep-green-200",
             tbody: "capitalize bg-white py-4 text-sm",
           }}
         >
