@@ -10,12 +10,7 @@ import { useEffect, useState, useMemo } from "react";
 import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
 import { FaMapMarkerAlt } from "react-icons/fa";
-import {
-  ProductType,
-  AddressType,
-  OrderDetailsType,
-  ModalTemplateType,
-} from "@/types/index";
+import { ProductType, AddressType, ModalTemplateType } from "@/types/index";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
 import { debitCardSchema } from "@/schema/DebitCardSchema";
@@ -28,30 +23,39 @@ import {
 } from "@/components/Modal/index";
 import { routes } from "@/routes";
 
+interface ShoppingBag {
+  addressId: string;
+  totalPrice: number;
+  products: {
+    productId: string;
+    demandedQuantity: number;
+  }[];
+}
+
 export default function Shiipping() {
   const location = useLocation();
   const navigation = useNavigate();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [currentTemplate, setCurrentTemplate] = useState<string>("");
-  const [checkoutItems, setCheckoutItems] = useState<ProductType[]>([]);
   const [response, setResponse] = useState({ isError: false, message: "" });
-
   const [userAddress, setUserAddress] = useState<AddressType[]>([]);
-  const [orderDetails, setOrderDetails] = useState<OrderDetailsType>({
+
+  const [shoppingBag, setShoppingBag] = useState<ShoppingBag>({
     addressId: "",
-    productsId: [],
     totalPrice: 0,
+    products: [],
   });
 
   const calculatedSum = useMemo(() => {
     let subTotal: number = 0;
-    checkoutItems.forEach((item) => {
+    location.state.forEach((item: ProductType) => {
       subTotal += Number(item.price.slice(3)) * Number(item.quantity);
     });
+
     const total: number = subTotal + 18.0;
     subTotal = Math.floor(subTotal);
     return { subTotal, total };
-  }, [checkoutItems]);
+  }, [location.state]);
 
   const fetchUserAddress = useMemo(async () => {
     const { data } = await axios.get(`${api}/user/get-address`, {
@@ -60,33 +64,42 @@ export default function Shiipping() {
     if (!data.error) setUserAddress(data);
   }, []);
 
-  const selectDeliveryAddress = (id: string) =>
-    setOrderDetails((prev) => ({ ...prev, addressId: id }));
+  const selectDeliveryAddress = (id: string) => {
+    setShoppingBag({ ...shoppingBag, addressId: id });
+  };
 
   useEffect(() => {
     if (location.state == undefined || authentication_token == undefined) {
       return navigation(routes.login);
     }
     fetchUserAddress;
-    setCheckoutItems(location.state);
-    setOrderDetails((prev) => ({
-      ...prev,
-      addressId: userAddress[0]?.id,
-      productsId: checkoutItems.map((item) => item.id),
-      totalPrice: calculatedSum.total,
+    // Set Products details For Checkout
+    const products = location.state.map((item: ProductType) => ({
+      productId: item.id,
+      demandedQuantity: item.quantity,
+      price: `${(Number(item.price.slice(3)) * item.quantity).toFixed(2)}`,
     }));
+    const total = location.state.reduce(
+      (acc: number, item: ProductType) =>
+        acc + Number(item.price.slice(3)) * item.quantity,
+      0
+    );
+    setShoppingBag({
+      addressId: userAddress[0]?.id || "",
+      totalPrice: total,
+      products: products,
+    });
   }, [
     location,
     navigation,
     fetchUserAddress,
     userAddress,
-    checkoutItems,
     calculatedSum.total,
   ]);
 
   const templates: ModalTemplateType = {
     loaderModal: <LoadingGif />,
-    serverResponseModal: (
+    responseModal: (
       <ResponseModal isError={response.isError} message={response.message} />
     ),
     verifyPaymentModal: (
@@ -109,12 +122,12 @@ export default function Shiipping() {
     changeModalContent("loaderModal");
     const response = await axios.post(
       `${api}/transactions/accept-payment`,
-      orderDetails,
+      shoppingBag,
       { headers: { Authorization: authentication_token } }
     );
     if (response.data.error) {
       setResponse({ ...response, isError: true, message: response.data.error });
-      changeModalContent("serverResponseModal");
+      changeModalContent("responseModal");
     } else {
       reset();
       navigation(routes.userDashboard);
@@ -189,8 +202,7 @@ export default function Shiipping() {
                           name="location"
                           id={`${address?.id}`}
                           checked={
-                            orderDetails &&
-                            address?.id == orderDetails?.addressId
+                            shoppingBag && address?.id == shoppingBag?.addressId
                           }
                           onChange={() => selectDeliveryAddress(address?.id)}
                         />
@@ -295,11 +307,11 @@ export default function Shiipping() {
           <div className="w-full flex flex-col gap-4">
             <p className="text-lg">IN YOUR CART</p>
             <div className="flex flex-col gap-4 md:h-[400px] overflow-y-auto">
-              {checkoutItems.map((product, index) => (
+              {location.state.map((product: ProductType, index: number) => (
                 <div
                   key={product.id}
                   className={`flex items-center gap-5 ${
-                    index + 1 < checkoutItems?.length && "border-b pb-5"
+                    index + 1 < location.state?.length && "border-b pb-5"
                   }`}
                 >
                   <div className="h-[100px] w-[80px] z-0">

@@ -127,13 +127,12 @@ export default function SingleOrder() {
                         <b>Basic Info</b>
                       </div>
                     </TableColumn>
-                    <TableColumn>OderId</TableColumn>
+                    <TableColumn>Oder Id</TableColumn>
                     <TableColumn>Customer</TableColumn>
                     <TableColumn>Date</TableColumn>
                     <TableColumn>Quantity</TableColumn>
                     <TableColumn>Total</TableColumn>
                   </TableHeader>
-
                   <TableBody>
                     <TableRow>
                       <TableCell>
@@ -149,7 +148,6 @@ export default function SingleOrder() {
                           </div>
                         </div>
                       </TableCell>
-
                       <TableCell>
                         {orderDetails?.transaction_reference}
                       </TableCell>
@@ -168,17 +166,17 @@ export default function SingleOrder() {
               </div>
               <div className="w-full flex justify-end border-t pt-5 px-4 md:px-8">
                 <div className="w-full md:w-1/3 flex flex-col gap-5">
-                  <div className="flex justify-between border-b pb-2">
+                  {/* <div className="flex justify-between border-b pb-2">
                     <p>Sub Total :</p>
                     <p>$80.00</p>
                   </div>
                   <div className="flex justify-between border-b pb-2">
                     <p>Shipping Cost :</p>
                     <p>$10.00</p>
-                  </div>
-                  <div className="flex justify-between">
+                  </div> */}
+                  <div className="flex justify-between font-semibold">
                     <p>Grand Total :</p>
-                    <p>$90.00</p>
+                    <p>NGN 90.00</p>
                   </div>
                 </div>
               </div>

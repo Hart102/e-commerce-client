@@ -164,8 +164,8 @@ export default function AddProduct() {
 
   return (
     <>
-      <div className="flex flex-col md:flex-row text-sm md:p-0 p-4 justify-center bg-white md:bg-transparent">
-        <form className="w-full md:w-10/12 flex flex-col gap-8 md:bg-deep-gray-200 md:p-5">
+      <div className="flex flex-col md:flex-row text-sm md:p-0 p-4 justify-center">
+        <form className="w-full md:w-10/12 flex flex-col gap-8 md:p-5">
           <div className="flex flex-col gap-4">
             <p className="text-xl ml-3">Product Information</p>
             <div className="flex flex-col gap-4 [&_span]:text-red-500 [&_span]:text-xs [&_span]:ml-31">
@@ -173,7 +173,7 @@ export default function AddProduct() {
                 <Input
                   placeholder="Product Name"
                   classNames={{
-                    base: "bg-deep-gray-50",
+                    base: "border",
                     input: "border-0 outline-none bg-transparent",
                   }}
                   {...register("productName")}
@@ -190,10 +190,10 @@ export default function AddProduct() {
                   selectionMode="single"
                   className="text-green-400"
                   classNames={{
-                    selectorIcon: "hidden",
-                    base: "bg-deep-gray-50 capitalize",
                     listbox: "bg-white",
                     value: "capitalize",
+                    selectorIcon: "hidden",
+                    base: "border capitalize",
                     innerWrapper: "text-start flex",
                   }}
                   {...register("category")}
@@ -216,7 +216,7 @@ export default function AddProduct() {
                     placeholder="Describe product"
                     classNames={{
                       input: "outline-none",
-                      base: "h-32 bg-deep-gray-50",
+                      base: "h-32 border",
                     }}
                     {...register("description")}
                   />
@@ -225,7 +225,7 @@ export default function AddProduct() {
               </div>
               <div className="px-2">
                 <p className="text-xl">Product Images</p>
-                <div className="grid grid-cols-2 gap-8 p-4 bg-deep-gray-50">
+                <div className="grid grid-cols-2 gap-8 p-4">
                   {filesLength.map((index) => (
                     <label
                       key={index}

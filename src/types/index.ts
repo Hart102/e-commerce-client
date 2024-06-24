@@ -39,13 +39,6 @@ export type PaymentCardType = {
   expiry_date: string;
 };
 
-export type OrderDetailsType = {
-  addressId?: string | undefined;
-  paymentCardId?: string | undefined;
-  productsId?: string[];
-  totalPrice?: string | number;
-};
-
 export type OrderType = {
   id: string;
   images: string[];
