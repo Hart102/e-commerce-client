@@ -27,25 +27,33 @@ export default function SingleOrder() {
   const [currentTemplate, setCurrenttemplate] = useState<string>("");
   const [response, setResponse] = useState({ isError: false, message: "" });
   const [orderDetails, setOrderDetails] = useState<CustomerOrderType>();
+  const [orders, setOrders] = useState<CustomerOrderType[]>([]);
 
-  const FetchCustomersAndOrderDetails = async () => {
+  const FetchData = async () => {
     const { data } = await axios.get(
-      `${api}/transactions/fetch-customers-and-orderDetails/${location.state}`,
+      `${api}/transactions/fetch-customer-and-orderDetails/${location.state}`,
       { headers: { Authorization: authentication_token } }
     );
-    if (data.error) {
+    if (!data.error) {
+      setOrderDetails(data);
+      const request = await axios.post(
+        `${api}/transactions/fetch-order-and-products`,
+        { userId: data.user_id, orderId: data.transaction_reference },
+        { headers: { Authorization: authentication_token } }
+      );
+      const response = await request.data;
+      setOrders(response);
+    } else {
       setResponse({ isError: true, message: data.error });
       changeModalContent("responseModal");
-      onOpen();
-    } else {
-      setOrderDetails(data[0]);
     }
   };
+
   useEffect(() => {
     if (location.state == null) {
       navigation("/");
     }
-    FetchCustomersAndOrderDetails();
+    FetchData();
   }, [location.state, navigation]);
 
   const changeModalContent = (template: string) => {
@@ -133,47 +141,45 @@ export default function SingleOrder() {
                     <TableColumn>Quantity</TableColumn>
                     <TableColumn>Total</TableColumn>
                   </TableHeader>
-                  <TableBody>
-                    <TableRow>
-                      <TableCell>
-                        <div className="flex items-center gap-4">
-                          <div className="flex items-center gap-4">
-                            <Image
-                              src={imageUrl(orderDetails?.images[0])}
-                              classNames={{
-                                img: "rounded-full h-[50px] w-[50px]",
-                              }}
-                            />
-                            {orderDetails?.name}
-                          </div>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        {orderDetails?.transaction_reference}
-                      </TableCell>
-                      <TableCell>{orderDetails?.firstname}</TableCell>
-                      <TableCell>
-                        {new Date(orderDetails?.createdAt).toLocaleDateString(
-                          "en-US",
-                          dateOptions
-                        )}
-                      </TableCell>
-                      <TableCell>{orderDetails?.demanded_quantity}</TableCell>
-                      <TableCell>{orderDetails?.total_price}</TableCell>
-                    </TableRow>
-                  </TableBody>
+                  {orders.length > 0 ? (
+                    <TableBody>
+                      {orders.map((order, index) => (
+                        <TableRow key={index}>
+                          <TableCell>
+                            <div className="flex items-center gap-4">
+                              <div className="flex items-center gap-4">
+                                <Image
+                                  src={imageUrl(order?.images[0])}
+                                  classNames={{
+                                    img: "rounded-full h-[50px] w-[50px]",
+                                  }}
+                                />
+                                {order?.name}
+                              </div>
+                            </div>
+                          </TableCell>
+                          <TableCell>{order?.transaction_reference}</TableCell>
+                          <TableCell>{order?.firstname}</TableCell>
+                          <TableCell>
+                            {new Date(order?.createdAt).toLocaleDateString(
+                              "en-US",
+                              dateOptions
+                            )}
+                          </TableCell>
+                          <TableCell>{order?.demanded_quantity}</TableCell>
+                          <TableCell>{order?.total_price}</TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  ) : (
+                    <TableBody emptyContent={"No rows to display."}>
+                      {[]}
+                    </TableBody>
+                  )}
                 </Table>
               </div>
               <div className="w-full flex justify-end border-t pt-5 px-4 md:px-8">
                 <div className="w-full md:w-1/3 flex flex-col gap-5">
-                  {/* <div className="flex justify-between border-b pb-2">
-                    <p>Sub Total :</p>
-                    <p>$80.00</p>
-                  </div>
-                  <div className="flex justify-between border-b pb-2">
-                    <p>Shipping Cost :</p>
-                    <p>$10.00</p>
-                  </div> */}
                   <div className="flex justify-between font-semibold">
                     <p>Grand Total :</p>
                     <p>NGN 90.00</p>

@@ -17,7 +17,7 @@ const help = [
 
 export default function Footer() {
   return (
-    <footer className="bg-deep-green-200 text-white py-10 text-sm">
+    <footer className="border-t py-10">
       <div className="w-10/12 mx-auto py-5 grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-4">
         <div className="flex flex-col gap-3">
           <h3 className="font-bold text-3xl">treeCard</h3>
@@ -57,7 +57,7 @@ export default function Footer() {
               as much as the rest of the site.
             </p>
             <div className="mt-5">
-              <Button className="bg-[#4DAF78] font-semibold rounded-lg">
+              <Button className="bg-deep-green-50 font-semibold rounded-lg">
                 Get Started
               </Button>
             </div>
@@ -70,3 +70,4 @@ export default function Footer() {
     </footer>
   );
 }
+// [#4DAF78]

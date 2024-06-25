@@ -97,8 +97,8 @@ export default function CheckoutSummary() {
     <Loader />
   ) : (
     <div className="flex flex-col md:flex-row md:px-0 pt-16 p-4 justify-center">
-      <div className="w-full md:w-7/12 flex flex-col md:py-5 md:px-3">
-        <span>CART ITEMS ({cartItems?.length})</span>
+      <div className="w-full md:w-7/12 flex flex-col md:px-3">
+        <b>CART ITEMS ({cartItems?.length})</b>
         {/* Desktop */}
         <div className="w-full hidden md:flex flex-col gap-2 mt-5">
           {cartItems &&
@@ -161,7 +161,6 @@ export default function CheckoutSummary() {
                       </h2>
                     </div>
                   </div>
-                  <div className="bg-deep-gray-200 shadow-sm py-1 rounded-full"></div>
                 </div>
               </label>
             ))}
@@ -227,27 +226,29 @@ export default function CheckoutSummary() {
             </label>
           ))}
       </div>
-      <div className="flex flex-col gap-8 w-full md:w-4/12 md:py-10 md:px-12 py-10 px-5">
-        <p className="text-xl">SUMMARY</p>
+      <div className="flex flex-col gap-8 w-full md:w-4/12 md:py-10 md:px-12 px-5">
+        <h2 className="font-semibold text-xl">SUMMARY</h2>
         <div className="flex flex-col gap-4 border-b pb-3">
           <div className="flex items-center justify-between">
             <p className="text-neutral-700">SUBTOTAL</p>
-            <p className="text-xl">NGN {total.subTotal}</p>
+            <div>
+              <b>NGN {total.subTotal} </b>
+            </div>
           </div>
           <div className="flex items-center justify-between">
             <p className="text-neutral-700">SHIPPING FEE</p>
-            <p className="text-xl">NGN 18.00</p>
+            <b>NGN 18.00</b>
           </div>
         </div>
         <div className="flex justify-between text-lg">
           <b>TOTAL</b>
-          <p className="text-xl">NGN {total.total}</p>
+          <b className="text-xl">NGN {total.total}</b>
         </div>
         <div className="flex flex-col gap-8 justify-between h-full pb-10">
           <Button
             onClick={handleCheckout}
             disabled={selectedItems.length === 0}
-            className={`w-full rounded-full font-bold bg-deep-green-200 mt-5 text-white ${
+            className={`w-full rounded-full font-bold bg-deep-green-50 mt-5 ${
               selectedItems.length === 0
                 ? "cursor-not-allowed opacity-55"
                 : "cursor-pointer"
