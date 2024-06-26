@@ -15,12 +15,15 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
 import { ProductSchema } from "@/schema/addProductSchema";
 import { api, authentication_token, imageUrl } from "@/lib";
-import { ModalLayout, ResponseModal, LoadingGif } from "@/components/Modal";
+import { ModalLayout } from "@/components/Modal";
+import ModalTemplates, {
+  changeModalContent,
+} from "@/components/Modal/CompleteModal";
 
 export default function AddProduct() {
   const location = useLocation();
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [currentTemplate, setCurrenttemplate] = useState<string>("");
+  const [currentTemplate, setCurrentTemplate] = useState<string>("");
   const [response, setResponse] = useState({ isError: false, message: "" });
   const [files, setFiles] = useState<File[]>([]);
   const [previewImages, setPreviewImages] = useState<string[]>([]);
@@ -29,11 +32,6 @@ export default function AddProduct() {
   const filesLength: number[] = [0, 1, 2, 3];
   const categories: string[] = ["fasion", "electronics", "jewelry"];
 
-  type ModalTemplateType = {
-    [key: string]: JSX.Element;
-    loaderModal: JSX.Element;
-    responseModal: JSX.Element;
-  };
   type FormFields =
     | "productName"
     | "quantity"
@@ -95,25 +93,30 @@ export default function AddProduct() {
       }
     }
   };
-  const templates: ModalTemplateType = {
-    loaderModal: <LoadingGif />,
-    responseModal: (
-      <ResponseModal isError={response.isError} message={response.message} />
-    ),
+
+  const templates = ModalTemplates({
+    onCancle: onClose,
+    onContinue: () => console.log("Confirm"),
+    confirmationMessage: "",
+    response,
+  });
+
+  const handleChangeModalContent = (template: string) => {
+    changeModalContent({
+      template,
+      templates,
+      onOpen,
+      setCurrentTemplate,
+    });
   };
-  const changeModalContent = (template: string) => {
-    if (template in templates) {
-      onOpen();
-      setCurrenttemplate(template);
-    }
-  };
+
   // Handles Editing Of Products
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setValue(name as FormFields, value);
   };
   const handleApiRequest = async (data: ProductSchema, endpoint: string) => {
-    changeModalContent("loaderModal");
+    handleChangeModalContent("01");
     const price = location.state == null ? `NGN ${data.price}` : data.price;
     const formData = new FormData();
     files.forEach((file: File) => formData.append("file", file));
@@ -151,9 +154,8 @@ export default function AddProduct() {
         isError: true,
         message: "Something went wrong. Please try again.",
       });
-      onOpen();
     }
-    changeModalContent("responseModal");
+    handleChangeModalContent("03");
   };
 
   const onSubmit = (data: ProductSchema) => {
@@ -325,6 +327,7 @@ export default function AddProduct() {
           </div>
         </form>
       </div>
+
       <ModalLayout isOpen={isOpen} onClose={onClose}>
         {templates[currentTemplate]}
       </ModalLayout>

@@ -17,6 +17,7 @@ import SingleOrder from "./pages/dashboard/SingleOrder";
 import Customers from "./pages/dashboard/Customers";
 import Categories from "./pages/dashboard/Categories";
 import ProductView from "./pages/dashboard/ProductView";
+import EditAndDeleteCategory from "./pages/createAndEditCategory";
 
 // USER
 import User from "./pages/user/Address";
@@ -48,6 +49,10 @@ export const router = createBrowserRouter([
       { path: "/dashboard/order", element: <SingleOrder /> },
       { path: "/dashboard/customers", element: <Customers /> },
       { path: "/dashboard/categories", element: <Categories /> },
+      {
+        path: "/dashboard/categories/:action",
+        element: <EditAndDeleteCategory />,
+      },
       { path: "/dashboard/product-view", element: <ProductView /> },
     ],
   },

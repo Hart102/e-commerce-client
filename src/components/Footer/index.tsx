@@ -18,9 +18,9 @@ const help = [
 export default function Footer() {
   return (
     <footer className="border-t py-10">
-      <div className="w-10/12 mx-auto py-5 grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-4">
+      <div className="w-full md:w-10/12 mx-auto py-5 grid grid-cols-1 md:grid-cols-3 gap-8 px-4 md:gap-4">
         <div className="flex flex-col gap-3">
-          <h3 className="font-bold text-3xl">treeCard</h3>
+          <h3 className="font-bold text-3xl">FresCart</h3>
           <div className="flex items-center gap-4">
             <FaTwitter />
             <FaFacebook />

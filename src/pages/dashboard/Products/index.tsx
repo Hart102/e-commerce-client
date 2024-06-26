@@ -16,58 +16,66 @@ import {
 } from "@nextui-org/react";
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
-import { BiAddToQueue, BiSearch } from "react-icons/bi";
+import { BiAddToQueue } from "react-icons/bi";
 import { api, authentication_token, imageUrl, divideAndInsertBr } from "@/lib";
 import { ProductType } from "@/types/index";
-import {
-  ModalLayout,
-  ConfirmationModal,
-  ResponseModal,
-  LoadingGif,
-} from "@/components/Modal";
-import { ModalTemplateType } from "@/types/index";
+import { ModalLayout } from "@/components/Modal";
+import ModalTemplates, {
+  changeModalContent,
+} from "@/components/Modal/CompleteModal";
 
 export default function Products() {
   const navigation = useNavigate();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [products, setProducts] = useState<ProductType[]>([]);
   const [query, setQuery] = useState<string>("");
-  const [currentTemplate, setCurrenttemplate] = useState<string>("");
+  const [currentTemplate, setCurrentTemplate] = useState<string>("");
   const [response, setResponse] = useState({ isError: false, message: "" });
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [selectedProduct, setSelectedProduct] = useState<{
     index: number;
     id: string | number;
   }>({ index: 0, id: 0 });
-  
+
   const FetchProducts = async () => {
     setIsLoading(true);
     const { data } = await axios.get(`${api}/products/`, {
       headers: { Authorization: authentication_token },
     });
-    if(data.error){
+    if (data.error) {
       setResponse({ isError: true, message: data.error });
       onOpen();
-      setCurrenttemplate("responseModal");
-    }else{
+      setCurrentTemplate("03");
+    } else {
       setProducts(data);
     }
     setIsLoading(false);
   };
+
+  const templates = ModalTemplates({
+    onCancle: onClose,
+    onContinue: () => DeleteProduct(),
+    confirmationMessage: "Are you sure you want to delete this product ?",
+    response,
+  });
+
+  const handleChangeModalContent = (template: string) => {
+    changeModalContent({
+      template,
+      templates,
+      onOpen,
+      setCurrentTemplate,
+    });
+  };
+
   const searchResult = useMemo(() => {
     return products.filter((product: ProductType) =>
       product.name.toLowerCase().includes(query.toLowerCase())
     );
   }, [products, query]);
 
-  const changeModalContent = (template: string) => {
-    if (template in templates) {
-      onOpen();
-      setCurrenttemplate(template);
-    }
-  };
   const DeleteProduct = async () => {
-    changeModalContent("loaderModal");
+    handleChangeModalContent("01");
     const request = await axios.delete(
       `${api}/products/delete/${selectedProduct.id}`,
       {
@@ -80,7 +88,7 @@ export default function Products() {
       onOpen();
     } else {
       setResponse({ isError: false, message: response.message });
-      changeModalContent("responseModal");
+      handleChangeModalContent("03");
       onOpen();
       products.splice(selectedProduct.index, 1);
       setProducts([...products]);
@@ -88,7 +96,7 @@ export default function Products() {
   };
   const OpenDeleteProductModal = (index: number, id: string | number) => {
     setSelectedProduct({ ...selectedProduct, index, id });
-    changeModalContent("deleteModal");
+    handleChangeModalContent("02");
   };
   const ViewProduct = (product: ProductType) =>
     navigation(`/shop/single`, { state: product });
@@ -96,19 +104,7 @@ export default function Products() {
   const EditProduct = (product: ProductType) => {
     navigation(`/dashboard/product/edit`, { state: product });
   };
-  const templates: ModalTemplateType = {
-    loaderModal: <LoadingGif />,
-    responseModal: (
-      <ResponseModal isError={response.isError} message={response.message} />
-    ),
-    deleteModal: (
-      <ConfirmationModal
-        onCancle={() => onClose()}
-        onContinue={() => DeleteProduct()}
-        message="Are you sure you want to delete this product ?"
-      />
-    ),
-  };
+
   useEffect(() => {
     FetchProducts();
   }, []);
@@ -117,16 +113,15 @@ export default function Products() {
     <p className="text-2xl text-neutral-400">Loading...</p>
   ) : (
     <>
-      <div className="bg-white text-dark-gray-100 rounded-xl flex flex-col gap-4 md:gap-8">
+      <div className="bg-white text-dark-gray-100 rounded-xl flex flex-col">
         <div className="hidden px-4 md:flex items-center justify-between">
           <form className="flex w-1/2 items-center gap-2 border rounded-lg px-2">
-            <BiSearch size={18} className="text-deep-gray-100" />
             <Input
               size="sm"
               type="search"
               placeholder="Type to search..."
               classNames={{
-                base: "h-10 border-l outline-0",
+                base: "h-10 outline-0",
                 mainWrapper: "h-full",
                 input: "text-small",
                 inputWrapper: "h-full font-normal hover:border-01",
@@ -146,12 +141,9 @@ export default function Products() {
           </div>
         </div>
         <div>
-          <p className="text-sm ml-3">
-            ({products && searchResult?.length}) Products
-          </p>
           <Table
             classNames={{
-              th: "uppercase bg-dark-gray-200",
+              th: "capitalize bg-dark-gray-200",
               tbody: "py-4 text-sm text-center",
               td: "first-letter:capitalize",
             }}

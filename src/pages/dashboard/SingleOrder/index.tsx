@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   Image,
@@ -29,7 +29,7 @@ export default function SingleOrder() {
   const [orderDetails, setOrderDetails] = useState<CustomerOrderType>();
   const [orders, setOrders] = useState<CustomerOrderType[]>([]);
 
-  const FetchData = async () => {
+  const FetchData = useCallback(async () => {
     const { data } = await axios.get(
       `${api}/transactions/fetch-customer-and-orderDetails/${location.state}`,
       { headers: { Authorization: authentication_token } }
@@ -47,14 +47,17 @@ export default function SingleOrder() {
       setResponse({ isError: true, message: data.error });
       changeModalContent("responseModal");
     }
-  };
-
-  useEffect(() => {
-    if (location.state == null) {
-      navigation("/");
-    }
-    FetchData();
   }, [location.state, navigation]);
+
+  const totalPrice = () => {
+    let total = 0;
+    for (let i = 0; i < orders.length; i++) {
+      const price = parseFloat(orders[i].total_price.replace(/[^0-9.-]+/g, ""));
+      total += price;
+    }
+    return total;
+  };
+  const grandTotal = `NGN ${totalPrice()}`;
 
   const changeModalContent = (template: string) => {
     if (template in templates) {
@@ -62,6 +65,13 @@ export default function SingleOrder() {
       setCurrenttemplate(template);
     }
   };
+
+  useEffect(() => {
+    if (location.state == null) {
+      navigation("/");
+    }
+    FetchData();
+  }, [location.state, navigation, FetchData]);
 
   const templates: ModalTemplateType = {
     responseModal: (
@@ -74,13 +84,19 @@ export default function SingleOrder() {
       <div className="w-full flex flex-col gap-8 text-dark-gray-100 md:p-5">
         <div className="flex gap-2 items-baseline">
           <p className="text-2xl font-semibold">Order</p>
-          <span className="capitalize text-sm px-2 rounded text-white bg-orange-500">
-            Success
+          <span
+            className={`capitalize text-sm px-2 rounded ${
+              orders[0]?.payment_status == "success"
+                ? "bg-deep-green-50"
+                : "bg-orange-200"
+            }`}
+          >
+            {orders[0]?.payment_status}
           </span>
         </div>
         {orderDetails && (
           <>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
               <div className="border rounded flex flex-col gap-2 p-4">
                 <p className="text-xl font-semibold">Customer Details</p>
                 <div className="flex flex-col gap-1">
@@ -125,7 +141,7 @@ export default function SingleOrder() {
                 <Table
                   classNames={{
                     base: "text-center",
-                    th: "uppercase bg-dark-gray-200",
+                    th: "capitalize bg-dark-gray-200",
                     tbody: "capitalize py-4 bg-white text-sm",
                   }}
                 >
@@ -159,7 +175,7 @@ export default function SingleOrder() {
                             </div>
                           </TableCell>
                           <TableCell>{order?.transaction_reference}</TableCell>
-                          <TableCell>{order?.firstname}</TableCell>
+                          <TableCell>{orderDetails?.firstname}</TableCell>
                           <TableCell>
                             {new Date(order?.createdAt).toLocaleDateString(
                               "en-US",
@@ -182,7 +198,7 @@ export default function SingleOrder() {
                 <div className="w-full md:w-1/3 flex flex-col gap-5">
                   <div className="flex justify-between font-semibold">
                     <p>Grand Total :</p>
-                    <p>NGN 90.00</p>
+                    <p>{grandTotal}</p>
                   </div>
                 </div>
               </div>

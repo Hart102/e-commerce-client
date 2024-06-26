@@ -13,26 +13,39 @@ import {
   TableRow,
   useDisclosure,
 } from "@nextui-org/react";
-import { useEffect, useState } from "react";
-import { BiSearch } from "react-icons/bi";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { api, authentication_token, imageUrl, dateOptions } from "@/lib";
-import {
-  ModalLayout,
-  ConfirmationModal,
-  ResponseModal,
-  LoadingGif,
-} from "@/components/Modal/index";
-import { OrderType, ModalTemplateType } from "@/types/index";
+import { ModalLayout } from "@/components/Modal";
+import ModalTemplates, {
+  changeModalContent,
+} from "@/components/Modal/CompleteModal";
+import { OrderType } from "@/types/index";
 
 export default function Orders() {
   const navigation = useNavigate();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [orders, setOrders] = useState<OrderType[]>([]);
-  const [currentTemplate, setCurrenttemplate] = useState<string>("");
+  const [currentTemplate, setCurrentTemplate] = useState<string>("");
   const [response, setResponse] = useState({ isError: false, message: "" });
+  const [searchString, setSearchString] = useState<string>("");
   const [index, setIndex] = useState<number>(0);
+
+  const searchResult = useMemo(() => {
+    return orders.filter((order) => {
+      return (
+        order.transaction_reference
+          .toString()
+          .toLocaleLowerCase()
+          .includes(searchString.toLocaleLowerCase()) ||
+        order.firstname
+          .toString()
+          .toLocaleLowerCase()
+          .includes(searchString.toLocaleLowerCase())
+      );
+    });
+  }, [orders, searchString]);
 
   useEffect(() => {
     FetchOrders();
@@ -44,20 +57,15 @@ export default function Orders() {
     });
     if (data.error) {
       setResponse({ isError: true, message: data.error });
-      setCurrenttemplate("responseModal");
+      handleChangeModalContent("03");
       onOpen();
     } else {
       setOrders(data);
     }
   };
-  const changeModalContent = (template: string) => {
-    if (template in templates) {
-      onOpen();
-      setCurrenttemplate(template);
-    }
-  };
+
   const DeleteOrder = async () => {
-    changeModalContent("loaderModal");
+    handleChangeModalContent("01");
     const { data } = await axios.delete(
       `${api}/transactions/delete-order/${orders[index].id}`,
       {
@@ -66,59 +74,60 @@ export default function Orders() {
     );
     if (data.error) {
       setResponse({ isError: true, message: data.error });
-      changeModalContent("responseModal");
-      onOpen();
+      handleChangeModalContent("03");
     } else {
       orders.splice(index, 1);
       setOrders([...orders]);
       setResponse({ isError: false, message: data.message });
-      changeModalContent("responseModal");
-      onOpen();
+      handleChangeModalContent("03");
     }
   };
-  const templates: ModalTemplateType = {
-    loaderModal: <LoadingGif />,
-    responseModal: (
-      <ResponseModal isError={response.isError} message={response.message} />
-    ),
-    deleteModal: (
-      <ConfirmationModal
-        onCancle={() => onClose()}
-        onContinue={() => DeleteOrder()}
-        message="Are you sure you want to delete this record ?"
-      />
-    ),
+
+  const templates = ModalTemplates({
+    onCancle: onClose,
+    onContinue: () => DeleteOrder(),
+    confirmationMessage: "Are you sure you want to delete this ?",
+    response,
+  });
+
+  const handleChangeModalContent = (template: string) => {
+    changeModalContent({
+      template,
+      templates,
+      onOpen,
+      setCurrentTemplate,
+    });
   };
+
   const openDeleteModal = (index: number) => {
     setIndex(index);
-    changeModalContent("deleteModal");
-    onOpen();
+    handleChangeModalContent("02");
   };
   const viewProduct = (id: string) =>
     navigation("/dashboard/order", { state: id });
 
   return (
     <>
-      <div className="bg-white text-dark-gray-100 flex flex-col gap-4">
+      <div className="bg-white text-dark-gray-100 flex flex-col">
         <form className="flex w-1/2 items-center gap-2 border rounded-lg px-2 md:ml-4">
-          <BiSearch size={18} className="text-deep-gray-100" />
           <Input
             size="sm"
             type="search"
-            placeholder="Type to search..."
+            placeholder="Search by Name or order Id"
             classNames={{
-              base: "h-10 border-l outline-0",
+              base: "h-10 text-sm outline-0",
               mainWrapper: "h-full",
               input: "text-small",
               inputWrapper: "h-full font-normal hover:border-0",
             }}
             style={{ outline: "0" }}
+            onValueChange={setSearchString}
           />
         </form>
         <Table
           classNames={{
             base: "text-center",
-            th: "uppercase bg-dark-gray-200",
+            th: "capitalize bg-dark-gray-200",
             tbody: "capitalize py-4 text-sm",
           }}
         >
@@ -131,9 +140,9 @@ export default function Orders() {
             <TableColumn>Date</TableColumn>
             <TableColumn>Actions</TableColumn>
           </TableHeader>
-          {orders && orders.length > 0 ? (
+          {searchResult && searchResult.length > 0 ? (
             <TableBody>
-              {orders.map((order, index) => (
+              {searchResult.map((order, index) => (
                 <TableRow key={order?.id}>
                   <TableCell>
                     <div className="flex items-center gap-4">

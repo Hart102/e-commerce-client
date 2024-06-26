@@ -18,7 +18,7 @@ type CategoryWithProductCount = {
   product_count: number;
 };
 
-export default function AddCategory({
+export default function EditAndDeleteCategory({
   close,
   category,
 }: {
@@ -81,7 +81,7 @@ export default function AddCategory({
 
   return (
     <>
-      <form className="pt-4 pb-8 flex flex-col gap-4 text-sm [&_span]:text-red-500 [&_span]:text-xs">
+      {/* <form className="pt-4 pb-8 flex flex-col gap-4 text-sm [&_span]:text-red-500 [&_span]:text-xs">
         <div className="flex flex-col gap-4 px-4">
           <div>
             <p className="text-lg font-semibold mb-5 text-dark-gray-100">
@@ -133,10 +133,64 @@ export default function AddCategory({
             CREATE
           </Button>
         </div>
+      </form> */}
+
+      <form className="min-h-[80vh] flex items-center text-dark-gray-100">
+        <div className="w-full md:w-1/2 mx-auto flex flex-col gap-4">
+          <Input
+            placeholder="Category Name"
+            classNames={{
+              inputWrapper: "px-0",
+              input: "bg-white rounded-lg outline-none px-2 border",
+            }}
+            {...register("name")}
+          />
+          {errors?.name?.message && <span>{errors?.name?.message}</span>}
+
+          <div className="flex items-center gap-2 [&_span]:text-red-500 [&_span]:text-xs">
+            <div className="flex gap-2 items-center">
+              <input
+                type="radio"
+                id="active"
+                value="published"
+                {...register("status")}
+              />
+              <label htmlFor="active" className="text-app-gray-200">
+                Publish
+              </label>
+            </div>
+            <div className="flex gap-2 items-center">
+              <input
+                type="radio"
+                id="unpublished"
+                value="unpublished"
+                {...register("status")}
+              />
+              <label htmlFor="unpublished" className="text-app-gray-200">
+                Unpublished
+              </label>
+            </div>
+            {errors?.status?.message && <span>{errors?.status?.message}</span>}
+          </div>
+
+          <div>
+            <Button
+              onClick={handleSubmit(onSubmit)}
+              className="w-full bg-deep-green-200 rounded font-semibold text-white"
+            >
+              CREATE
+            </Button>
+          </div>
+        </div>
       </form>
+
       <ModalLayout isOpen={isOpen} onClose={onClose}>
         {templates[currentTemplate]}
       </ModalLayout>
     </>
   );
 }
+
+// export default function EditAndDeleteCategory() {
+//   return <div></div>;
+// }
