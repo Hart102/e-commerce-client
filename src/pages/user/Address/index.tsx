@@ -1,15 +1,15 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { Button, useDisclosure } from "@nextui-org/react";
+import { Button } from "@nextui-org/react";
 import { FaMapMarkerAlt, FaTrashAlt, FaPencilAlt } from "react-icons/fa";
-import AddAddress from "@/components/Add-address";
-import ConfirmationModal from "@/components/Modal/ConfirmationModal";
+// import AddAddress from "@/components/Add-address";
+// import ConfirmationModal from "@/components/Modal/ConfirmationModal";
 import { api, authentication_token } from "@/lib";
 import { AddressType } from "@/types/index";
 
 export default function Address() {
-  const { isOpen, onOpen, onClose } = useDisclosure();
-  const [message, setMessage] = useState<string>("");
+  // const { isOpen, onOpen, onClose } = useDisclosure();
+  // const [message, setMessage] = useState<string>("");
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [userAddress, setUserAddress] = useState<AddressType[]>([]);
   const [index, setIndex] = useState<number>(0);
@@ -24,27 +24,27 @@ export default function Address() {
   const openCofirmation = (index: number) => {
     if (isModalOpen) {
       setIsModalOpen(false);
-      setMessage("");
+      // setMessage("");
     } else {
       setIsModalOpen(true);
       setIndex(index);
-      setMessage("Are you sure you want to delete address");
+      // setMessage("Are you sure you want to delete address");
     }
   };
 
-  const deleteAddress = async () => {
-    setIsModalOpen(false);
-    const { data } = await axios.delete(`${api}/user/delete-address`, {
-      headers: { Authorization: authentication_token },
-      data: { id: userAddress[index]?.id },
-    });
-    if (!data.error) {
-      userAddress.splice(index, 1);
-    } else {
-      setIsModalOpen(true);
-      setMessage(data.error);
-    }
-  };
+  // const deleteAddress = async () => {
+  //   setIsModalOpen(false);
+  //   const { data } = await axios.delete(`${api}/user/delete-address`, {
+  //     headers: { Authorization: authentication_token },
+  //     data: { id: userAddress[index]?.id },
+  //   });
+  //   if (!data.error) {
+  //     userAddress.splice(index, 1);
+  //   } else {
+  //     setIsModalOpen(true);
+  //     setMessage(data.error);
+  //   }
+  // };
 
   useEffect(() => {
     fetchUserAddress();
@@ -56,7 +56,7 @@ export default function Address() {
         <Button
           size="sm"
           type="button"
-          onPress={onOpen}
+          // onPress={onOpen}
           className="py-1 px-2 rounded flex items-center gap-1 bg-deep-green-50 text-white"
         >
           <FaMapMarkerAlt />
@@ -95,13 +95,13 @@ export default function Address() {
             </div>
           ))}
       </div>
-      <AddAddress isOpen={isOpen} onClose={onClose} />
+      {/* <AddAddress isOpen={isOpen} onClose={onClose} />
       <ConfirmationModal
         isOpen={isModalOpen}
         onContinue={deleteAddress}
         onClose={() => openCofirmation(0)}
         message={message}
-      />
+      /> */}
     </>
   );
 }

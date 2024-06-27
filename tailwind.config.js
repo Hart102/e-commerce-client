@@ -19,6 +19,7 @@ export default {
 
         // -------------------------
         "deep-green-50": "#ceefce",
+        // "deep-green-50": "#066806",
         "deep-green-100": "#044504",
         "deep-green-200": "#1E474E",
         // --------------------------
@@ -38,3 +39,4 @@ export default {
 // dark blue belnder: #262648
 
 // dark-green: 1E474E
+// 198754;

@@ -1,8 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { BiGridAlt, BiLogOut } from "react-icons/bi";
-import { Button, useDisclosure } from "@nextui-org/react";
-import ConfirmationModal from "@/components/Modal/ConfirmationModal";
+import { Button } from "@nextui-org/react";
+// import ConfirmationModal from "@/components/Modal/ConfirmationModal";
 import { authentication_token } from "@/lib";
 
 const checkAuthentication = (
@@ -27,18 +27,18 @@ export default function SideBar({
 }) {
   const location = useLocation();
   const navigation = useNavigate();
-  const { isOpen, onOpen, onClose } = useDisclosure();
-  const [message, setMessage] = useState<string>("");
+  // const { isOpen, onOpen, onClose } = useDisclosure();
+  // const [message, setMessage] = useState<string>("");
 
-  const confirmLogout = () => {
-    setMessage("Are you sure you want to logout?");
-    onOpen();
-  };
+  // const confirmLogout = () => {
+  //   setMessage("Are you sure you want to logout?");
+  //   onOpen();
+  // };
 
-  const logout = () => {
-    onClose();
-    alert("Coming soon");
-  };
+  // const logout = () => {
+  //   onClose();
+  //   alert("Coming soon");
+  // };
 
   useEffect(() => {
     checkAuthentication(authentication_token, navigation);
@@ -91,7 +91,7 @@ export default function SideBar({
             <div className="border-b border-dotted bg-dark-gray-200 py-1 rounded"></div>
             <div>
               <Button
-                onClick={confirmLogout}
+                // onClick={confirmLogout}
                 className="flex items-center gap-2 rounded hover:bg-deep-green-200 hover:text-white"
               >
                 <BiLogOut />
@@ -101,12 +101,12 @@ export default function SideBar({
           </div>
         </div>
       </aside>
-      <ConfirmationModal
+      {/* <ConfirmationModal
         isOpen={isOpen}
         onClose={onClose}
         message={message}
         onContinue={logout}
-      />
+      /> */}
     </>
   );
 }

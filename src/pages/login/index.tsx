@@ -6,7 +6,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
 import { LoginSchema } from "@/schema/register_login_schema";
 import { api, authentication_token } from "@/lib";
-import ServerResponseModal from "@/components/Modal/ServerResponse";
+// import ServerResponseModal from "@/components/Modal/ServerResponse";
 
 interface CookieOptions {
   name: string;
@@ -112,12 +112,12 @@ export default function Login() {
           </div>
         </form>
       </div>
-      <ServerResponseModal
+      {/* <ServerResponseModal
         isOpen={isOpen}
         onClose={onClose}
         isError={response.isError}
         message={response.message}
-      />
+      /> */}
     </>
   );
 }

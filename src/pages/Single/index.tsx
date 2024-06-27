@@ -1,8 +1,8 @@
 import axios from "axios";
 import { Button, Image } from "@nextui-org/react";
-import { useEffect, useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import { ProductType } from "@/types/index";
+import { useCallback, useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { BiStar, BiCartAdd } from "react-icons/bi";
 import {
   api,
   imageUrl,
@@ -10,27 +10,33 @@ import {
   setCartCount,
   getCartCount,
 } from "@/lib";
+import { ProductType } from "@/types/index";
 
 export default function SingleProduct() {
   const location = useLocation();
   const navigation = useNavigate();
   const [product, setProduct] = useState<ProductType>();
+  const [relatedProducts, setRelatedProducts] = useState<ProductType[]>([]);
   const [selectedImageIndex, setSelectedImageIndex] = useState<number>(0);
-  const [selectedSize, setSelectedSize] = useState<string>();
-  const [quantity, setQuantity] = useState<number>(0);
-  const sizes = ["XS", "S", "M", "L", "XL"];
-
+  const [quantity, setQuantity] = useState<number>(1);
   const selectImage = (imageIndex: number) => setSelectedImageIndex(imageIndex);
-  const setSize = (text: string) => setSelectedSize(text);
-  const increaseQty = () => setQuantity(quantity + 1);
-  const deCreaseQty = () => quantity !== 0 && setQuantity(quantity - 1);
+  const IncreaseQuntiy = () => setQuantity(quantity + 1);
+  const DecreaseQuantity = () => quantity !== 0 && setQuantity(quantity - 1);
 
-  const addToCart = async () => {
+  const FetchRelatedProducts = useCallback(async () => {
+    const { data } = await axios.get(
+      `${api}/products/category/${location.state.category}`
+    );
+    if (!data.error) {
+      setRelatedProducts(data);
+    }
+  }, [location.state.category]);
+
+  const AddToCart = async () => {
     const { data } = await axios.put(
       `${api}/cart/add-to-cart`,
       {
         productId: product?.id,
-        size: selectedSize || "",
         quantity: quantity,
       },
       { headers: { Authorization: authentication_token } }
@@ -41,93 +47,135 @@ export default function SingleProduct() {
     }
   };
 
+  const SelectProduct = (product: ProductType) => setProduct(product);
+
   useEffect(() => {
     if (location.state == undefined) return navigation("/");
     setProduct(location.state);
-  }, [location, navigation]);
+    FetchRelatedProducts();
+  }, [location, navigation, FetchRelatedProducts]);
 
   return (
-    <div className="flex md:flex-row text-sm md:p-0 p-4 justify-center">
-      <div className="w-full md:w-7/12 md- flex flex-col gap-8 md:bg-deep-gray-2001 md:p-10">
-        <div className="flex justify-center items-center">
-          <Image
-            src={imageUrl(product?.images[selectedImageIndex] || "")}
-            classNames={{ img: "w-[550px] h-[500px]" }}
-          />
-        </div>
-      </div>
-      <div className="flex flex-col gap-8 w-full md:w-4/12 md:py-10 md:px-12 py-10 px-5">
-        <div className="text-center flex flex-col gap-8">
-          <div className="border-b pb-8 flex flex-col gap-5">
-            <p className="first-letter:capitalize text-xl font-bold">
-              {product?.name}
-            </p>
-            <div className="flex gap-3 mx-auto">
-              PRICE: <b>{product?.price}</b>
-            </div>
-          </div>
-          <div>
-            <p>PRODUCT</p>
-            <div className="flex gap-4 items-center justify-center pt-3">
+    <div>
+      <div className="w-full md:w-10/12 mx-auto flex flex-col gap-28 md:py-5 px-5 text-dark-gray-100">
+        <div className="flex flex-col md:flex-row gap-10 md:gap-20">
+          <div className="w-full md:w-1/2 flex flex-col gap-8 md:px-10">
+            <Image
+              src={imageUrl(product?.images[selectedImageIndex] || "")}
+              classNames={{
+                img: "w-[510px] h-[250px] md:h-[320px]",
+              }}
+              className="rounded-lg overflow-hidden"
+            />
+            <div className="flex gap-3">
               {product &&
                 product?.images.map((image, index) => (
-                  <Image
-                    key={index}
-                    src={imageUrl(image)}
-                    alt="product image"
-                    classNames={{
-                      img: "rounded-full h-[50px] w-[50px] cursor-pointer",
-                    }}
-                    onClick={() => selectImage(index)}
-                  />
+                  <div key={index}>
+                    <Image
+                      src={imageUrl(image)}
+                      alt="product image"
+                      classNames={{
+                        img: "w-[120px] h-[70px] md:h-[90px] rounded-lg cursor-pointer",
+                      }}
+                      onClick={() => selectImage(index)}
+                    />
+                  </div>
                 ))}
             </div>
           </div>
-          {product && product?.category == "fashion" && (
-            <div className="md:px-4 flex flex-col gap-4">
-              <p>SIZE</p>
-              <div className="grid grid-cols-5 gap-4">
-                {sizes &&
-                  sizes.map((size, index) => (
-                    <Button
-                      key={size}
-                      onClick={() => setSize(size)}
-                      className={`bg-deep-gray-50 ${
-                        selectedSize == sizes[index] && "bg-black text-white"
-                      }`}
-                    >
-                      {size}
-                    </Button>
-                  ))}
+          <div className="w-full md:w-1/2 flex flex-col gap-5">
+            <div className="w-full flex flex-col gap-5 border-b pb-5">
+              <p className="text-sm text-deep-blue-100 capitalize">
+                {product?.category}
+              </p>
+              <div className="flex flex-col gap-2">
+                <h1 className="capitalize text-3xl font-bold">
+                  {product?.name}
+                </h1>
+                <div className="flex items-center gap-5">
+                  <div className="flex gap-2 text-yellow-500">
+                    <BiStar />
+                    <BiStar />
+                    <BiStar />
+                    <BiStar />
+                    <BiStar />
+                  </div>
+                  <p className="text-sm text-deep-blue-100">(30 reviews)</p>
+                </div>
               </div>
+              <h2 className="font-bold text-2xl">{product?.price}</h2>
             </div>
-          )}
-          <div className="flex flex-col gap-4">
-            <p>QUANTIY</p>
-            <div className="flex items-center justify-center gap-5">
-              <div className="border rounded-full h-[25px] w-[25px] flex items-center justify-center">
-                <Button onClick={deCreaseQty}>-</Button>
+            <div className="flex flex-col gap-4">
+              <div className="flex items-center gap-4">
+                <Button onClick={DecreaseQuantity} className="bg-deep-gray-50">
+                  -
+                </Button>
+                <div>{quantity}</div>
+                <Button onClick={IncreaseQuntiy} className="bg-deep-gray-50">
+                  +
+                </Button>
               </div>
-              <div className="border px-5 py-1">{quantity}</div>
-              <div className="border rounded-full h-[25px] w-[25px] flex items-center justify-center">
-                <Button onClick={increaseQty}>+</Button>
+              <div>
+                <Button
+                  onClick={AddToCart}
+                  className="flex items-center gap-4 bg-deep-blue-100 text-white font-semibold rounded-lg hover:opacity-75"
+                >
+                  <BiCartAdd />
+                  Add to cart
+                </Button>
               </div>
             </div>
           </div>
         </div>
-        <div className="flex flex-col gap-2">
-          <Button
-            onClick={addToCart}
-            className="bg-black text-white rounded-full font-bold"
-          >
-            ADD TO CART
-          </Button>
-          <Link
-            to="/shop/checkout"
-            className="text-center py-2 border rounded-full font-bold"
-          >
-            BUY NOW
-          </Link>
+
+        <div>
+          <h2 className="font-bold text-2xl md:text-3xl mb-5 md:mb-10">
+            Related Items
+          </h2>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {relatedProducts.length &&
+              relatedProducts.map((item) => (
+                <div
+                  key={item.id}
+                  onClick={() => SelectProduct(item)}
+                  className="p-4 flex flex-col items-center gap-5 rounded-lg shadow-md 
+                  bg-white border border-transparent hover:border-deep-blue-100 cursor-pointer"
+                >
+                  <img
+                    width={150}
+                    src={imageUrl(item?.images[0] || "")}
+                    className="rounded-lg"
+                  />
+                  <div className="w-full mt-2">
+                    <p className="text-sm text-deep-gray-100 capitalize">
+                      {item?.category}
+                    </p>
+                    <b className="capitalize text-xl1 font-bold">
+                      {item?.name}
+                    </b>
+                    <div className="flex flex-wrap items-center gap-2 md:gap-5">
+                      <div className="flex gap-2 text-yellow-500">
+                        <BiStar />
+                        <BiStar />
+                        <BiStar />
+                        <BiStar />
+                        <BiStar />
+                      </div>
+                      <p className="text-sm">4.5</p>
+                    </div>
+                  </div>
+                  <div className="w-full flex items-center justify-between">
+                    <b>{item?.price}</b>
+                    <Button
+                      size="sm"
+                      className="bg-deep-blue-100 text-white text-sm font-semibold rounded"
+                    >
+                      Add
+                    </Button>
+                  </div>
+                </div>
+              ))}
+          </div>
         </div>
       </div>
     </div>

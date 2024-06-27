@@ -1,22 +1,21 @@
-import { Image, Button, useDisclosure } from "@nextui-org/react";
-import { useState } from "react";
-import ConfirmationModal from "@/components/Modal/ConfirmationModal";
+import { Image, Button } from "@nextui-org/react";
+// import ConfirmationModal from "@/components/Modal/ConfirmationModal";
 import MasterCardImage from "@/assets/mastercard.svg";
 import { BiTrashAlt } from "react-icons/bi";
 
 export default function PaymentMethod() {
-  const { isOpen, onOpen, onClose } = useDisclosure();
-  const [message, setMessage] = useState<string>("");
+  // const { isOpen, onOpen, onClose } = useDisclosure();
+  // const [message, setMessage] = useState<string>("");
 
-  const removeCard = () => {
-    setMessage("Are you sure you want to remove card ?");
-    onOpen();
-  };
+  // const removeCard = () => {
+  //   setMessage("Are you sure you want to remove card ?");
+  //   onOpen();
+  // };
 
-  const confirmRemoval = () => {
-    onClose();
-    alert("Coming soon");
-  };
+  // const confirmRemoval = () => {
+  //   onClose();
+  //   alert("Coming soon");
+  // };
 
   return (
     <>
@@ -36,19 +35,19 @@ export default function PaymentMethod() {
             <Button
               size="sm"
               className="text-sm flex gap-1 items-center text-red-500"
-              onClick={removeCard}
+              // onClick={removeCard}
             >
               <BiTrashAlt /> Remove
             </Button>
           </div>
         </div>
       </div>
-      <ConfirmationModal
+      {/* <ConfirmationModal
         isOpen={isOpen}
         onClose={onClose}
         onContinue={confirmRemoval}
         message={message}
-      />
+      /> */}
     </>
   );
 }
