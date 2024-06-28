@@ -57,7 +57,7 @@ export default function SingleProduct() {
 
   return (
     <div>
-      <div className="w-full md:w-10/12 mx-auto flex flex-col gap-28 md:py-5 px-5 text-dark-gray-100">
+      <div className="flex flex-col gap-28 text-dark-gray-100">
         <div className="flex flex-col md:flex-row gap-10 md:gap-20">
           <div className="w-full md:w-1/2 flex flex-col gap-8 md:px-10">
             <Image

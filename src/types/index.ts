@@ -17,6 +17,7 @@ export type ProductType = {
   status: string;
   isChecked: boolean;
   totalPrice: string | number;
+  demanded_quantity: number;
 };
 
 export type AddressType = {

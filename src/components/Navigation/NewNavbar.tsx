@@ -6,55 +6,62 @@ import {
   DropdownItem,
   Button,
 } from "@nextui-org/react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FaAngleDown, FaSearch, FaTimes } from "react-icons/fa";
-import { BiCartAdd, BiUser, BiMenuAltLeft, BiGridAlt } from "react-icons/bi";
+import { BiCartAdd, BiMenuAltLeft, BiGridAlt } from "react-icons/bi";
+import { authentication_token, getCartCount } from "@/lib";
 
 export default function Navbar() {
-  const dropDownClass = "my-1 hover:bg-deep-gray-50 py-1 rounded-md";
+  const navigation = useNavigate();
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [cartCount, setCartCount] = useState<string | number>();
 
+  setInterval(() => {
+    setCartCount(getCartCount());
+  }, 3000);
+  // const CheckIfIsLoggedId = () => authentication_token !== undefined ?
   const Toggle = () => (!isOpen ? setIsOpen(true) : setIsOpen(false));
 
+  const dropDownClass = "my-1 hover:bg-deep-gray-50 py-1 rounded-md";
   return (
     <>
       <nav className="w-screen relative md:sticky top-0 z-20 bg-white">
-        <div className="w-full md:w-10/12 px-5 py-3 md:py-4 mx-auto flex flex-col gap-3">
-          <div className="flex items-center justify-between">
-            <Link to="/" className="font-bold text-3xl flex items-center gap-2">
-              <BiCartAdd size={30} className="text-deep-blue-100" />
-              FresCart
-            </Link>
-            <div className="w-5/12 hidden md:flex items-center justify-between border rounded-lg px-4 bg-white">
-              <input
-                type="text"
-                placeholder="Search for products"
-                className="py-2 w-96 text-dark-gray-100 outline-none"
-              />
-              <FaSearch className="text-deep-gray-100" />
-            </div>
-            <div className="flex items-center text-deep-gray-100 gap-8">
-              <Link to="/shop/cart" className="relative">
-                <span className="bg-[#198754] text-white text-xs px-1.5 py-0.5 rounded-full absolute -top-3 -right-3">
-                  0
-                </span>
-                <BiCartAdd size={23} />
-              </Link>
-
-              <Button className="p-0">
-                <BiUser size={23} />
-              </Button>
-
-              <Button
-                onClick={Toggle}
-                size="sm"
-                className="px-0 block md:hidden"
+        <div className=" flex flex-col gap-2">
+          <div className="border-b border-deep-gray-50">
+            <div className="w-full md:w-10/12 px-5 py-3 md:py-4 mx-auto flex items-center justify-between">
+              <Link
+                to="/"
+                className="font-bold text-3xl flex items-center gap-2"
               >
-                <BiMenuAltLeft size={23} />
-              </Button>
+                <BiCartAdd size={30} className="text-deep-blue-100" />
+                FresCart
+              </Link>
+              <div className="w-5/12 hidden md:flex items-center justify-between border rounded-lg px-4 bg-white">
+                <input
+                  type="text"
+                  placeholder="Search for products"
+                  className="py-2 w-96 text-dark-gray-100 outline-none"
+                />
+                <FaSearch className="text-deep-gray-100" />
+              </div>
+              <div className="flex items-center text-deep-gray-100 gap-8">
+                <Link to="/shop/cart" className="relative">
+                  <span className="bg-[#198754] text-white text-xs px-1.5 py-0.5 rounded-full absolute -top-3 -right-3">
+                    {cartCount}
+                  </span>
+                  <BiCartAdd size={23} />
+                </Link>
+                <Button
+                  onClick={Toggle}
+                  size="sm"
+                  className="px-0 block md:hidden"
+                >
+                  <BiMenuAltLeft size={23} />
+                </Button>
+              </div>
             </div>
           </div>
-          <div className="hidden md:flex gap-8 items-center">
+          <div className="w-full md:w-10/12 mx-auto px-5 hidden md:flex gap-8 items-center pb-2">
             <Dropdown>
               <DropdownTrigger>
                 <Button className="bg-deep-blue-100 text-white rounded-lg flex gap-2">
@@ -64,13 +71,11 @@ export default function Navbar() {
               </DropdownTrigger>
               <DropdownMenu
                 aria-label="Static Actions"
-                className="bg-white text-dark-gray-100 text-sm shadow rounded mt-4 px-2 min-w-[200px]"
+                className="bg-white text-dark-gray-100 text-sm shadow rounded mt-1 px-2 min-w-[200px]"
               >
                 <DropdownItem className={dropDownClass}>Phones</DropdownItem>
-                <DropdownItem className={dropDownClass}>Signup</DropdownItem>
-                <DropdownItem className={dropDownClass}>
-                  My Account
-                </DropdownItem>
+                <DropdownItem className={dropDownClass}>Clothing</DropdownItem>
+                <DropdownItem className={dropDownClass}>Jewelries</DropdownItem>
               </DropdownMenu>
             </Dropdown>
             <Dropdown>
@@ -82,12 +87,36 @@ export default function Navbar() {
               </DropdownTrigger>
               <DropdownMenu
                 aria-label="Static Actions"
-                className="bg-white text-dark-gray-100 text-sm shadow rounded mt-4 px-2 w-[150px]"
+                className="bg-white text-dark-gray-100 text-sm shadow rounded mt-3 px-2 w-[150px]"
               >
-                <DropdownItem className={dropDownClass}>Signin</DropdownItem>
-                <DropdownItem className={dropDownClass}>Signup</DropdownItem>
-                <DropdownItem className={dropDownClass}>
-                  My Account
+                <DropdownItem
+                  onClick={() => navigation("/login")}
+                  className={`${dropDownClass} ${
+                    authentication_token == undefined ? "block" : "hidden"
+                  }`}
+                >
+                  <Link to="">Signin</Link>
+                </DropdownItem>
+                <DropdownItem
+                  className={`${dropDownClass} ${
+                    authentication_token !== undefined ? "block" : "hidden"
+                  }`}
+                >
+                  <Link to="">Logout</Link>
+                </DropdownItem>
+                <DropdownItem
+                  className={`${dropDownClass} ${
+                    authentication_token == undefined ? "block" : "hidden"
+                  }`}
+                >
+                  <Link to="">Signup</Link>
+                </DropdownItem>
+                <DropdownItem
+                  className={`${dropDownClass} ${
+                    authentication_token !== undefined ? "block" : "hidden"
+                  }`}
+                >
+                  <Link to="">My Account</Link>
                 </DropdownItem>
               </DropdownMenu>
             </Dropdown>
@@ -96,7 +125,7 @@ export default function Navbar() {
 
         {/* Mobile */}
         <div
-          className={`w-screen h-screen absolute top-0 bg-white z-30 p-4 duration-300 delay-300 ${
+          className={`block md:hidden w-screen h-screen absolute top-0 bg-white z-30 p-4 duration-300 delay-300 ${
             !isOpen ? "-translate-x-full" : "translate-x-0"
           }`}
         >
@@ -125,7 +154,7 @@ export default function Navbar() {
               />
               <FaSearch className="text-deep-gray-100" />
             </div>
-            <div className="flex flex-col gap-5">
+            <div className="flex flex-col gap-10">
               <Dropdown className="w-screen">
                 <DropdownTrigger>
                   <Button className="bg-deep-blue-100 text-white rounded-lg flex gap-2">
@@ -135,30 +164,56 @@ export default function Navbar() {
                 </DropdownTrigger>
                 <DropdownMenu
                   aria-label="Static Actions"
-                  className="bg-white text-dark-gray-100 text-sm shadow rounded mt-4 px-2 w-full"
+                  className="bg-white text-dark-gray-100 text-sm mt-4 px-2 w-full"
                 >
                   <DropdownItem className={dropDownClass}>Phones</DropdownItem>
-                  <DropdownItem className={dropDownClass}>Signup</DropdownItem>
                   <DropdownItem className={dropDownClass}>
-                    My Account
+                    Clothing
+                  </DropdownItem>
+                  <DropdownItem className={dropDownClass}>
+                    Jewelries
                   </DropdownItem>
                 </DropdownMenu>
               </Dropdown>
               <Dropdown className="w-screen">
                 <DropdownTrigger>
-                  <div className="p-0 text-dark-gray-100 flex items-center justify-between border-b pb-2">
+                  <div className="p-0 text-dark-gray-100 flex items-center gap-2">
                     Account
                     <FaAngleDown />
                   </div>
                 </DropdownTrigger>
                 <DropdownMenu
                   aria-label="Static Actions"
-                  className="bg-white text-dark-gray-100 text-sm shadow rounded px-2 w-full"
+                  className="bg-white text-dark-gray-100 text-sm px-2 w-[150px]"
                 >
-                  <DropdownItem className={dropDownClass}>Signin</DropdownItem>
-                  <DropdownItem className={dropDownClass}>Signup</DropdownItem>
-                  <DropdownItem className={dropDownClass}>
-                    My Account
+                  <DropdownItem
+                    onClick={() => navigation("/login")}
+                    className={`${dropDownClass} ${
+                      authentication_token == undefined ? "block" : "hidden"
+                    }`}
+                  >
+                    <Link to="">Signin</Link>
+                  </DropdownItem>
+                  <DropdownItem
+                    className={`${dropDownClass} ${
+                      authentication_token !== undefined ? "block" : "hidden"
+                    }`}
+                  >
+                    <Link to="">Logout</Link>
+                  </DropdownItem>
+                  <DropdownItem
+                    className={`${dropDownClass} ${
+                      authentication_token == undefined ? "block" : "hidden"
+                    }`}
+                  >
+                    <Link to="">Signup</Link>
+                  </DropdownItem>
+                  <DropdownItem
+                    className={`${dropDownClass} ${
+                      authentication_token !== undefined ? "block" : "hidden"
+                    }`}
+                  >
+                    <Link to="">My Account</Link>
                   </DropdownItem>
                 </DropdownMenu>
               </Dropdown>

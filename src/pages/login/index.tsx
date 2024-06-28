@@ -6,7 +6,10 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
 import { LoginSchema } from "@/schema/register_login_schema";
 import { api, authentication_token } from "@/lib";
-// import ServerResponseModal from "@/components/Modal/ServerResponse";
+import { ModalLayout } from "@/components/Modal";
+import ModalTemplates, {
+  changeModalContent,
+} from "@/components/Modal/CompleteModal";
 
 interface CookieOptions {
   name: string;
@@ -22,6 +25,24 @@ export default function Login() {
     isError: boolean;
     message: string;
   }>({ isError: false, message: "" });
+  const [currentTemplate, setCurrentTemplate] = useState<string>("");
+
+  const templates = ModalTemplates({
+    onCancle: onClose,
+    onContinue: () => console.log("login"),
+    confirmationMessage: "",
+    response,
+  });
+
+  const handleChangeModalContent = (template: string) => {
+    changeModalContent({
+      template,
+      templates,
+      onOpen,
+      setCurrentTemplate,
+    });
+  };
+
   const {
     register,
     handleSubmit,
@@ -35,7 +56,7 @@ export default function Login() {
     setIsLoading(false);
     if (response.error) {
       setResponse({ ...response, isError: true, message: response.error });
-      onOpen();
+      handleChangeModalContent("03");
       return;
     }
     // SET COOKIE FUNCTION
@@ -62,13 +83,13 @@ export default function Login() {
     label: "mb-16",
     inputWrapper: "px-0 flex",
     input: "p-2 outline-none",
-    base: "text-sm text-neutral-500 mb-2 z-0 bg-deep-gray-50",
+    base: "text-sm text-dark-gray-100 mb-2 z-0 bg-deep-gray-200 rounded-lg",
   };
 
   return (
     <>
       <div className="p-5">
-        <form className="w-full md:w-5/12 mx-auto p-5 md:px-16">
+        <form className="w-full md:w-5/12 mx-auto p-5">
           <h1 className="text-2xl font-semibold mb-10">Welcome Back !</h1>
 
           <div className="flex flex-col gap-8 [&_span]:text-xs [&_span]:text-deep-red-100">
@@ -105,19 +126,16 @@ export default function Login() {
             <Button
               onClick={handleSubmit(onSubmit)}
               disabled={isLoading}
-              className="w-full font-semibold bg-deep-green-200 text-white rounded-full"
+              className="w-full bg-deep-blue-100 text-white rounded-lg"
             >
               {!isLoading ? "LOGIN" : "PLEASE WAIT"}
             </Button>
           </div>
         </form>
       </div>
-      {/* <ServerResponseModal
-        isOpen={isOpen}
-        onClose={onClose}
-        isError={response.isError}
-        message={response.message}
-      /> */}
+      <ModalLayout isOpen={isOpen} onClose={onClose}>
+        {templates[currentTemplate]}
+      </ModalLayout>
     </>
   );
 }

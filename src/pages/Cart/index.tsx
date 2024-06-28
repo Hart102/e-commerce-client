@@ -37,7 +37,7 @@ export default function CheckoutSummary() {
     cartItems.forEach((item) => {
       subTotal += Number(item.price.slice(3));
     });
-    const total: number = subTotal + 18.0;
+    const total: number = subTotal;
     return { subTotal, total };
   };
   const total = calculateSum();
@@ -83,7 +83,7 @@ export default function CheckoutSummary() {
         setCartItems(
           data.map((product: ProductType) => ({
             ...product,
-            quantity: 1,
+            quantity: product.demanded_quantity,
             isChecked: false,
             totalPrice: product.price.slice(3),
           }))
@@ -96,11 +96,11 @@ export default function CheckoutSummary() {
   return isLoading ? (
     <Loader />
   ) : (
-    <div className="flex flex-col md:flex-row md:px-0 pt-16 p-4 justify-center">
-      <div className="w-full md:w-7/12 flex flex-col md:px-3">
-        <b>CART ITEMS ({cartItems?.length})</b>
+    <div className="w-full flex flex-col md:flex-row justify-center gap-5 md:gap-2">
+      <div className="w-full flex flex-col">
+        <p>CART ITEMS ({cartItems?.length})</p>
         {/* Desktop */}
-        <div className="w-full hidden md:flex flex-col gap-2 mt-5">
+        <div className="w-full md:w-11/12 hidden md:flex flex-col gap-5">
           {cartItems &&
             cartItems?.map((product, index) => (
               <label
@@ -136,9 +136,6 @@ export default function CheckoutSummary() {
                       </div>
                       <div className="md:w-1/2 flex flex-col gap-2 capitalize">
                         <p>{product?.name}</p>
-                        {product.category == "fashion" && (
-                          <p>Size: ({product?.size})</p>
-                        )}
                         <h2 className="text-xl">{product?.price}</h2>
                       </div>
                     </div>
@@ -157,7 +154,7 @@ export default function CheckoutSummary() {
                         </div>
                       </div>
                       <h2 className="text-xl self-end">
-                        NGN {product?.totalPrice}
+                        NGN {Math.round(Number(product?.totalPrice))}
                       </h2>
                     </div>
                   </div>
@@ -166,16 +163,26 @@ export default function CheckoutSummary() {
             ))}
         </div>
       </div>
-      <div className="md:hidden mt-5 px-2 flex flex-col gap-4">
+      <div className="md:hidden flex flex-col gap-5">
         {cartItems &&
           cartItems?.map((product, index) => (
             <label
               htmlFor={`${product?.id}${index}`}
               key={product?.id}
-              className="flex flex-col gap-2 text-sm cursor-pointer"
+              className="flex flex-col gap-4 text-sm cursor-pointer"
             >
+              <div className="flex justify-end">
+                <Button
+                  size="sm"
+                  className="flex items-center gap-2 text-xs"
+                  onClick={() => removeItemFromCart(index)}
+                >
+                  <FaTrashAlt className="text-deep-red-100" />
+                  Remove
+                </Button>
+              </div>
               <div className="flex justify-between gap-2">
-                <div className="flex gap-2 items-end">
+                <div className="flex gap-2">
                   <div className="flex items-center gap-2">
                     <input
                       type="checkbox"
@@ -189,57 +196,35 @@ export default function CheckoutSummary() {
                       }}
                     />
                   </div>
-                  <div className="text-neutral-700">
-                    <p className="text-lg text-black">{product?.price}</p>
-                    {product.category !== "fashion" && (
-                      <p>Size: ({product?.size})</p>
-                    )}
-                  </div>
-                </div>
-                <div className="flex flex-col gap-1 text-center">
-                  <div className="bg-deep-gray-200 rounded text-2xl">
-                    <Button size="sm" onClick={() => deCreaseQty(index)}>
-                      -
-                    </Button>
-                  </div>
-                  <p className="border px-4 py-2">{product?.quantity}</p>
-                  <div className="bg-deep-gray-200 rounded text-2xl">
-                    <Button size="sm" onClick={() => increaseQty(index)}>
-                      +
-                    </Button>
+                  <div className="flex flex-col gap-4">
+                    <p className="text-lg">{product?.price}</p>
+                    <div className="flex gap-5 text-center">
+                      <div className="bg-deep-gray-200 rounded text-2xl">
+                        <Button size="sm" onClick={() => deCreaseQty(index)}>
+                          -
+                        </Button>
+                      </div>
+                      <p className="border px-4 py-2">{product?.quantity}</p>
+                      <div className="bg-deep-gray-200 rounded text-2xl">
+                        <Button size="sm" onClick={() => increaseQty(index)}>
+                          +
+                        </Button>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
-              <div className="flex flex-col gap-2">
-                <p className="capitalize">{product?.name}</p>
-                <div className="flex justify-end">
-                  <Button
-                    size="sm"
-                    className="flex items-center gap-2 text-xs text-deep-red-100"
-                    onClick={() => removeItemFromCart(index)}
-                  >
-                    <FaTrashAlt />
-                    Remove
-                  </Button>
-                </div>
-              </div>
+              <p className="capitalize">{product?.name}</p>
+              {index % 2 == 0 && (
+                <div className="bg-deep-gray-50 rounded-full py-1"></div>
+              )}
             </label>
           ))}
       </div>
-      <div className="flex flex-col gap-8 w-full md:w-4/12 md:py-10 md:px-12 px-5">
-        <h2 className="font-semibold text-xl">SUMMARY</h2>
-        <div className="flex flex-col gap-4 border-b pb-3">
-          <div className="flex items-center justify-between">
-            <p className="text-neutral-700">SUBTOTAL</p>
-            <div>
-              <b>NGN {total.subTotal} </b>
-            </div>
-          </div>
-          <div className="flex items-center justify-between">
-            <p className="text-neutral-700">SHIPPING FEE</p>
-            <b>NGN 18.00</b>
-          </div>
-        </div>
+
+      <div className="flex flex-col gap-8 w-full md:w-4/12 mt-10 md:mt-0">
+        <h2 className="text-lg">SUMMARY</h2>
+
         <div className="flex justify-between text-lg">
           <b>TOTAL</b>
           <b className="text-xl">NGN {total.total}</b>
@@ -248,7 +233,7 @@ export default function CheckoutSummary() {
           <Button
             onClick={handleCheckout}
             disabled={selectedItems.length === 0}
-            className={`w-full rounded-full font-bold bg-deep-green-50 mt-5 ${
+            className={`w-full rounded-full font-bold bg-deep-blue-100 text-white mt-5 ${
               selectedItems.length === 0
                 ? "cursor-not-allowed opacity-55"
                 : "cursor-pointer"
@@ -256,7 +241,6 @@ export default function CheckoutSummary() {
           >
             CHECK OUT
           </Button>
-          <p>NEED HELP ?</p>
         </div>
       </div>
     </div>

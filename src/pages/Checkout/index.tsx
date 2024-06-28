@@ -52,7 +52,7 @@ export default function Shiipping() {
       subTotal += Number(item.price.slice(3)) * Number(item.quantity);
     });
 
-    const total: number = subTotal + 18.0;
+    const total: number = subTotal;
     subTotal = Math.floor(subTotal);
     return { subTotal, total };
   }, [location.state]);
@@ -155,8 +155,8 @@ export default function Shiipping() {
   };
   return (
     <>
-      <div className="flex flex-col-reverse md:flex-row md:p-0 p-4 justify-center">
-        <div className="w-full md:w-7/12 md- flex flex-col gap-8 md:p-10 border-deep-gray-200 border-r">
+      <div className="flex flex-col-reverse md:flex-row justify-center gap-8">
+        <div className="w-full md:w-8/12 flex flex-col gap-8">
           {/* Select Delivery Address */}
           <Accordion>
             <AccordionItem
@@ -213,93 +213,71 @@ export default function Shiipping() {
             </AccordionItem>
           </Accordion>
 
-          <Accordion>
-            <AccordionItem
-              key="2"
-              aria-label="02. PAYMENT"
-              title="02. PAYMENT"
-              classNames={{
-                heading: "text-lg",
-                indicator: "-rotate-90",
-              }}
-            >
-              <div className="border rounded-lg p-5 flex flex-col gap-10">
-                <div className="flex flex-col gap-2">
-                  <p>Credit / Debit Card</p>
-                  <p className="text-neutral-500">
-                    Safe money transfer using your bank accou k account. We
-                    support Mastercard tercard, Visa, Discover and Stripe.
-                  </p>
-                </div>
-                <form className="[&_span]:text-xs [&_span]:text-red-500">
-                  <div>
-                    <Input
-                      type="number"
-                      label="Card number"
-                      placeholder="123 4567 6789 4321"
-                      classNames={InputProps}
-                      {...register("card_number")}
-                    />
-                    <span>{errors?.card_number?.message}</span>
-                  </div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                    <div>
-                      <Input
-                        label="Name on card"
-                        placeholder="Enter your first name"
-                        classNames={InputProps}
-                        {...register("card_name")}
-                      />
-                      <span>{errors?.card_name?.message}</span>
-                    </div>
-                    <div>
-                      <Input
-                        type="date"
-                        label="Expiry date"
-                        classNames={InputProps}
-                        {...register("expiry_date")}
-                      />
-                      <span>{errors?.expiry_date?.message}</span>
-                    </div>
-                    <div>
-                      <Input
-                        type="number"
-                        label="CVV code"
-                        placeholder="***"
-                        classNames={InputProps}
-                        {...register("cvv")}
-                      />
-                      <span>{errors?.cvv?.message}</span>
-                    </div>
-                  </div>
-                </form>
+          <div className="flex flex-col gap-10 md:w-8/12 md:ml-2">
+            <h2 className="text-lg">Payment</h2>
+            <div className="flex flex-col gap-2">
+              <p>Credit / Debit Card</p>
+              <p className="text-neutral-500">
+                Safe money transfer using your bank accou k account. We support
+                Mastercard tercard, Visa, Discover and Stripe.
+              </p>
+            </div>
+            <form className="[&_span]:text-xs [&_span]:text-red-500">
+              <div>
+                <Input
+                  type="number"
+                  label="Card number"
+                  placeholder="123 4567 6789 4321"
+                  classNames={InputProps}
+                  {...register("card_number")}
+                />
+                <span>{errors?.card_number?.message}</span>
               </div>
-            </AccordionItem>
-          </Accordion>
-          <div className="flex mt-5">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                <div>
+                  <Input
+                    label="Name on card"
+                    placeholder="Enter your first name"
+                    classNames={InputProps}
+                    {...register("card_name")}
+                  />
+                  <span>{errors?.card_name?.message}</span>
+                </div>
+                <div>
+                  <Input
+                    type="date"
+                    label="Expiry date"
+                    classNames={InputProps}
+                    {...register("expiry_date")}
+                  />
+                  <span>{errors?.expiry_date?.message}</span>
+                </div>
+                <div>
+                  <Input
+                    type="number"
+                    label="CVV code"
+                    placeholder="***"
+                    classNames={InputProps}
+                    {...register("cvv")}
+                  />
+                  <span>{errors?.cvv?.message}</span>
+                </div>
+              </div>
+            </form>
+          </div>
+
+          <div className="flex mt-5 md:ml-2">
             <Button
               onClick={handleSubmit(validateInput)}
-              className="bg-deep-green-200 text-white rounded-full px-8 hover:opacity-85"
+              className="bg-deep-blue-100 text-white rounded-lg px-8 hover:opacity-85"
             >
               PLACE ORDER
             </Button>
           </div>
         </div>
 
-        <div className="w-2 bg-deep-gray-200 shadow-sm mt-5 rounded-full"></div>
-
-        <div className="flex flex-col gap-8 w-full md:w-4/12 md:py-10 md:px-12 py-10 px-5">
+        <div className="flex flex-col gap-8 w-full md:w-4/12">
           <p className="text-lg">SUMMARY</p>
-          <div className="flex flex-col gap-4 border-b pb-3 [&_b]:text-neutral-600 [&_p]:text-neutral-700 text-lg">
-            <div className="flex items-center justify-between">
-              <p>SUBTOTAL</p>
-              <p>NGN {calculatedSum?.subTotal}</p>
-            </div>
-            <div className="flex items-center justify-between">
-              <p>SHIPPING FEE</p>
-              <p>NGN 18.00</p>
-            </div>
-          </div>
           <div className="flex justify-between text-lg">
             <b>TOTAL</b>
             <b>NGN {calculatedSum?.total}</b>
@@ -321,15 +299,12 @@ export default function Shiipping() {
                       className="object-contain w-full h-full rounded"
                     />
                   </div>
-                  <div className="flex flex-col capitalize">
-                    <p className="capitalize text-neutral-700 mb-1 text-sm">
-                      {product?.name}
+                  <div className="flex flex-col capitalize text-sm">
+                    <p className="capitalize mb-1">{product?.name}</p>
+                    <p className="text-dark-gray-100">
+                      Qauntity: {product?.quantity}
                     </p>
-                    {product?.category == "fashion" && (
-                      <p className="my-0.5">Size: {product?.size}</p>
-                    )}
-                    <p>Qauntity: ({product?.quantity})</p>
-                    <p className="text-lg mt-2 font-semibold">
+                    <p className="mt-1 text-dark-gray-100">
                       NGN {product?.totalPrice}
                     </p>
                   </div>
