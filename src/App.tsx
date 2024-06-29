@@ -3,10 +3,11 @@ import "./App.css";
 
 import MainLayout from "./layout/MainLayout";
 import Home from "./pages/Home";
+import Login from "./pages/login";
+import Categories_page from "./pages/categories";
 import SingleProduct from "./pages/Single";
 import Cart from "./pages/Cart";
 import Checkout from "./pages/Checkout";
-import Login from "./pages/login";
 
 // DASHBOARD
 import DashboardLayout from "./layout/DashboardLayout";
@@ -32,6 +33,7 @@ export const router = createBrowserRouter([
     children: [
       { path: "/", element: <Home /> },
       { path: "/login", element: <Login /> },
+      { path: "/shop/:category", element: <Categories_page /> },
 
       { path: "shop/cart", element: <Cart /> },
       { path: "/shop/checkout", element: <Checkout /> },

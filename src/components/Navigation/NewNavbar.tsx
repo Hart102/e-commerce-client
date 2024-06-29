@@ -15,6 +15,7 @@ export default function Navbar() {
   const navigation = useNavigate();
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [cartCount, setCartCount] = useState<string | number>();
+  const dummyCategories = ["clothings", "jewelry", "wrist watch", "phones"];
 
   setInterval(() => {
     setCartCount(getCartCount());
@@ -73,9 +74,16 @@ export default function Navbar() {
                 aria-label="Static Actions"
                 className="bg-white text-dark-gray-100 text-sm shadow rounded mt-1 px-2 min-w-[200px]"
               >
-                <DropdownItem className={dropDownClass}>Phones</DropdownItem>
-                <DropdownItem className={dropDownClass}>Clothing</DropdownItem>
-                <DropdownItem className={dropDownClass}>Jewelries</DropdownItem>
+                {dummyCategories.map((category) => (
+                  <DropdownItem key={category} className={dropDownClass}>
+                    <Link
+                      to={`/shop/${category}`}
+                      className="capitalize hover:border-deep-blue-100"
+                    >
+                      {category}
+                    </Link>
+                  </DropdownItem>
+                ))}
               </DropdownMenu>
             </Dropdown>
             <Dropdown>

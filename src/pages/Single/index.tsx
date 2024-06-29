@@ -11,6 +11,7 @@ import {
   getCartCount,
 } from "@/lib";
 import { ProductType } from "@/types/index";
+import ProductTemplate from "@/components/ProductTemplate";
 
 export default function SingleProduct() {
   const location = useLocation();
@@ -47,7 +48,7 @@ export default function SingleProduct() {
     }
   };
 
-  const SelectProduct = (product: ProductType) => setProduct(product);
+  // const SelectProduct = (product: ProductType) => setProduct(product);
 
   useEffect(() => {
     if (location.state == undefined) return navigation("/");
@@ -133,7 +134,11 @@ export default function SingleProduct() {
             Related Items
           </h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {relatedProducts.length &&
+            <ProductTemplate
+              onclick={() => console.log("open")}
+              products={relatedProducts}
+            />
+            {/* {relatedProducts.length &&
               relatedProducts.map((item) => (
                 <div
                   key={item.id}
@@ -174,7 +179,7 @@ export default function SingleProduct() {
                     </Button>
                   </div>
                 </div>
-              ))}
+              ))} */}
           </div>
         </div>
       </div>

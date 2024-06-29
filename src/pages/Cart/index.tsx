@@ -130,7 +130,7 @@ export default function CheckoutSummary() {
                           src={imageUrl(product?.images[0])}
                           alt="product image"
                           classNames={{
-                            img: "rounded-lg w-[100px] h-[100px]",
+                            img: "rounded-lg w-[100px] h-[90px]",
                           }}
                         />
                       </div>
@@ -214,7 +214,7 @@ export default function CheckoutSummary() {
                   </div>
                 </div>
               </div>
-              <p className="capitalize">{product?.name}</p>
+              <p className="capitalize ml-4 text-base">{product?.name}</p>
               {index % 2 == 0 && (
                 <div className="bg-deep-gray-50 rounded-full py-1"></div>
               )}
@@ -233,7 +233,7 @@ export default function CheckoutSummary() {
           <Button
             onClick={handleCheckout}
             disabled={selectedItems.length === 0}
-            className={`w-full rounded-full font-bold bg-deep-blue-100 text-white mt-5 ${
+            className={`w-full rounded-lg font-bold bg-deep-blue-100 text-white mt-5 ${
               selectedItems.length === 0
                 ? "cursor-not-allowed opacity-55"
                 : "cursor-pointer"
