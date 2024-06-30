@@ -13,24 +13,20 @@ export default function ConfirmationModal({
     <>
       <div className="flex flex-col gap-2">
         <h2 className="font-bold text-3xl text-center">Confirm</h2>
-
-        <p className="text-neutral-5001 first-letter:capitalize text-xl">
-          {message}
-        </p>
+        <p className="first-letter:capitalize text-xl">{message}</p>
       </div>
-
       <div className="flex justify-around pt-5">
         <Button
-          onPress={onCancle}
-          className="border rounded-full hover:bg-deep-green-50"
+          onClick={onContinue}
+          className="border rounded-lg px-5 py-0 hover:bg-deep-blue-100 hover:text-white"
         >
-          Cancel
+          Yes
         </Button>
         <Button
-          onClick={onContinue}
-          className="border rounded-full hover:bg-deep-green-50"
+          onPress={onCancle}
+          className="border rounded-lg px-5 py-0 hover:bg-deep-blue-100 hover:text-white"
         >
-          Continue
+          No
         </Button>
       </div>
     </>

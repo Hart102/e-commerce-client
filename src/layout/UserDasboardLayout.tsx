@@ -1,19 +1,18 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
 import { useDisclosure } from "@nextui-org/react";
 import SideBar from "@/components/Navigation/SideBar";
-import { BiBell, BiCreditCard, BiCartAdd, BiGridAlt } from "react-icons/bi";
+import { BiBell, BiCreditCard, BiCartAdd, BiMenuAltLeft } from "react-icons/bi";
 import { FaMapMarkerAlt, FaToggleOn } from "react-icons/fa";
-import Navbar from "@/components/Navigation/Navbar";
+import NewNavBar from "@/components/Navigation/NewNavbar";
+import Footer from "@/components/Footer";
 import { Button } from "@nextui-org/react";
 import axios from "axios";
 import { api, authentication_token } from "@/lib";
-import {
-  ModalLayout,
-  ResponseModal,
-  LoadingGif,
-} from "@/components/Modal/index";
-import { ModalTemplateType } from "@/types/index";
+import { ModalLayout } from "@/components/Modal";
+import ModalTemplates, {
+  changeModalContent,
+} from "@/components/Modal/CompleteModal";
 
 const links = [
   { icon: BiCartAdd, title: "Your Orders", href: "" },
@@ -29,47 +28,41 @@ const links = [
 
 export default function UserDasboardLayout() {
   const { isOpen, onClose, onOpen } = useDisclosure();
-  const sidebarRef = useRef<HTMLDivElement | null>(null);
   const [paymentStatus, setPaymentStatus] = useState(false);
   const [currentTemplate, setCurrentTemplate] = useState<string>("");
   const [response, setResponse] = useState({ isError: false, message: "" });
+  const [toggleStatus, setToggleStatus] = useState<boolean>(false);
 
-  const templates: ModalTemplateType = {
-    loaderModal: <LoadingGif />,
-    responseModal: (
-      <ResponseModal isError={response.isError} message={response.message} />
-    ),
+  const templates = ModalTemplates({
+    onCancle: onClose,
+    onContinue: () => console.log("clicked from dashboard layout"),
+    confirmationMessage: "",
+    response,
+  });
+  const handleChangeModalContent = (template: string) => {
+    changeModalContent({
+      template,
+      templates,
+      onOpen,
+      setCurrentTemplate,
+    });
   };
-
-  const changeModalContent = (template: string) => {
-    if (template in templates) {
-      onOpen();
-      setCurrentTemplate(template);
-    }
-  };
-
-  const handleToggle = () => {
-    if (sidebarRef?.current?.classList.contains("-translate-x-full")) {
-      sidebarRef?.current?.classList.remove("-translate-x-full");
-    } else {
-      sidebarRef?.current?.classList.add("-translate-x-full");
-    }
-  };
+  const toggle = () =>
+    !toggleStatus ? setToggleStatus(true) : setToggleStatus(false);
 
   const confirmPayment = async () => {
     onOpen();
-    changeModalContent("loaderModal");
+    handleChangeModalContent("01");
     const { data } = await axios.get(`${api}/transactions/confirm-payment`, {
       headers: { Authorization: authentication_token },
     });
-    changeModalContent("responseModal");
+    handleChangeModalContent("03");
     if (data.error) {
       setResponse({ ...response, isError: true, message: data.error });
     } else {
       setResponse({ ...response, isError: false, message: data.message });
     }
   };
-
   useEffect(() => {
     const intervalId = setInterval(async () => {
       try {
@@ -93,11 +86,10 @@ export default function UserDasboardLayout() {
 
   return (
     <>
-      <Navbar />
-
-      <div className="w-screen bg-white flex flex-col gap-4">
+      <NewNavBar />
+      <div className="w-full md:w-11/12 px-4 md:px-16 mx-auto md:py-8 text-dark-gray-100">
         {paymentStatus && (
-          <div className="mt-16 py-1 px-5 bg-deep-green-50 flex justify-end">
+          <div className="py-1 px-5 border-b flex justify-end">
             <Button
               size="sm"
               radius="none"
@@ -109,30 +101,23 @@ export default function UserDasboardLayout() {
             </Button>
           </div>
         )}
-        <div
-          className={`w-full md:w-10/12 mx-auto relative flex ${
-            paymentStatus ? "mt-3" : "mt-24"
-          }`}
-        >
+        <div className="relative md:mt-5 md:flex gap-10 pb-10">
           <div
-            ref={sidebarRef}
-            className="w-full md:w-3/12 min-h-screen absolute md:fixed 
-            md:left-10 delay-150 duration-300 -translate-x-full md:-translate-x-0 py-10 md:py-0 z-20"
+            className={`w-full md:w-3/12 h-screen md:h-fit md:pr-4 md:border-r border-dotted
+           absolute md:relative top-0 left-0 z-20 bg-white delay-150 duration-300 md:-translate-x-0 ${
+             !toggleStatus ? "-translate-x-full" : "-translate-x-0"
+           }`}
           >
             <SideBar
               status={false}
               sidebarlinks={links}
               urlCount={16}
-              closeMenu={() => handleToggle()}
+              closeMenu={() => toggle()}
             />
           </div>
-          <div className="w-full bg-white md:w-9/12 min-h-screen px-10 flex flex-col gap-5 border-l md:absolute right-0">
-            <div
-              onClick={handleToggle}
-              className="flex md:hidden z-20 -ml-4 items-center gap-1 w-[80px]"
-            >
-              <BiGridAlt />
-              menu
+          <div className="w-full md:w-9/12 mx-auto flex flex-col gap-3">
+            <div className="flex justify-end md:hidden">
+              <BiMenuAltLeft size={23} onClick={toggle} />
             </div>
             <Outlet />
           </div>
@@ -141,6 +126,7 @@ export default function UserDasboardLayout() {
       <ModalLayout isOpen={isOpen} onClose={onClose}>
         {templates[currentTemplate]}
       </ModalLayout>
+      <Footer />
     </>
   );
 }

@@ -12,11 +12,7 @@ import googlePlay from "@/assets/appbutton/googleplay-btn.svg";
 
 import { FaTwitter, FaFacebook, FaInstagram } from "react-icons/fa";
 
-const shop = [
-  { href: "#", title: "Fashion" },
-  { href: "#", title: "Jewelry" },
-  { href: "#", title: "Electronic" },
-];
+const dummyCategories = ["clothings", "jewelry", "wrist watch", "phones"];
 
 const about = [
   { href: "#", title: "About" },
@@ -52,13 +48,13 @@ const payments = [
 export default function Footer() {
   return (
     <footer className="px-4 py-10 flex flex-col gap-8 bg-deep-gray-200 text-dark-gray-100">
-      <div className="w-full md:w-10/12 mx-auto [&_h2]:font-semibold grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8">
-        <div className="flex flex-col gap-3 text-sm">
+      <div className="w-full md:w-11/12 md:px-12 mx-auto [&_h2]:font-semibold grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8">
+        <div className="flex flex-col gap-3 text-sm capitalize">
           <h2>Categories</h2>
-          {shop.map((item) => (
-            <ul key={item.title}>
+          {dummyCategories.map((item) => (
+            <ul key={item}>
               <li>
-                <Link to={item.href}>{item.title}</Link>
+                <Link to={`/shop/${item}`}>{item}</Link>
               </li>
             </ul>
           ))}
@@ -94,7 +90,7 @@ export default function Footer() {
           </ul>
         </div>
       </div>
-      <div className="w-full md:w-10/12 mx-auto flex flex-col gap-8">
+      <div className="w-full md:w-11/12 mx-auto flex flex-col gap-8">
         <div className="w-full border-t md:border-b py-4 mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex flex-col md:flex-row items-center gap-4">
             <p className="text-black">Payment Partners</p>

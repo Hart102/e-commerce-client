@@ -1,54 +1,78 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { Button } from "@nextui-org/react";
-import { FaMapMarkerAlt, FaTrashAlt, FaPencilAlt } from "react-icons/fa";
-// import AddAddress from "@/components/Add-address";
-// import ConfirmationModal from "@/components/Modal/ConfirmationModal";
+import { Button, useDisclosure } from "@nextui-org/react";
+import { FaMapMarkerAlt, FaPencilAlt } from "react-icons/fa";
 import { api, authentication_token } from "@/lib";
 import { AddressType } from "@/types/index";
+import { ModalLayout } from "@/components/Modal";
+import ModalTemplates, {
+  changeModalContent,
+} from "@/components/Modal/CompleteModal";
+import AddAddress from "@/components/Add-address";
 
 export default function Address() {
-  // const { isOpen, onOpen, onClose } = useDisclosure();
-  // const [message, setMessage] = useState<string>("");
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [currentTemplate, setCurrentTemplate] = useState<string>("");
+  const [templateType, setTemplateType] = useState<string>("");
+  const [response, setResponse] = useState({ isError: false, message: "" });
   const [userAddress, setUserAddress] = useState<AddressType[]>([]);
   const [index, setIndex] = useState<number>(0);
 
-  const fetchUserAddress = async () => {
-    const { data } = await axios.get(`${api}/user/get-address`, {
-      headers: { Authorization: authentication_token },
+  const switchModal = (modalType: string) => {
+    setTemplateType(modalType);
+    onOpen();
+  };
+  const templates = ModalTemplates({
+    onCancle: onClose,
+    onContinue: () => deleteAddress(),
+    confirmationMessage: "Are you sure you want to delete this ?",
+    response,
+  });
+  const handleChangeModalContent = (template: string) => {
+    changeModalContent({
+      template,
+      templates,
+      onOpen,
+      setCurrentTemplate,
     });
-    if (!data.error) setUserAddress(data);
   };
-
-  const openCofirmation = (index: number) => {
-    if (isModalOpen) {
-      setIsModalOpen(false);
-      // setMessage("");
-    } else {
-      setIsModalOpen(true);
-      setIndex(index);
-      // setMessage("Are you sure you want to delete address");
-    }
-  };
-
-  // const deleteAddress = async () => {
-  //   setIsModalOpen(false);
-  //   const { data } = await axios.delete(`${api}/user/delete-address`, {
-  //     headers: { Authorization: authentication_token },
-  //     data: { id: userAddress[index]?.id },
-  //   });
-  //   if (!data.error) {
-  //     userAddress.splice(index, 1);
-  //   } else {
-  //     setIsModalOpen(true);
-  //     setMessage(data.error);
-  //   }
-  // };
-
   useEffect(() => {
+    const fetchUserAddress = async () => {
+      const { data } = await axios.get(`${api}/user/get-address`, {
+        headers: { Authorization: authentication_token },
+      });
+      if (data.error) {
+        setResponse({ isError: true, message: data.error });
+        handleChangeModalContent("03");
+      } else {
+        setUserAddress(data);
+      }
+    };
     fetchUserAddress();
   }, []);
+
+  const GetAddressIndex = (index: number) => {
+    handleChangeModalContent("02");
+    switchModal("");
+    setIndex(index);
+  };
+
+  const deleteAddress = async () => {
+    handleChangeModalContent("01");
+    const { data } = await axios.delete(
+      `${api}/user/delete-address/${userAddress[index]?.id}`,
+      {
+        headers: { Authorization: authentication_token },
+      }
+    );
+    handleChangeModalContent("03");
+    if (data.error) {
+      setResponse({ isError: true, message: data.error });
+    } else {
+      setResponse({ isError: false, message: data.message });
+      userAddress.splice(index, 1);
+    }
+  };
 
   return (
     <>
@@ -56,8 +80,9 @@ export default function Address() {
         <Button
           size="sm"
           type="button"
-          // onPress={onOpen}
-          className="py-1 px-2 rounded flex items-center gap-1 bg-deep-green-50 text-white"
+          onClick={() => switchModal("add")}
+          className="py-1 px-2 rounded flex items-center gap-1 border 
+          border-deep-blue-100 hover:bg-deep-blue-100 hover:text-white"
         >
           <FaMapMarkerAlt />
           <p className="text-sm font-semibold">ADD ADDRESS</p>
@@ -68,7 +93,7 @@ export default function Address() {
           userAddress?.map((address, index) => (
             <div
               key={address?.id}
-              className="bg-deep-gray-200 rounded p-5 cursor-pointer"
+              className="border border-deep-gray-50 rounded-lg p-5"
             >
               <FaMapMarkerAlt className="text-deep-red-100" />
               <div className="flex flex-col gap-1 mt-4">
@@ -80,12 +105,8 @@ export default function Address() {
                 <p>{address?.phone_number}</p>
               </div>
               <div className="flex gap-10 text-sm justify-between mt-4">
-                <Button className="flex items-center gap-1 px-0 hover:underline font-semibold text-deep-green-200">
-                  <FaTrashAlt />
-                  Edit
-                </Button>
                 <Button
-                  onClick={() => openCofirmation(index)}
+                  onClick={() => GetAddressIndex(index)}
                   className="flex items-center gap-1 px-0 hover:underline font-semibold text-deep-red-100 "
                 >
                   <FaPencilAlt />
@@ -95,13 +116,9 @@ export default function Address() {
             </div>
           ))}
       </div>
-      {/* <AddAddress isOpen={isOpen} onClose={onClose} />
-      <ConfirmationModal
-        isOpen={isModalOpen}
-        onContinue={deleteAddress}
-        onClose={() => openCofirmation(0)}
-        message={message}
-      /> */}
+      <ModalLayout isOpen={isOpen} onClose={onClose}>
+        {templateType == "add" ? <AddAddress /> : templates[currentTemplate]}
+      </ModalLayout>
     </>
   );
 }

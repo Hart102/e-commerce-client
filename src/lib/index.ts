@@ -1,4 +1,4 @@
-export const api = "http://localhost:3000/api";
+export const api = "http://localhost:5000/api";
 export const imageUrl = (imageId: string) =>
   `https://cloud.appwrite.io/v1/storage/buckets/660f31232cf0b6c64dfc/files/${imageId}/view?project=660f30b6474fd486d62e&mode=admin`;
 

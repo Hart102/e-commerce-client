@@ -20,16 +20,16 @@ export default function Navbar() {
   setInterval(() => {
     setCartCount(getCartCount());
   }, 3000);
-  // const CheckIfIsLoggedId = () => authentication_token !== undefined ?
   const Toggle = () => (!isOpen ? setIsOpen(true) : setIsOpen(false));
+  const ChangeCategory = (cat: string) => navigation(`/shop/${cat}`);
 
   const dropDownClass = "my-1 hover:bg-deep-gray-50 py-1 rounded-md";
   return (
     <>
-      <nav className="w-screen relative md:sticky top-0 z-20 bg-white">
+      <nav className="w-screen relative md:sticky -top-16 z-50 bg-white">
         <div className=" flex flex-col gap-2">
           <div className="border-b border-deep-gray-50">
-            <div className="w-full md:w-10/12 px-5 py-3 md:py-4 mx-auto flex items-center justify-between">
+            <div className="w-full md:w-11/12 px-5 py-3 md:py-4 md:px-14 mx-auto flex items-center justify-between">
               <Link
                 to="/"
                 className="font-bold text-3xl flex items-center gap-2"
@@ -41,16 +41,16 @@ export default function Navbar() {
                 <input
                   type="text"
                   placeholder="Search for products"
-                  className="py-2 w-96 text-dark-gray-100 outline-none"
+                  className="py-2 w-96 text-dark-gray-100 outline-none text-sm"
                 />
                 <FaSearch className="text-deep-gray-100" />
               </div>
               <div className="flex items-center text-deep-gray-100 gap-8">
                 <Link to="/shop/cart" className="relative">
-                  <span className="bg-[#198754] text-white text-xs px-1.5 py-0.5 rounded-full absolute -top-3 -right-3">
+                  <span className="bg-deep-red-100 text-white text-xs px-1.5 py-0.5 rounded-full absolute -top-3 -right-3">
                     {cartCount}
                   </span>
-                  <BiCartAdd size={23} />
+                  <BiCartAdd size={23} className="text-deep-blue-100" />
                 </Link>
                 <Button
                   onClick={Toggle}
@@ -62,7 +62,7 @@ export default function Navbar() {
               </div>
             </div>
           </div>
-          <div className="w-full md:w-10/12 mx-auto px-5 hidden md:flex gap-8 items-center pb-2">
+          <div className="w-full md:w-11/12 mx-auto md:px-14 px-5 hidden md:flex gap-8 items-center pb-2">
             <Dropdown>
               <DropdownTrigger>
                 <Button className="bg-deep-blue-100 text-white rounded-lg flex gap-2">
@@ -75,13 +75,14 @@ export default function Navbar() {
                 className="bg-white text-dark-gray-100 text-sm shadow rounded mt-1 px-2 min-w-[200px]"
               >
                 {dummyCategories.map((category) => (
-                  <DropdownItem key={category} className={dropDownClass}>
-                    <Link
-                      to={`/shop/${category}`}
-                      className="capitalize hover:border-deep-blue-100"
-                    >
-                      {category}
-                    </Link>
+                  <DropdownItem
+                    key={category}
+                    onClick={() => {
+                      ChangeCategory(category);
+                    }}
+                    className={dropDownClass}
+                  >
+                    {category}
                   </DropdownItem>
                 ))}
               </DropdownMenu>
@@ -174,13 +175,17 @@ export default function Navbar() {
                   aria-label="Static Actions"
                   className="bg-white text-dark-gray-100 text-sm mt-4 px-2 w-full"
                 >
-                  <DropdownItem className={dropDownClass}>Phones</DropdownItem>
-                  <DropdownItem className={dropDownClass}>
-                    Clothing
-                  </DropdownItem>
-                  <DropdownItem className={dropDownClass}>
-                    Jewelries
-                  </DropdownItem>
+                  {dummyCategories.map((category) => (
+                    <DropdownItem
+                      key={category}
+                      onClick={() => {
+                        ChangeCategory(category), setIsOpen(false);
+                      }}
+                      className={dropDownClass}
+                    >
+                      {category}
+                    </DropdownItem>
+                  ))}
                 </DropdownMenu>
               </Dropdown>
               <Dropdown className="w-screen">

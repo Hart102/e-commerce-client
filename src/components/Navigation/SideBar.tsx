@@ -1,9 +1,13 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { BiGridAlt, BiLogOut } from "react-icons/bi";
-import { Button } from "@nextui-org/react";
-// import ConfirmationModal from "@/components/Modal/ConfirmationModal";
+import { BiCartAdd, BiGridAlt, BiLogOut } from "react-icons/bi";
+import { Button, useDisclosure } from "@nextui-org/react";
 import { authentication_token } from "@/lib";
+import { FaTimes } from "react-icons/fa";
+import { ModalLayout } from "@/components/Modal";
+import ModalTemplates, {
+  changeModalContent,
+} from "@/components/Modal/CompleteModal";
 
 const checkAuthentication = (
   token: string | undefined,
@@ -27,18 +31,28 @@ export default function SideBar({
 }) {
   const location = useLocation();
   const navigation = useNavigate();
-  // const { isOpen, onOpen, onClose } = useDisclosure();
-  // const [message, setMessage] = useState<string>("");
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [currentTemplate, setCurrentTemplate] = useState<string>("");
+  const [response, setResponse] = useState({ isError: false, message: "" });
 
-  // const confirmLogout = () => {
-  //   setMessage("Are you sure you want to logout?");
-  //   onOpen();
-  // };
-
-  // const logout = () => {
-  //   onClose();
-  //   alert("Coming soon");
-  // };
+  const templates = ModalTemplates({
+    onCancle: onClose,
+    onContinue: () => logout(),
+    confirmationMessage: "Are you sure you want to logout ?",
+    response,
+  });
+  const handleChangeModalContent = (template: string) => {
+    changeModalContent({
+      template,
+      templates,
+      onOpen,
+      setCurrentTemplate,
+    });
+  };
+  const logout = () => {
+    onClose();
+    alert("Coming soon");
+  };
 
   useEffect(() => {
     checkAuthentication(authentication_token, navigation);
@@ -46,15 +60,25 @@ export default function SideBar({
 
   return (
     <>
-      <aside className="px-5 w-full flex flex-col gap-8">
+      <aside className="flex flex-col gap-8 px-4 md:px-0">
         <Link
           to="/dashboard_1/products"
           className={`text-2xl font-bold first-letter:text-3xl text-dark-gray-100 ${
             status ? "block" : "hidden"
           }`}
         >
-          Spline.One
+          <div className="flex items-center gap-3">
+            <BiCartAdd size={30} className="text-deep-blue-100" />
+            FresCart
+          </div>
         </Link>
+        <div className="flex md:hidden items-center justify-between">
+          <div className="flex items-center gap-3 text-2xl font-bold">
+            <BiCartAdd size={30} className="text-deep-blue-100" />
+            FresCart
+          </div>
+          <FaTimes onClick={closeMenu} />
+        </div>
         <div className="flex flex-col gap-4 justify-between text-dark-gray-100">
           <Link
             to="/dashboard_1/products"
@@ -79,7 +103,7 @@ export default function SideBar({
                     className={`flex items-center gap-2 p-2 rounded-lg ${
                       location.pathname.slice(urlCount).replace("-", " ") ==
                         link?.title.toLowerCase() &&
-                      "bg-deep-green-2001 bg-deep-green-50 text-deep-green-100"
+                      "bg-deep-green-2001 bg-deep-blue-100 text-white"
                     }`}
                   >
                     <link.icon size={18} />
@@ -91,8 +115,8 @@ export default function SideBar({
             <div className="border-b border-dotted bg-dark-gray-200 py-1 rounded"></div>
             <div>
               <Button
-                // onClick={confirmLogout}
-                className="flex items-center gap-2 rounded hover:bg-deep-green-200 hover:text-white"
+                onClick={() => handleChangeModalContent("02")}
+                className="flex items-center gap-2 rounded-lg border hover:border-deep-blue-100"
               >
                 <BiLogOut />
                 Log out
@@ -101,12 +125,9 @@ export default function SideBar({
           </div>
         </div>
       </aside>
-      {/* <ConfirmationModal
-        isOpen={isOpen}
-        onClose={onClose}
-        message={message}
-        onContinue={logout}
-      /> */}
+      <ModalLayout isOpen={isOpen} onClose={onClose}>
+        {templates[currentTemplate]}
+      </ModalLayout>
     </>
   );
 }

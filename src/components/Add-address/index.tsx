@@ -1,167 +1,146 @@
 import { useState } from "react";
-import {
-  Modal,
-  ModalContent,
-  ModalBody,
-  Button,
-  Input,
-} from "@nextui-org/react";
+import { Button, Input, useDisclosure } from "@nextui-org/react";
 import axios from "axios";
-import { FaTimes } from "react-icons/fa";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
 import { addAddressSchema } from "@/schema/addressSchema";
 import { api, authentication_token } from "@/lib";
-import ServerResponseModal from "@/components/Modal/ServerResponse";
+import { ModalLayout } from "@/components/Modal";
+import ModalTemplates, {
+  changeModalContent,
+} from "@/components/Modal/CompleteModal";
 
-export default function AddAddress({
-  isOpen,
-  onClose,
-}: {
-  isOpen: boolean;
-  onClose: () => void;
-}) {
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const [modalData, setModalData] = useState({ isError: false, message: "" });
+export default function AddAddress() {
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [currentTemplate, setCurrentTemplate] = useState<string>("");
+  const [response, setResponse] = useState({ isError: false, message: "" });
 
+  const templates = ModalTemplates({
+    onCancle: onClose,
+    onContinue: () => console.log("clicked"),
+    confirmationMessage: "",
+    response,
+  });
+  const handleChangeModalContent = (template: string) => {
+    changeModalContent({
+      template,
+      templates,
+      onOpen,
+      setCurrentTemplate,
+    });
+  };
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm<addAddressSchema>({ resolver: yupResolver(addAddressSchema) });
 
   const onSubmit = async (data: addAddressSchema) => {
+    handleChangeModalContent("01");
     const request = await axios.post(`${api}/user/add-address`, data, {
       headers: { Authorization: authentication_token },
     });
     const response = await request.data;
-
+    handleChangeModalContent("03");
     if (response.error) {
-      setModalData({ isError: true, message: response.error });
-      setIsModalOpen(true);
+      setResponse({ isError: true, message: response.error });
     } else {
-      setModalData({ isError: false, message: response.message });
-      setIsModalOpen(true);
-      onClose();
+      reset();
+      setResponse({ isError: false, message: response.message });
     }
   };
-
   const InputProps = {
     label: "mb-16",
     inputWrapper: "px-0 flex",
-    input: "p-2 outline-none border- bg-deep-gray-50",
-    base: "text-sm text-neutral-5001 mb-2 py-2",
+    input: "p-2 outline-none bg-deep-gray-200 rounded-lg",
+    base: "text-sm mb-2 py-2",
   };
   return (
     <>
-      <Modal
-        size={"2xl"}
-        isOpen={isOpen}
-        onClose={onClose}
-        classNames={{ closeButton: "hidden" }}
-        className="fixed top-0 -left-1 h-screen w-screen bg-overLay"
-      >
-        <ModalContent className="flex flex-col justify-center items-center">
-          {(onClose) => (
-            <div className="w-full md:w-6/12 mx-auto">
-              <ModalBody>
-                <form className="bg-white rounded-lg p-5 flex flex-col gap-12 relative">
-                  <div>
-                    <div className="flex justify-end">
-                      <FaTimes
-                        size={30}
-                        onClick={onClose}
-                        className="border rounded-full p-2 cursor-pointer"
-                      />
-                    </div>
-                    <div className="flex flex-col gap-1 md:px-10">
-                      <h1 className="text-3xl font-bold">
-                        New Shipping Address
-                      </h1>
-                      <p>Add new shipping address for your order delivery.</p>
-                    </div>
-                  </div>
-                  <div className="md:px-10 md:py-2">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-2 [&_span]:text-red-500 [&_span]:text-xs">
-                      <div>
-                        <Input
-                          label="Address"
-                          placeholder="No, 7 aba oweri road"
-                          classNames={InputProps}
-                          {...register("address")}
-                        />
-                        <span>{errors?.address?.message}</span>
-                      </div>
-                      <div>
-                        <Input
-                          label="City"
-                          placeholder="Aba"
-                          classNames={InputProps}
-                          {...register("city")}
-                        />
-                        <span>{errors?.city?.message}</span>
-                      </div>
-                      <div>
-                        <Input
-                          label="State"
-                          placeholder="Abia state"
-                          classNames={InputProps}
-                          {...register("state")}
-                        />
-                        <span>{errors?.state?.message}</span>
-                      </div>
-
-                      <div>
-                        <Input
-                          label="Country"
-                          placeholder="Nigeria"
-                          classNames={InputProps}
-                          {...register("country")}
-                        />
-                        <span>{errors?.country?.message}</span>
-                      </div>
-                      <div>
-                        <Input
-                          label="Zip Code"
-                          placeholder="11400"
-                          classNames={InputProps}
-                          {...register("zipcode")}
-                        />
-                        <span>{errors?.zipcode?.message}</span>
-                      </div>
-                      <div>
-                        <Input
-                          label="Phone Number"
-                          placeholder="+234 456 789"
-                          classNames={InputProps}
-                          {...register("phone")}
-                        />
-                        <span>{errors?.phone?.message}</span>
-                      </div>
-                    </div>
-                    <div>
-                      <Button
-                        variant="light"
-                        onClick={handleSubmit(onSubmit)}
-                        className="bg-deep-green-200 font-semibold text-white rounded-full px-20 mt-5"
-                      >
-                        SAVE
-                      </Button>
-                    </div>
-                  </div>
-                </form>
-              </ModalBody>
+      <div className="w-full text-dark-gray-100">
+        <form className="flex flex-col gap-8 relative">
+          <div>
+            <div className="flex flex-col gap-1 text-start">
+              <h1 className="text-xl font-bold">Shipping address</h1>
+              <p className="text-sm">
+                Add new shipping address for your order delivery.
+              </p>
             </div>
-          )}
-        </ModalContent>
-      </Modal>
+          </div>
+          <div className="md:py-2">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-2 [&_span]:text-red-500 [&_span]:text-xs">
+              <div>
+                <Input
+                  label="Address"
+                  placeholder="No, 7 aba oweri road"
+                  classNames={InputProps}
+                  {...register("address")}
+                />
+                <span>{errors?.address?.message}</span>
+              </div>
+              <div>
+                <Input
+                  label="City"
+                  placeholder="Aba"
+                  classNames={InputProps}
+                  {...register("city")}
+                />
+                <span>{errors?.city?.message}</span>
+              </div>
+              <div>
+                <Input
+                  label="State"
+                  placeholder="Abia state"
+                  classNames={InputProps}
+                  {...register("state")}
+                />
+                <span>{errors?.state?.message}</span>
+              </div>
+              <div>
+                <Input
+                  label="Country"
+                  placeholder="Nigeria"
+                  classNames={InputProps}
+                  {...register("country")}
+                />
+                <span>{errors?.country?.message}</span>
+              </div>
+              <div>
+                <Input
+                  label="Zip Code"
+                  placeholder="11400"
+                  classNames={InputProps}
+                  {...register("zipcode")}
+                />
+                <span>{errors?.zipcode?.message}</span>
+              </div>
+              <div>
+                <Input
+                  label="Phone Number"
+                  placeholder="+234 456 789"
+                  classNames={InputProps}
+                  {...register("phone")}
+                />
+                <span>{errors?.phone?.message}</span>
+              </div>
+            </div>
+            <div className="flex">
+              <Button
+                variant="light"
+                onClick={handleSubmit(onSubmit)}
+                className="bg-deep-blue-100 font-semibold text-white rounded-lg px-20 mt-5"
+              >
+                SAVE
+              </Button>
+            </div>
+          </div>
+        </form>
+      </div>
 
-      <ServerResponseModal
-        isError={modalData.isError}
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        message={modalData.message}
-      />
+      <ModalLayout isOpen={isOpen} onClose={onClose}>
+        {templates[currentTemplate]}
+      </ModalLayout>
     </>
   );
 }

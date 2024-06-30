@@ -48,8 +48,6 @@ export default function SingleProduct() {
     }
   };
 
-  // const SelectProduct = (product: ProductType) => setProduct(product);
-
   useEffect(() => {
     if (location.state == undefined) return navigation("/");
     setProduct(location.state);
@@ -128,58 +126,12 @@ export default function SingleProduct() {
             </div>
           </div>
         </div>
-
-        <div>
+        <div className="md:px-10">
           <h2 className="font-bold text-2xl md:text-3xl mb-5 md:mb-10">
             Related Items
           </h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <ProductTemplate
-              onclick={() => console.log("open")}
-              products={relatedProducts}
-            />
-            {/* {relatedProducts.length &&
-              relatedProducts.map((item) => (
-                <div
-                  key={item.id}
-                  onClick={() => SelectProduct(item)}
-                  className="p-4 flex flex-col items-center gap-5 rounded-lg shadow-md 
-                  bg-white border border-transparent hover:border-deep-blue-100 cursor-pointer"
-                >
-                  <img
-                    width={150}
-                    src={imageUrl(item?.images[0] || "")}
-                    className="rounded-lg"
-                  />
-                  <div className="w-full mt-2">
-                    <p className="text-sm text-deep-gray-100 capitalize">
-                      {item?.category}
-                    </p>
-                    <b className="capitalize text-xl1 font-bold">
-                      {item?.name}
-                    </b>
-                    <div className="flex flex-wrap items-center gap-2 md:gap-5">
-                      <div className="flex gap-2 text-yellow-500">
-                        <BiStar />
-                        <BiStar />
-                        <BiStar />
-                        <BiStar />
-                        <BiStar />
-                      </div>
-                      <p className="text-sm">4.5</p>
-                    </div>
-                  </div>
-                  <div className="w-full flex items-center justify-between">
-                    <b>{item?.price}</b>
-                    <Button
-                      size="sm"
-                      className="bg-deep-blue-100 text-white text-sm font-semibold rounded"
-                    >
-                      Add
-                    </Button>
-                  </div>
-                </div>
-              ))} */}
+            <ProductTemplate products={relatedProducts} />
           </div>
         </div>
       </div>
