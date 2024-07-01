@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Dropdown,
   DropdownTrigger,
@@ -10,12 +10,25 @@ import { Link, useNavigate } from "react-router-dom";
 import { FaAngleDown, FaSearch, FaTimes } from "react-icons/fa";
 import { BiCartAdd, BiMenuAltLeft, BiGridAlt } from "react-icons/bi";
 import { authentication_token, getCartCount } from "@/lib";
+import axios from "axios";
+import { api } from "@/lib";
+import { CategoryWithProductCount } from "@/types/index";
 
 export default function Navbar() {
   const navigation = useNavigate();
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [cartCount, setCartCount] = useState<string | number>();
-  const dummyCategories = ["clothings", "jewelry", "wrist watch", "phones"];
+  const [categories, setCategories] = useState<CategoryWithProductCount[]>([]);
+
+  useEffect(() => {
+    const FetchCategories = async () => {
+      const { data } = await axios.get(`${api}/categories/fetch-all-categorie`);
+      if (!data.error) {
+        setCategories(data);
+      }
+    };
+    FetchCategories();
+  }, []);
 
   setInterval(() => {
     setCartCount(getCartCount());
@@ -35,7 +48,7 @@ export default function Navbar() {
                 className="font-bold text-3xl flex items-center gap-2"
               >
                 <BiCartAdd size={30} className="text-deep-blue-100" />
-                FresCart
+                FreshCart
               </Link>
               <div className="w-5/12 hidden md:flex items-center justify-between border rounded-lg px-4 bg-white">
                 <input
@@ -70,22 +83,24 @@ export default function Navbar() {
                   All Departments
                 </Button>
               </DropdownTrigger>
-              <DropdownMenu
-                aria-label="Static Actions"
-                className="bg-white text-dark-gray-100 text-sm shadow rounded mt-1 px-2 min-w-[200px]"
-              >
-                {dummyCategories.map((category) => (
-                  <DropdownItem
-                    key={category}
-                    onClick={() => {
-                      ChangeCategory(category);
-                    }}
-                    className={dropDownClass}
-                  >
-                    {category}
-                  </DropdownItem>
-                ))}
-              </DropdownMenu>
+              {categories && categories.length > 0 && (
+                <DropdownMenu
+                  aria-label="Static Actions"
+                  className="bg-white capitalize text-dark-gray-100 text-sm shadow rounded mt-1 px-2 min-w-[200px]"
+                >
+                  {categories.map((category) => (
+                    <DropdownItem
+                      key={category.id}
+                      onClick={() => {
+                        ChangeCategory(category.name);
+                      }}
+                      className={dropDownClass}
+                    >
+                      {category.name}
+                    </DropdownItem>
+                  ))}
+                </DropdownMenu>
+              )}
             </Dropdown>
             <Dropdown>
               <DropdownTrigger>
@@ -172,22 +187,24 @@ export default function Navbar() {
                     All Departments
                   </Button>
                 </DropdownTrigger>
-                <DropdownMenu
-                  aria-label="Static Actions"
-                  className="bg-white text-dark-gray-100 text-sm mt-4 px-2 w-full"
-                >
-                  {dummyCategories.map((category) => (
-                    <DropdownItem
-                      key={category}
-                      onClick={() => {
-                        ChangeCategory(category), setIsOpen(false);
-                      }}
-                      className={dropDownClass}
-                    >
-                      {category}
-                    </DropdownItem>
-                  ))}
-                </DropdownMenu>
+                {categories && categories.length > 0 && (
+                  <DropdownMenu
+                    aria-label="Static Actions"
+                    className="bg-white capitalize text-dark-gray-100 text-sm shadow rounded mt-1 px-2 min-w-[200px]"
+                  >
+                    {categories.map((category) => (
+                      <DropdownItem
+                        key={category.id}
+                        onClick={() => {
+                          ChangeCategory(category.name);
+                        }}
+                        className={dropDownClass}
+                      >
+                        {category.name}
+                      </DropdownItem>
+                    ))}
+                  </DropdownMenu>
+                )}
               </Dropdown>
               <Dropdown className="w-screen">
                 <DropdownTrigger>

@@ -82,3 +82,11 @@ export type CustomerOrderType = {
   user_id: number;
   zipe_code?: string;
 };
+
+export type CategoryWithProductCount = {
+  id: number;
+  name: string;
+  status: "published" | "unpublished";
+  createdAt: Date;
+  product_count: number;
+};

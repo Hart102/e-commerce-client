@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
+import axios from "axios";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { BiCartAdd, BiGridAlt, BiLogOut } from "react-icons/bi";
+import { BiGridAlt, BiLogOut } from "react-icons/bi";
 import { Button, useDisclosure } from "@nextui-org/react";
-import { authentication_token } from "@/lib";
+import { api, authentication_token } from "@/lib";
 import { FaTimes } from "react-icons/fa";
 import { ModalLayout } from "@/components/Modal";
 import ModalTemplates, {
@@ -49,8 +50,17 @@ export default function SideBar({
       setCurrentTemplate,
     });
   };
-  const logout = () => {
-    onClose();
+  const logout = async () => {
+    const { data } = await axios.get(`${api}`, {
+      headers: { Authorization: authentication_token },
+    });
+    if (data.error) {
+      setResponse({ isError: true, message: data.error });
+      handleChangeModalContent("03");
+    } else {
+      localStorage.removeItem("authentication_token");
+      navigation("/login");
+    }
     alert("Coming soon");
   };
 
@@ -67,14 +77,15 @@ export default function SideBar({
             status ? "block" : "hidden"
           }`}
         >
-          <div className="flex items-center gap-3">
-            <BiCartAdd size={30} className="text-deep-blue-100" />
-            FresCart
-          </div>
+          <p className="hidden md:block text-2xl ml-2 text-dark-gray-100 font-semibold first-letter:uppercase">
+            {location.pathname.slice(11).replace("-", " ")}
+          </p>
         </Link>
-        <div className="flex md:hidden items-center justify-end">
-          <FaTimes onClick={closeMenu} />
-        </div>
+        {!status && (
+          <div className="flex md:hidden items-center justify-end mt-4">
+            <FaTimes onClick={closeMenu} />
+          </div>
+        )}
         <div className="flex flex-col gap-4 justify-between text-dark-gray-100">
           <Link
             to="/dashboard_1/products"

@@ -3,6 +3,7 @@ import Navbar from "@/components/Navigation/NewNavbar";
 import Footer from "@/components/Footer";
 
 export default function MainLayout() {
+ 
   return (
     <div className="w-screen">
       <Navbar />

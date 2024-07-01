@@ -1,16 +1,18 @@
 import { Avatar, Badge } from "@nextui-org/react";
-import { BiBell, BiMenuAltLeft } from "react-icons/bi";
-import { useLocation } from "react-router-dom";
+import { BiBell, BiCartAdd, BiMenuAltLeft } from "react-icons/bi";
+import { Link } from "react-router-dom";
 
 export default function Header({ onclick }: { onclick: () => void }) {
-  const location = useLocation();
-
   return (
     <nav className="bg-white rounded-tr-xl px-5">
       <div className="container mx-auto flex justify-between items-center">
-        <p className="text-2xl text-dark-gray-100 font-semibold first-letter:uppercase">
-          {location.pathname.slice(11).replace("-", " ")}
-        </p>
+        <Link
+          to="/"
+          className="font-bold text-3xl hidden md:flex items-center gap-2"
+        >
+          <BiCartAdd size={30} className="text-deep-blue-100" />
+          FresCart
+        </Link>
         <div className="flex justify-end md:hidden">
           <BiMenuAltLeft size={23} onClick={onclick} />
         </div>

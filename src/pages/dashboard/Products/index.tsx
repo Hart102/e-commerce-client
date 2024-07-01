@@ -12,6 +12,7 @@ import {
   TableColumn,
   TableHeader,
   TableRow,
+  Spinner,
   useDisclosure,
 } from "@nextui-org/react";
 import { useNavigate, Link } from "react-router-dom";
@@ -108,13 +109,11 @@ export default function Products() {
     FetchProducts();
   }, []);
 
-  return isLoading ? (
-    <p className="text-2xl text-neutral-400">Loading...</p>
-  ) : (
+  return (
     <>
       <div className="flex flex-col gap-4">
-        <div className="hidden px-4 md:flex items-center justify-between">
-          <form className="flex w-1/2 items-center gap-2 border rounded-lg px-2">
+        <div className="px-4 flex flex-col gap-2 md:flex-row items-center justify-between">
+          <form className="flex w-full md:w-1/2 items-center gap-2 border rounded-lg px-2">
             <Input
               size="sm"
               type="search"
@@ -129,10 +128,10 @@ export default function Products() {
               onValueChange={setQuery}
             />
           </form>
-          <div>
+          <div className="w-full md:w-fit">
             <Link
               to="/dashboard/product/create"
-              className="py-2 px-2 rounded-lg flex items-center gap-1 font-semibold bg-deep-blue-100 text-white"
+              className="py-2 px-2 rounded-lg flex items-center justify-center gap-1 font-semibold bg-deep-blue-100 text-white"
             >
               <BiAddToQueue />
               <p className="text-sm">ADD PRODUCT</p>
@@ -142,6 +141,7 @@ export default function Products() {
         <div>
           <Table
             classNames={{
+              base: "overflow-x-scroll md:overflow-x-auto",
               th: "capitalize bg-dark-gray-200",
               tbody: "py-4 text-sm text-center",
               td: "first-letter:capitalize",
@@ -160,14 +160,18 @@ export default function Products() {
               <TableColumn>Actions</TableColumn>
             </TableHeader>
             {products && products?.length > 0 ? (
-              <TableBody>
+              <TableBody
+                isLoading={isLoading}
+                loadingContent={<Spinner label="Loading..." />}
+              >
                 {searchResult.map((product, index) => (
-                  <TableRow key={product?.id}>
+                  <TableRow key={product?.id} className="hover:bg-deep-gray-50">
                     <TableCell>
-                      <div className="flex gap-4 items-center">
+                      <div className="md:flex gap-4 items-center">
                         {product?.images && product?.images?.length > 0 && (
                           <Image
                             src={imageUrl(product?.images[0])}
+                            className="hidden md:block"
                             classNames={{
                               img: "rounded-full h-[50px] w-[50px]",
                             }}

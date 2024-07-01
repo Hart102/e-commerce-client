@@ -1,5 +1,9 @@
 import { Link } from "react-router-dom";
 import { Image } from "@nextui-org/react";
+import { api } from "@/lib";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { CategoryWithProductCount } from "@/types/index";
 
 import amazonImg from "@/assets/payment/amazonpay.svg";
 import americanExpress from "@/assets/payment/american-express.svg";
@@ -11,8 +15,6 @@ import appStore from "@/assets/appbutton/appstore-btn.svg";
 import googlePlay from "@/assets/appbutton/googleplay-btn.svg";
 
 import { FaTwitter, FaFacebook, FaInstagram } from "react-icons/fa";
-
-const dummyCategories = ["clothings", "jewelry", "wrist watch", "phones"];
 
 const about = [
   { href: "#", title: "About" },
@@ -46,18 +48,31 @@ const payments = [
 ];
 
 export default function Footer() {
+  const [categories, setCategories] = useState<CategoryWithProductCount[]>([]);
+
+  useEffect(() => {
+    const FetchCategories = async () => {
+      const { data } = await axios.get(`${api}/categories/fetch-all-categorie`);
+      if (!data.error) {
+        setCategories(data);
+      }
+    };
+    FetchCategories();
+  }, []);
   return (
     <footer className="px-4 py-10 flex flex-col gap-8 bg-deep-gray-200 text-dark-gray-100">
       <div className="w-full md:w-11/12 md:px-12 mx-auto [&_h2]:font-semibold grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8">
         <div className="flex flex-col gap-3 text-sm capitalize">
           <h2>Categories</h2>
-          {dummyCategories.map((item) => (
-            <ul key={item}>
-              <li>
-                <Link to={`/shop/${item}`}>{item}</Link>
-              </li>
-            </ul>
-          ))}
+          {categories &&
+            categories.length > 0 &&
+            categories.map((cat) => (
+              <ul key={cat.name}>
+                <li>
+                  <Link to={`/shop/${cat.name}`}>{cat.name}</Link>
+                </li>
+              </ul>
+            ))}
         </div>
         <div className="flex flex-col gap-4">
           <h2>Get to know us </h2>

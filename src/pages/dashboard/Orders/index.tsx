@@ -108,14 +108,14 @@ export default function Orders() {
 
   return (
     <>
-      <div className="bg-white text-dark-gray-100 flex flex-col">
-        <form className="flex w-1/2 items-center gap-2 border rounded-lg px-2 md:ml-4">
+      <div className="bg-white text-dark-gray-100 flex flex-col gap-4">
+        <form className="w-full md:w-1/2 px-4">
           <Input
             size="sm"
             type="search"
-            placeholder="Search by Name or order Id"
+            placeholder="Search category by name"
             classNames={{
-              base: "h-10 text-sm outline-0",
+              base: "h-10 text-sm outline-0 border rounded-lg",
               mainWrapper: "h-full",
               input: "text-small",
               inputWrapper: "h-full font-normal hover:border-0",
@@ -126,7 +126,7 @@ export default function Orders() {
         </form>
         <Table
           classNames={{
-            base: "text-center",
+            base: "text-center overflow-x-scroll md:overflow-x-auto",
             th: "capitalize bg-dark-gray-200",
             tbody: "capitalize py-4 text-sm",
           }}
@@ -143,11 +143,12 @@ export default function Orders() {
           {searchResult && searchResult.length > 0 ? (
             <TableBody>
               {searchResult.map((order, index) => (
-                <TableRow key={order?.id}>
+                <TableRow key={order?.id} className="hover:bg-deep-gray-50">
                   <TableCell>
-                    <div className="flex items-center gap-4">
+                    <div className="md:flex items-center gap-4">
                       <Image
                         src={imageUrl(order?.images[0])}
+                        className="hidden md:block"
                         classNames={{ img: "rounded-full h-[50px] w-[50px]" }}
                       />
                       {order?.name}

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { useLocation } from "react-router-dom";
 import { Input, Button, useDisclosure } from "@nextui-org/react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
@@ -10,30 +11,11 @@ import ModalTemplates, {
 } from "@/components/Modal/CompleteModal";
 import { api, authentication_token } from "@/lib";
 
-type CategoryWithProductCount = {
-  id: number;
-  name: string;
-  status: "published" | "unpublished";
-  createdAt: Date;
-  product_count: number;
-};
-
-export default function AddCategory({
-  close,
-  category,
-}: {
-  close: () => void;
-  category?: CategoryWithProductCount;
-}) {
+export default function EditAndEditCategory() {
+  const location = useLocation();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [currentTemplate, setCurrentTemplate] = useState<string>("");
   const [response, setResponse] = useState({ isError: false, message: "" });
-
-  useEffect(() => {
-    if (category) {
-      console.log("EDit:", category);
-    }
-  }, []);
 
   const templates = ModalTemplates({
     onCancle: onClose,
@@ -41,7 +23,6 @@ export default function AddCategory({
     confirmationMessage: "",
     response,
   });
-
   const handleChangeModalContent = (template: string) => {
     changeModalContent({
       template,
@@ -50,17 +31,36 @@ export default function AddCategory({
       setCurrentTemplate,
     });
   };
-
   const {
     register,
     handleSubmit,
     reset,
+    setValue,
     formState: { errors },
-  } = useForm<addCategorySchema>({ resolver: yupResolver(addCategorySchema) });
+  } = useForm<addCategorySchema>({
+    resolver: yupResolver(addCategorySchema),
+    defaultValues: {
+      name: location.state?.name || "",
+      status: location.state?.status || "active" || "disabled",
+    },
+  });
+
+  useEffect(() => {
+    if (location.state !== null) {
+      const { name, status } = location.state;
+      setValue("name", name);
+      setValue("status", status);
+    }
+  }, []);
+
+  const endpoint =
+    location.state == null
+      ? `${api}/categories/create`
+      : `${api}/categories/edit/${location.state.id}`;
 
   const handleApiRequest = async (data: addCategorySchema) => {
     handleChangeModalContent("01");
-    const request = await axios.put(`${api}/categories/create`, data, {
+    const request = await axios.post(endpoint, data, {
       headers: { Authorization: authentication_token },
     });
     const response = request.data;
@@ -76,62 +76,58 @@ export default function AddCategory({
   };
 
   const onSubmit = async (data: addCategorySchema) => {
-    handleApiRequest(data);
+    if (location.state !== null) {
+      handleApiRequest(data);
+    } else {
+      handleApiRequest(data);
+    }
   };
 
   return (
     <>
-      <form className="pt-4 pb-8 flex flex-col gap-4 text-sm [&_span]:text-red-500 [&_span]:text-xs">
-        <div className="flex flex-col gap-4 px-4">
-          <div>
-            <p className="text-lg font-semibold mb-5 text-dark-gray-100">
-              Create Product Categories
-            </p>
-          </div>
-          <div>
-            <Input
-              placeholder="Category Name"
-              classNames={{
-                inputWrapper: "px-0",
-                input: "bg-white rounded-lg outline-none px-2",
-              }}
-              {...register("name")}
-            />
-            {errors?.name?.message && <span>{errors?.name?.message}</span>}
-          </div>
-          <div className="[&_label]:cursor-pointer flex items-center gap-4 text-neutral-500">
+      <form className="min-h-[80vh] flex1 items-center text-dark-gray-100 [&_span]:text-deep-red-100 [&_span]:text-xs">
+        <div className="w-full md:w-7/12 mx-auto1 flex flex-col gap-4 rounded-lg py-10 px-5 text-sm">
+          <h1 className="text-2xl font-semibold">Create Products Category</h1>
+          <Input
+            placeholder="Category Name"
+            classNames={{
+              inputWrapper: "px-0",
+              input: "bg-white rounded-lg outline-none px-2 border",
+            }}
+            {...register("name")}
+          />
+          {errors?.name?.message && <span>{errors?.name?.message}</span>}
+
+          <div className="flex items-center gap-2">
             <div className="flex gap-2 items-center">
               <input
                 type="radio"
                 id="active"
-                value="published"
+                value="active"
                 {...register("status")}
               />
-              <label htmlFor="active" className="text-app-gray-200">
-                Publish
-              </label>
+              <label htmlFor="active">Activate</label>
             </div>
             <div className="flex gap-2 items-center">
               <input
                 type="radio"
-                id="unpublished"
-                value="unpublished"
+                id="disabled"
+                value="disabled"
                 {...register("status")}
               />
-              <label htmlFor="unpublished" className="text-app-gray-200">
-                Unpublished
-              </label>
+              <label htmlFor="disabled">Disable</label>
             </div>
+            {errors?.status?.message && <span>{errors?.status?.message}</span>}
           </div>
-          {errors?.status?.message && <span>{errors?.status?.message}</span>}
-        </div>
-        <div className="px-4">
-          <Button
-            onClick={handleSubmit(onSubmit)}
-            className="w-full bg-deep-green-50 rounded font-semibold text-dark-gray-100"
-          >
-            CREATE
-          </Button>
+          <div>
+            <Button
+              onClick={handleSubmit(onSubmit)}
+              className="w-full md:w-1/2 rounded-lg font-semibold
+               border border-deep-blue-100 hover:bg-deep-blue-100 hover:text-white"
+            >
+              CREATE
+            </Button>
+          </div>
         </div>
       </form>
       <ModalLayout isOpen={isOpen} onClose={onClose}>

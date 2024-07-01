@@ -145,7 +145,7 @@ export default function SingleOrder() {
               <div className="overflow-x-scroll">
                 <Table
                   classNames={{
-                    base: "text-center",
+                    base: "text-center overflow-x-scroll md:overflow-x-auto",
                     th: "capitalize bg-dark-gray-200",
                     tbody: "capitalize py-4 bg-white text-sm",
                   }}
