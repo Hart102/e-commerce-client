@@ -12,6 +12,7 @@ const getauthentication_tokenFromCookieStorage = () => {
   });
   return cookieMap;
 };
+
 export const authentication_token =
   getauthentication_tokenFromCookieStorage()["online_store"];
 
@@ -31,7 +32,6 @@ export const divideAndInsertBr = (text: string) => {
   if (text.length <= 41) {
     return text;
   }
-
   const middleIndex = Math.floor(text.length / 2);
   const spaceIndexBefore = text.lastIndexOf(" ", middleIndex);
   const spaceIndexAfter = text.indexOf(" ", middleIndex);
@@ -49,10 +49,8 @@ export const divideAndInsertBr = (text: string) => {
         ? spaceIndexBefore
         : spaceIndexAfter;
   }
-
   const firstPart = text.substring(0, insertIndex);
   const secondPart = text.substring(insertIndex + 1);
-
   return `${firstPart}<br>${secondPart}`;
 };
 

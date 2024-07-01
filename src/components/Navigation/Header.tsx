@@ -1,8 +1,8 @@
 import { Avatar, Badge } from "@nextui-org/react";
-import { BiBell } from "react-icons/bi";
+import { BiBell, BiMenuAltLeft } from "react-icons/bi";
 import { useLocation } from "react-router-dom";
 
-export default function Header() {
+export default function Header({ onclick }: { onclick: () => void }) {
   const location = useLocation();
 
   return (
@@ -11,6 +11,9 @@ export default function Header() {
         <p className="text-2xl text-dark-gray-100 font-semibold first-letter:uppercase">
           {location.pathname.slice(11).replace("-", " ")}
         </p>
+        <div className="flex justify-end md:hidden">
+          <BiMenuAltLeft size={23} onClick={onclick} />
+        </div>
 
         <div className="flex items-center gap-6">
           <div className="flex items-start">

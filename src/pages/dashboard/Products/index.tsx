@@ -58,7 +58,6 @@ export default function Products() {
     confirmationMessage: "Are you sure you want to delete this product ?",
     response,
   });
-
   const handleChangeModalContent = (template: string) => {
     changeModalContent({
       template,
@@ -113,7 +112,7 @@ export default function Products() {
     <p className="text-2xl text-neutral-400">Loading...</p>
   ) : (
     <>
-      <div className="bg-white text-dark-gray-100 rounded-xl flex flex-col">
+      <div className="flex flex-col gap-4">
         <div className="hidden px-4 md:flex items-center justify-between">
           <form className="flex w-1/2 items-center gap-2 border rounded-lg px-2">
             <Input
@@ -133,7 +132,7 @@ export default function Products() {
           <div>
             <Link
               to="/dashboard/product/create"
-              className="py-2 px-2 rounded-lg flex items-center gap-1 font-semibold bg-deep-green-50 text-deep-green-100"
+              className="py-2 px-2 rounded-lg flex items-center gap-1 font-semibold bg-deep-blue-100 text-white"
             >
               <BiAddToQueue />
               <p className="text-sm">ADD PRODUCT</p>

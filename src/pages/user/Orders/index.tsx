@@ -52,9 +52,12 @@ export default function Orders() {
   }, []);
 
   const FetchOrders = async () => {
-    const { data } = await axios.get(`${api}/transactions/fetch-all-orders`, {
-      headers: { Authorization: authentication_token },
-    });
+    const { data } = await axios.get(
+      `${api}/transactions/fetch-order-by-userId`,
+      {
+        headers: { Authorization: authentication_token },
+      }
+    );
     if (data.error) {
       setResponse({ isError: true, message: data.error });
       handleChangeModalContent("03");
@@ -63,7 +66,6 @@ export default function Orders() {
       setOrders(data);
     }
   };
-
   const DeleteOrder = async () => {
     handleChangeModalContent("01");
     const { data } = await axios.delete(
@@ -82,14 +84,12 @@ export default function Orders() {
       handleChangeModalContent("03");
     }
   };
-
   const templates = ModalTemplates({
     onCancle: onClose,
     onContinue: () => DeleteOrder(),
     confirmationMessage: "Are you sure you want to delete this ?",
     response,
   });
-
   const handleChangeModalContent = (template: string) => {
     changeModalContent({
       template,
@@ -98,13 +98,12 @@ export default function Orders() {
       setCurrentTemplate,
     });
   };
-
   const openDeleteModal = (index: number) => {
     setIndex(index);
     handleChangeModalContent("02");
   };
-  const viewProduct = (id: string) =>
-    navigation("/dashboard/order", { state: id });
+  const ViewOrder = (id: string) =>
+    navigation("/user/dashboard/single-order", { state: id });
 
   return (
     <>
@@ -179,13 +178,13 @@ export default function Orders() {
                         className="z-10 bg-white text-sm"
                       >
                         <DropdownItem
-                          className="py-1 my-1 rounded text-deep-green-100 hover:bg-deep-green-50"
-                          onClick={() => viewProduct(order?.id)}
+                          className="py-1 my-1 rounded hover:bg-deep-blue-100 hover:text-white"
+                          onClick={() => ViewOrder(order?.id)}
                         >
-                          View
+                          View Order
                         </DropdownItem>
                         <DropdownItem
-                          className="py-1 my-1 rounded text-deep-green-100 hover:bg-deep-green-50"
+                          className="py-1 my-1 rounded hover:bg-deep-blue-100 hover:text-white"
                           onClick={() => openDeleteModal(index)}
                         >
                           Delete

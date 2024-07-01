@@ -15,12 +15,16 @@ import ModalTemplates, {
 } from "@/components/Modal/CompleteModal";
 
 const links = [
-  { icon: BiCartAdd, title: "Your Orders", href: "" },
+  {
+    icon: BiCartAdd,
+    title: "Your Orders",
+    href: "/user/dashboard/your-orders",
+  },
   { icon: FaToggleOn, title: "Settings", href: "/user/dashboard/settings" },
   {
     icon: BiCreditCard,
-    title: "Payment method",
-    href: "/user/dashboard/payment-method",
+    title: "Profile",
+    href: "/user/dashboard/profile",
   },
   { icon: FaMapMarkerAlt, title: "Address", href: "/user/dashboard/address" },
   { icon: BiBell, title: "Notification", href: "" },
@@ -115,7 +119,7 @@ export default function UserDasboardLayout() {
               closeMenu={() => toggle()}
             />
           </div>
-          <div className="w-full md:w-9/12 mx-auto flex flex-col gap-3">
+          <div className="w-full md:w-9/12 mx-auto flex flex-col gap-3 p-1">
             <div className="flex justify-end md:hidden">
               <BiMenuAltLeft size={23} onClick={toggle} />
             </div>

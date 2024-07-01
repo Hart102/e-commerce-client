@@ -26,7 +26,7 @@ export default function Navbar() {
   const dropDownClass = "my-1 hover:bg-deep-gray-50 py-1 rounded-md";
   return (
     <>
-      <nav className="w-screen relative md:sticky -top-16 z-50 bg-white">
+      <nav className="w-screen relative md:sticky md:-top-16 z-50 bg-white">
         <div className=" flex flex-col gap-2">
           <div className="border-b border-deep-gray-50">
             <div className="w-full md:w-11/12 px-5 py-3 md:py-4 md:px-14 mx-auto flex items-center justify-between">
@@ -57,7 +57,7 @@ export default function Navbar() {
                   size="sm"
                   className="px-0 block md:hidden"
                 >
-                  <BiMenuAltLeft size={23} />
+                  <BiMenuAltLeft size={23} className="text-dark-gray-100" />
                 </Button>
               </div>
             </div>
@@ -104,28 +104,29 @@ export default function Navbar() {
                     authentication_token == undefined ? "block" : "hidden"
                   }`}
                 >
-                  <Link to="">Signin</Link>
+                  Signin
                 </DropdownItem>
                 <DropdownItem
                   className={`${dropDownClass} ${
                     authentication_token !== undefined ? "block" : "hidden"
                   }`}
                 >
-                  <Link to="">Logout</Link>
+                  Logout
                 </DropdownItem>
                 <DropdownItem
                   className={`${dropDownClass} ${
                     authentication_token == undefined ? "block" : "hidden"
                   }`}
                 >
-                  <Link to="">Signup</Link>
+                  Signup
                 </DropdownItem>
                 <DropdownItem
+                  onClick={() => navigation("/user/dashboard/settings")}
                   className={`${dropDownClass} ${
                     authentication_token !== undefined ? "block" : "hidden"
                   }`}
                 >
-                  <Link to="">My Account</Link>
+                  My Account
                 </DropdownItem>
               </DropdownMenu>
             </Dropdown>
@@ -151,7 +152,7 @@ export default function Navbar() {
                 <FaTimes
                   onClick={Toggle}
                   size={23}
-                  className="text-deep-gray-100"
+                  className="text-dark-gray-100"
                 />
               </Button>
             </div>

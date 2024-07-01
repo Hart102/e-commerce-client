@@ -1,29 +1,33 @@
 import { createBrowserRouter } from "react-router-dom";
 import "./App.css";
 
-import MainLayout from "./layout/MainLayout";
-import Home from "./pages/Home";
-import Login from "./pages/login";
-import Categories_page from "./pages/categories";
-import SingleProduct from "./pages/Single";
-import Cart from "./pages/Cart";
-import Checkout from "./pages/Checkout";
+import MainLayout from "@/layout/MainLayout";
+import Home from "@/pages/Home";
+import Login from "@/pages/login";
+import Categories_page from "@/pages/categories";
+import SingleProduct from "@/pages/Single";
+import Cart from "@/pages/Cart";
+import Checkout from "@/pages/Checkout";
 
 // DASHBOARD
-import DashboardLayout from "./layout/DashboardLayout";
-import AddProduct from "./pages/dashboard/Add-product";
-import ProductsPage from "./pages/dashboard/Products";
-import Orders from "./pages/dashboard/Orders";
-import SingleOrder from "./pages/dashboard/SingleOrder";
-import Customers from "./pages/dashboard/Customers";
-import Categories from "./pages/dashboard/Categories";
-import ProductView from "./pages/dashboard/ProductView";
-import EditAndDeleteCategory from "./pages/createAndEditCategory";
+import DashboardLayout from "@/layout/DashboardLayout";
+import AddProduct from "@/pages/dashboard/Add-product";
+import ProductsPage from "@/pages/dashboard/Products";
+import Orders from "@/pages/dashboard/Orders";
+import Customers from "@/pages/dashboard/Customers";
+import Categories from "@/pages/dashboard/Categories";
+import ProductView from "@/pages/dashboard/ProductView";
+import EditAndDeleteCategory from "@/pages/createAndEditCategory";
+
+// Reused
+import SingleOrder from "@/pages/dashboard/SingleOrder";
 
 // USER
-import User from "./pages/user/Address";
-import UserDasboardLayout from "./layout/UserDasboardLayout";
-import PaymentMethod from "./pages/user/PaymentMethod";
+import UserDasboardLayout from "@/layout/UserDasboardLayout";
+import User from "@/pages/user/Address";
+import UserOrder from "@/layout/OrdersLayout/index";
+import Order from "@/pages/user/Orders";
+import PaymentMethod from "@/pages/user/Profile";
 import AccountSetting from "@/pages/user/AccountSetting";
 
 export const router = createBrowserRouter([
@@ -62,8 +66,19 @@ export const router = createBrowserRouter([
     path: "/user",
     element: <UserDasboardLayout />,
     children: [
+      {
+        path: "/user/dashboard",
+        element: <UserOrder />,
+        children: [
+          { path: "/user/dashboard/your-orders", element: <Order /> },
+          {
+            path: "/user/dashboard/single-order",
+            element: <SingleOrder />,
+          },
+        ],
+      },
       { path: "/user/dashboard/address", element: <User /> },
-      { path: "/user/dashboard/payment-method", element: <PaymentMethod /> },
+      { path: "/user/dashboard/profile", element: <PaymentMethod /> },
       { path: "/user/dashboard/settings", element: <AccountSetting /> },
     ],
   },

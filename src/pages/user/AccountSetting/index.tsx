@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import axios from "axios";
 import { Input, Button, useDisclosure } from "@nextui-org/react";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -21,6 +21,8 @@ export default function AccountSetting() {
     oldPassword: "",
     newPassword: "",
   });
+  const newPasswordRef = useRef(null);
+  const oldPasswordRef = useRef(null);
 
   const templates = ModalTemplates({
     onCancle: onClose,
@@ -49,7 +51,7 @@ export default function AccountSetting() {
       headers: { Authorization: authentication_token },
     });
     const response = request.data;
-
+    handleChangeModalContent("03");
     if (response.error) {
       setResponse({ isError: true, message: response.error });
     } else {
@@ -76,6 +78,10 @@ export default function AccountSetting() {
       setResponse({ isError: true, message: data.error });
     } else {
       setResponse({ isError: false, message: data.message });
+      // if (oldPasswordRef.current && newPasswordRef.current) {
+      //   oldPasswordRef.current.value = "";
+      //   newPasswordRef.current.value = "";
+      // }
     }
   };
 
@@ -89,7 +95,7 @@ export default function AccountSetting() {
   return (
     <>
       <div>
-        <div className="flex flex-col gap-8 [&_span]:text-xs [&_span]:text-red-500">
+        <div className="flex flex-col gap-8 [&_span]:text-xs [&_span]:text-deep-red-100">
           <h1 className="text-xl md:text-3xl font-bold">Account Setting</h1>
           <form className="w-full md:w-1/2">
             <div className="flex flex-col gap-4">
@@ -136,7 +142,8 @@ export default function AccountSetting() {
               <div>
                 <Input
                   type="password"
-                  label="Password"
+                  ref={oldPasswordRef}
+                  label="Old Password"
                   labelPlacement="outside"
                   placeholder="*****"
                   classNames={InputProps}
@@ -146,7 +153,8 @@ export default function AccountSetting() {
               <div>
                 <Input
                   type="password"
-                  label="New password"
+                  ref={newPasswordRef}
+                  label="New Password"
                   labelPlacement="outside"
                   placeholder="*****"
                   classNames={InputProps}

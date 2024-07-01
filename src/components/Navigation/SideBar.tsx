@@ -72,11 +72,7 @@ export default function SideBar({
             FresCart
           </div>
         </Link>
-        <div className="flex md:hidden items-center justify-between">
-          <div className="flex items-center gap-3 text-2xl font-bold">
-            <BiCartAdd size={30} className="text-deep-blue-100" />
-            FresCart
-          </div>
+        <div className="flex md:hidden items-center justify-end">
           <FaTimes onClick={closeMenu} />
         </div>
         <div className="flex flex-col gap-4 justify-between text-dark-gray-100">

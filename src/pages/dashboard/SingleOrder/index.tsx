@@ -12,8 +12,11 @@ import {
 } from "@nextui-org/react";
 import axios from "axios";
 import { api, authentication_token, dateOptions, imageUrl } from "@/lib";
-import { ModalLayout, ResponseModal } from "@/components/Modal";
 import { CustomerOrderType } from "@/types/index";
+import { ModalLayout } from "@/components/Modal";
+import ModalTemplates, {
+  changeModalContent,
+} from "@/components/Modal/CompleteModal";
 
 export type ModalTemplateType = {
   [key: string]: JSX.Element;
@@ -21,10 +24,10 @@ export type ModalTemplateType = {
 };
 
 export default function SingleOrder() {
-  const { isOpen, onOpen, onClose } = useDisclosure();
   const location = useLocation();
   const navigation = useNavigate();
-  const [currentTemplate, setCurrenttemplate] = useState<string>("");
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [currentTemplate, setCurrentTemplate] = useState<string>("");
   const [response, setResponse] = useState({ isError: false, message: "" });
   const [orderDetails, setOrderDetails] = useState<CustomerOrderType>();
   const [orders, setOrders] = useState<CustomerOrderType[]>([]);
@@ -45,7 +48,7 @@ export default function SingleOrder() {
       setOrders(response);
     } else {
       setResponse({ isError: true, message: data.error });
-      changeModalContent("responseModal");
+      handleChangeModalContent("03");
     }
   }, [location.state, navigation]);
 
@@ -59,11 +62,19 @@ export default function SingleOrder() {
   };
   const grandTotal = `NGN ${totalPrice()}`;
 
-  const changeModalContent = (template: string) => {
-    if (template in templates) {
-      onOpen();
-      setCurrenttemplate(template);
-    }
+  const templates = ModalTemplates({
+    onCancle: onClose,
+    onContinue: () => console.log("clicked"),
+    confirmationMessage: "",
+    response,
+  });
+  const handleChangeModalContent = (template: string) => {
+    changeModalContent({
+      template,
+      templates,
+      onOpen,
+      setCurrentTemplate,
+    });
   };
 
   useEffect(() => {
@@ -72,12 +83,6 @@ export default function SingleOrder() {
     }
     FetchData();
   }, [location.state, navigation, FetchData]);
-
-  const templates: ModalTemplateType = {
-    responseModal: (
-      <ResponseModal isError={response.isError} message={response.message} />
-    ),
-  };
 
   return (
     <>

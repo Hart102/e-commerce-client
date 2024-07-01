@@ -18,7 +18,7 @@ export default function ModalLayout({
       classNames={{ closeButton: "hidden" }}
       className="fixed -top-1 left-0 h-screen w-screen bg-overLay z-30 py-3 px-4"
     >
-      <ModalContent className="flex flex-col justify-center items-center">
+      <ModalContent onClick={onClose} className="py-20">
         {(onClose) => (
           <div className="w-full md:w-4/12 mx-auto text-center bg-deep-gray-300 rounded-xl p-5">
             <div className="flex justify-end">
